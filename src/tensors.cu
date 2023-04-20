@@ -265,15 +265,26 @@ Tensor_3D<B_Index2, A_Index2, A_Index3>
 tensor_product_3D_with_2D_Contract_1st (const Tensor_3D<Contraction_Index, A_Index2, A_Index3> &,
                              const Tensor_2D<Contraction_Index, B_Index2> &);
 
+
 template
     <class A_Index1, class Contraction_Index, class A_Index3, class B_Index2>
 Tensor_3D<A_Index1, B_Index2, A_Index3>
 tensor_product_3D_with_2D_Contract_2nd (const Tensor_3D<A_Index1, Contraction_Index, A_Index3> &,
                                       const Tensor_2D<Contraction_Index, B_Index2> &);
 
+template
+    <class A_Index1, class A_Index2, class Contraction_Index, class B_Index1>
+Tensor_3D<A_Index1, A_Index2, B_Index1>
+tensor_product_3D_with_2D_Contract_3rd (const Tensor_3D<A_Index1, A_Index2, Contraction_Index> &,
+                                        const Tensor_2D<B_Index1, Contraction_Index> &);
 
+template<class Index1, class Index2, class Index3>
+real_t full_3D_contract(
+    const Tensor_3D<Index1, Index2, Index3> &,
+    const Tensor_3D<Index1, Index2, Index3> &
+);
 
-error_code_t calculate(const std::array<STO_Basis_Function, 4> &basis_functions)
+real_t calculate(const std::array<STO_Basis_Function, 4> &basis_functions)
 {
 
     MAKE_INDEX(X1)
@@ -296,8 +307,6 @@ error_code_t calculate(const std::array<STO_Basis_Function, 4> &basis_functions)
     Tensor_3D<X2, Y2, Z2> P2(r2_grid);
     Tensor_3D<X1, Y1, Z1> P3(r1_grid);
     Tensor_3D<X2, Y2, Z2> P4(r2_grid);
-
-
 
     basis_functions[0].calculate(P1);
     basis_functions[2].calculate(P3);
@@ -325,14 +334,18 @@ error_code_t calculate(const std::array<STO_Basis_Function, 4> &basis_functions)
     calculate_exponent_part<Z1, Z2, S>(Ez);
 
     General_2D_Grid<X1, X2> e_slice_grid_x(x_grid, x_grid);
-    General_2D_Grid<X1, X2> e_slice_grid_y(y_grid, y_grid);
+    General_2D_Grid<Y1, Y2> e_slice_grid_y(y_grid, y_grid);
+    General_2D_Grid<Z1, Z2> e_slice_grid_z(z_grid, z_grid);
 
     General_3D_Grid<X2, Y1, Z1> p13x_grid(x_grid, y_grid, z_grid);
     General_3D_Grid<X2, Y2, Z1> p13xy_grid(x_grid, y_grid, z_grid);
 
-    for ( auto l = 0U ; l < s_grid.size() ; ++l ) {
-        // Get rid of X1 dimension
+    General_3D_Grid<X2, Y2, Z1> p24z_grid(x_grid, y_grid, z_grid);
 
+    real_t sum_over_s = 0;
+    for ( auto l = 0U ; l < s_grid.size() ; ++l ) {
+
+        // Get rid of X1 dimension
         Tensor_2D<X1, X2> Ex_page(e_slice_grid_x);
         Ex_page = Ex.get_page(l);
         Tensor_3D<X2, Y1, Z1> P13X(p13x_grid);
@@ -344,8 +357,16 @@ error_code_t calculate(const std::array<STO_Basis_Function, 4> &basis_functions)
         Ey_page = Ey.get_page(l);
         P13XY = tensor_product_3D_with_2D_Contract_2nd<X2,Y1,Z1,Y2>(P13X, Ey_page);
 
+        // Get rid of Z1 dimension
+        Tensor_2D<Z1, Z2> Ez_page(e_slice_grid_z);
+        Ez_page = Ez.get_page(l);
+        Tensor_3D<X2, Y2, Z1> P24Z(p24z_grid);
+        P24Z = tensor_product_3D_with_2D_Contract_3rd<X2,Y2,Z2,Z1>(P24, Ez_page);
 
+        real_t contract = full_3D_contract<X2, Y2, Z1>(P13XY, P24Z);
+        sum_over_s += contract;
     }
+    return sum_over_s;
 }
 
 }
