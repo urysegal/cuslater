@@ -259,6 +259,19 @@ public:
 
 template<class I1, class I2, class S> void calculate_exponent_part(Tensor_3D<I1, I2, S> &ex);
 
+template
+    <class Contraction_Index, class A_Index2, class A_Index3, class B_Index2>
+Tensor_3D<B_Index2, A_Index2, A_Index3>
+tensor_product_3D_with_2D_Contract_1st (const Tensor_3D<Contraction_Index, A_Index2, A_Index3> &,
+                             const Tensor_2D<Contraction_Index, B_Index2> &);
+
+template
+    <class A_Index1, class Contraction_Index, class A_Index3, class B_Index2>
+Tensor_3D<A_Index1, B_Index2, A_Index3>
+tensor_product_3D_with_2D_Contract_2nd (const Tensor_3D<A_Index1, Contraction_Index, A_Index3> &,
+                                      const Tensor_2D<Contraction_Index, B_Index2> &);
+
+
 
 error_code_t calculate(const std::array<STO_Basis_Function, 4> &basis_functions)
 {
@@ -311,15 +324,27 @@ error_code_t calculate(const std::array<STO_Basis_Function, 4> &basis_functions)
     calculate_exponent_part<Y1, Y2, S>(Ey);
     calculate_exponent_part<Z1, Z2, S>(Ez);
 
+    General_2D_Grid<X1, X2> e_slice_grid_x(x_grid, x_grid);
+    General_2D_Grid<X1, X2> e_slice_grid_y(y_grid, y_grid);
+
+    General_3D_Grid<X2, Y1, Z1> p13x_grid(x_grid, y_grid, z_grid);
+    General_3D_Grid<X2, Y2, Z1> p13xy_grid(x_grid, y_grid, z_grid);
 
     for ( auto l = 0U ; l < s_grid.size() ; ++l ) {
-        General_2D_Grid<X1, X2> e_slice_grid(x_grid, y_grid);
-        Tensor_2D<X1, X2> Ex_page(e_slice_grid);
-        Ex_page = Ex.get_page(l);
-
         // Get rid of X1 dimension
-        Tensor_3D<X2, Y1, Z1> P13X;
-        P13X = contract<X1,>(P13, Ex_page);
+
+        Tensor_2D<X1, X2> Ex_page(e_slice_grid_x);
+        Ex_page = Ex.get_page(l);
+        Tensor_3D<X2, Y1, Z1> P13X(p13x_grid);
+        P13X = tensor_product_3D_with_2D_Contract_1st<X1,Y1,Z1,X2>(P13, Ex_page);
+
+        // Get rid of Y1 dimension
+        Tensor_3D<X2, Y2, Z1> P13XY(p13xy_grid);
+        Tensor_2D<Y1, Y2> Ey_page(e_slice_grid_y);
+        Ey_page = Ey.get_page(l);
+        P13XY = tensor_product_3D_with_2D_Contract_2nd<X2,Y1,Z1,Y2>(P13X, Ey_page);
+
+
     }
 }
 
