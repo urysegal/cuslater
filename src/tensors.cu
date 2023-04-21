@@ -75,20 +75,17 @@ real_t calculate(const std::array<STO_Basis_Function, 4> &basis_functions)
     for ( auto l = 0U ; l < s_grid.size() ; ++l ) {
 
         // Get rid of X1 dimension
-        Tensor_2D<X1, X2> Ex_page(e_slice_grid_x);
-        wEx.get_page(l, Ex_page);
+        Tensor_2D<X1, X2> Ex_page(e_slice_grid_x, wEx, l);
         Tensor_3D<X2, Y1, Z1> P13X(r_grid);
         P13X = tensor_product_3D_with_2D_Contract_1st<X1,Y1,Z1,X2>(P13, Ex_page);
 
         // Get rid of Y1 dimension
         Tensor_3D<X2, Y2, Z1> P13XY(r_grid);
-        Tensor_2D<Y1, Y2> Ey_page(e_slice_grid_y);
-        wEy.get_page(l, Ey_page );
+        Tensor_2D<Y1, Y2> Ey_page(e_slice_grid_y, wEy, l);
         P13XY = tensor_product_3D_with_2D_Contract_2nd<X2,Y1,Z1,Y2>(P13X, Ey_page);
 
         // Get rid of Z1 dimension
-        Tensor_2D<Z1, Z2> Ez_page(e_slice_grid_z);
-        wEz.get_page(l, Ez_page);
+        Tensor_2D<Z1, Z2> Ez_page(e_slice_grid_z, wEz, l);
         Tensor_3D<X2, Y2, Z1> P24Z(r_grid);
         P24Z = tensor_product_3D_with_2D_Contract_3rd<X2,Y2,Z2,Z1>(P24, Ez_page);
 
@@ -112,28 +109,7 @@ real_t Tensor_1D_Impl::operator[](int idx) const
     return data.at(idx);
 }
 
-real_t & Tensor_2D_Impl::at(int idx1, int idx2)
-{
-    ASSERT( idx1 < grid.size().first ) ;
-    ASSERT( idx2 < grid.size().second ) ;
 
-    return data.at(idx1*grid.size().first + idx2 );
-}
-
-real_t Tensor_2D_Impl::at(int idx1, int idx2) const
-{
-    ASSERT( idx1< grid.size().first ) ;
-    ASSERT( idx2< grid.size().second ) ;
-
-    return data.at(idx1*grid.size().first + idx2);
-}
-
-template<class Index1, class Index2, class Index3>
-void Tensor_3D<Index1, Index2, Index3>::get_page(unsigned int page_no, Tensor_2D<Index1, Index2> &res)
-{
-    real_t * page_data = Tensor_3D_Impl::get_page_data(page_no);
-
-}
 
 
 }
