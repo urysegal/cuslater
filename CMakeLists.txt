@@ -3,7 +3,7 @@ project(cuSlater CUDA)
 
 set(CMAKE_CUDA_STANDARD 11)
 include_directories(${cuSlater_SOURCE_DIR} ${cuSlater_SOURCE_DIR}/include)
-add_library(cuSlater cuslater.cu src/gputensors.cu src/tensors.cu include/grids.h)
+add_library(cuSlater cuslater.cu src/gputensors.cu src/tensors.cu include/grids.h include/sto.h include/tensors.h)
 
 set_target_properties(cuSlater PROPERTIES
         CUDA_SEPARABLE_COMPILATION ON)

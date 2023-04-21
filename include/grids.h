@@ -1,4 +1,5 @@
 #pragma once
+#include <map>
 
 namespace cuslater {
 
@@ -11,13 +12,20 @@ public:
 
 
 class Grid_1D : public Grid {
+    Grid_1D(int _size) : grid_size(_size) {}
 public:
-    unsigned int size() const;
+    unsigned int size() const { return grid_size; }
+private:
+    int grid_size = 0;
 };
 
 class Grid_2D : public Grid {
 public:
-    Grid_2D(const Grid_1D &, const Grid_1D &);
+    Grid_2D(const Grid_1D &g1, const Grid_1D &g2) : modes({g1,g2}) {}
+
+    std::pair<int, int> size() const { return std::make_pair<int, int>(modes.first.size(), modes.second.size());}
+private:
+    std::pair<const Grid_1D &, const Grid_1D &> modes ;
 };
 
 
