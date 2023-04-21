@@ -1,6 +1,7 @@
 #include <string>
 #include <algorithm>
 #include <array>
+#include "grids.h"
 
 namespace cuslater {
 
@@ -10,7 +11,6 @@ typedef enum error_code_t : int
 
 } error_code_t;
 
-typedef double real_t;
 typedef  int angular_quantum_number_t;
 typedef  int principal_quantum_number_t;
 typedef int magnetic_quantum_number_t;
@@ -23,6 +23,8 @@ typedef std::array<spatial_coordinate_t, 3> center_t;
 
 /// A normalization_coefficient or Normalization normalization_coefficient
 typedef double sto_coefficient_t;
+
+
 
 struct Quantum_Numbers {
     principal_quantum_number_t n = 0; /// principal quantum number, also known as 'n'
@@ -106,43 +108,6 @@ public:
 
 };
 
-class Grid {
-public:
-};
-
-
-
-class Grid_1D : public Grid {
-public:
-    unsigned int size() const;
-};
-
-class Grid_2D : public Grid {
-public:
-    Grid_2D(const Grid_1D &, const Grid_1D &);
-};
-
-
-
-class Grid_3D : public Grid {
-public:
-    Grid_3D(const Grid_3D &);
-    Grid_3D(const Grid_1D &, const Grid_1D &, const Grid_1D &);
-};
-
-
-class Logarithmic_1D_Grid : public Grid_1D
-{
-public:
-    Logarithmic_1D_Grid(real_t from, real_t to, int steps);
-    real_t operator[](unsigned int n) const;
-
-};
-
-class Equidistance_1D_Grid : public Grid_1D {
-public:
-    Equidistance_1D_Grid(real_t from, real_t to, int steps);
-};
 
 class Tensor_Index  {
 public:
@@ -152,6 +117,16 @@ public:
 private:
     const std::string index_name;
 };
+
+class Tensor_1D_Impl
+{
+public:
+    Tensor_1D_Impl(const Grid_1D &_grid) : grid(_grid) {}
+protected:
+    const Grid_1D &grid;
+
+};
+
 
 class Tensor_3D_Impl
 {
@@ -170,6 +145,20 @@ protected:
     const Grid_2D &grid;
 
 };
+
+template<class Index>
+class Tensor_1D : public Tensor_1D_Impl {
+public:
+    Tensor_1D(const Grid_1D &_grid) : Tensor_1D_Impl(_grid)
+    {
+        static_assert(std::is_base_of<Tensor_Index, Index>::value, "Index not derived from Tensor_Index");
+    }
+    Tensor_1D(Tensor_1D<Index> &&) = delete;
+    Tensor_1D operator=(Tensor_1D<Index> &&);
+
+    real_t &operator[](int idx) ;
+};
+
 
 template<class Index1, class Index2>
 class Tensor_2D : public Tensor_2D_Impl {
@@ -209,34 +198,7 @@ public: \
 
 
 
-template<class Index1, class Index2, class Index3>
-class General_3D_Grid : public Grid_3D {
-public:
-    General_3D_Grid(const General_3D_Grid &_grid) : Grid_3D(_grid)
-    {
-        static_assert(std::is_base_of<Tensor_Index, Index1>::value, "Index1 not derived from Tensor_Index");
-        static_assert(std::is_base_of<Tensor_Index, Index2>::value, "Index2 not derived from Tensor_Index");
-        static_assert(std::is_base_of<Tensor_Index, Index3>::value, "Index3 not derived from Tensor_Index");
-    }
-    General_3D_Grid(const Grid_1D &grid1,const Grid_1D &grid2, const Grid_1D &grid3 ) : Grid_3D(grid1,grid2,grid3)
-    {
-        static_assert(std::is_base_of<Tensor_Index, Index1>::value, "Index1 not derived from Tensor_Index");
-        static_assert(std::is_base_of<Tensor_Index, Index2>::value, "Index2 not derived from Tensor_Index");
-        static_assert(std::is_base_of<Tensor_Index, Index3>::value, "Index3 not derived from Tensor_Index");
-    }
 
-};
-
-template<class Index1, class Index2>
-class General_2D_Grid : public Grid_2D {
-public:
-    General_2D_Grid(const Grid_1D &grid1,const Grid_1D &grid2 ) : Grid_2D(grid1,grid2)
-    {
-        static_assert(std::is_base_of<Tensor_Index, Index1>::value, "Index1 not derived from Tensor_Index");
-        static_assert(std::is_base_of<Tensor_Index, Index2>::value, "Index2 not derived from Tensor_Index");
-    }
-
-};
 
 template<class Index1, class Index2, class Index3>
 class Hadamard {
@@ -284,6 +246,10 @@ real_t full_3D_contract(
     const Tensor_3D<Index1, Index2, Index3> &
 );
 
+void calculate_s_values(Tensor_1D_Impl &t);
+
+template<class Index> real_t Tensor_1D_1D_product(const Tensor_1D<Index> &t1, const Tensor_1D<Index> &t2);
+
 real_t calculate(const std::array<STO_Basis_Function, 4> &basis_functions)
 {
 
@@ -295,18 +261,19 @@ real_t calculate(const std::array<STO_Basis_Function, 4> &basis_functions)
     MAKE_INDEX(Z2)
     MAKE_INDEX(S)
 
+
+
     Equidistance_1D_Grid x_grid(-10,10,100);
     Equidistance_1D_Grid y_grid(x_grid);
     Equidistance_1D_Grid z_grid(x_grid);
 
-    General_3D_Grid<X1, Y1, Z1> r1_grid(x_grid, y_grid, z_grid);
-    General_3D_Grid<X2, Y2, Z2> r2_grid(x_grid, y_grid, z_grid);
+    General_3D_Grid r_grid(x_grid, y_grid, z_grid);
 
 
-    Tensor_3D<X1, Y1, Z1> P1(r1_grid);
-    Tensor_3D<X2, Y2, Z2> P2(r2_grid);
-    Tensor_3D<X1, Y1, Z1> P3(r1_grid);
-    Tensor_3D<X2, Y2, Z2> P4(r2_grid);
+    Tensor_3D<X1, Y1, Z1> P1(r_grid);
+    Tensor_3D<X2, Y2, Z2> P2(r_grid);
+    Tensor_3D<X1, Y1, Z1> P3(r_grid);
+    Tensor_3D<X2, Y2, Z2> P4(r_grid);
 
     basis_functions[0].calculate(P1);
     basis_functions[2].calculate(P3);
@@ -314,16 +281,20 @@ real_t calculate(const std::array<STO_Basis_Function, 4> &basis_functions)
     basis_functions[3].calculate(P4);
 
 
-    Tensor_3D<X1,Y1,Z1> P13(r1_grid);
+    Tensor_3D<X1,Y1,Z1> P13(r_grid);
     P13 = Hadamard<X1,Y1,Z1>().calculate(P1, P3);
-    Tensor_3D<X2,Y2,Z2> P24(r2_grid);
+    Tensor_3D<X2,Y2,Z2> P24(r_grid);
     P24 = Hadamard<X2,Y2,Z2>().calculate(P2, P4);
 
     Logarithmic_1D_Grid s_grid(0,1000,50);
 
-    General_3D_Grid<X1, X2, S> ex_grid(x_grid, x_grid, s_grid);
-    General_3D_Grid<Y1, Y2, S> ey_grid(y_grid, y_grid, s_grid);
-    General_3D_Grid<Z1, Z2, S> ez_grid(z_grid, z_grid, s_grid);
+    Tensor_1D<S> wIs(s_grid);
+
+    calculate_s_values(wIs);
+
+    General_3D_Grid ex_grid(x_grid, x_grid, s_grid);
+    General_3D_Grid ey_grid(y_grid, y_grid, s_grid);
+    General_3D_Grid ez_grid(z_grid, z_grid, s_grid);
 
     Tensor_3D<X1, X2, S> Ex(ex_grid);
     Tensor_3D<Y1, Y2, S> Ey(ey_grid);
@@ -333,26 +304,24 @@ real_t calculate(const std::array<STO_Basis_Function, 4> &basis_functions)
     calculate_exponent_part<Y1, Y2, S>(Ey);
     calculate_exponent_part<Z1, Z2, S>(Ez);
 
-    General_2D_Grid<X1, X2> e_slice_grid_x(x_grid, x_grid);
-    General_2D_Grid<Y1, Y2> e_slice_grid_y(y_grid, y_grid);
-    General_2D_Grid<Z1, Z2> e_slice_grid_z(z_grid, z_grid);
+    General_2D_Grid e_slice_grid_x(x_grid, x_grid);
+    General_2D_Grid e_slice_grid_y(y_grid, y_grid);
+    General_2D_Grid e_slice_grid_z(z_grid, z_grid);
 
-    General_3D_Grid<X2, Y1, Z1> p13x_grid(x_grid, y_grid, z_grid);
-    General_3D_Grid<X2, Y2, Z1> p13xy_grid(x_grid, y_grid, z_grid);
 
-    General_3D_Grid<X2, Y2, Z1> p24z_grid(x_grid, y_grid, z_grid);
 
-    real_t sum_over_s = 0;
+    Tensor_1D<S> I(s_grid);
+
     for ( auto l = 0U ; l < s_grid.size() ; ++l ) {
 
         // Get rid of X1 dimension
         Tensor_2D<X1, X2> Ex_page(e_slice_grid_x);
         Ex_page = Ex.get_page(l);
-        Tensor_3D<X2, Y1, Z1> P13X(p13x_grid);
+        Tensor_3D<X2, Y1, Z1> P13X(r_grid);
         P13X = tensor_product_3D_with_2D_Contract_1st<X1,Y1,Z1,X2>(P13, Ex_page);
 
         // Get rid of Y1 dimension
-        Tensor_3D<X2, Y2, Z1> P13XY(p13xy_grid);
+        Tensor_3D<X2, Y2, Z1> P13XY(r_grid);
         Tensor_2D<Y1, Y2> Ey_page(e_slice_grid_y);
         Ey_page = Ey.get_page(l);
         P13XY = tensor_product_3D_with_2D_Contract_2nd<X2,Y1,Z1,Y2>(P13X, Ey_page);
@@ -360,12 +329,14 @@ real_t calculate(const std::array<STO_Basis_Function, 4> &basis_functions)
         // Get rid of Z1 dimension
         Tensor_2D<Z1, Z2> Ez_page(e_slice_grid_z);
         Ez_page = Ez.get_page(l);
-        Tensor_3D<X2, Y2, Z1> P24Z(p24z_grid);
+        Tensor_3D<X2, Y2, Z1> P24Z(r_grid);
         P24Z = tensor_product_3D_with_2D_Contract_3rd<X2,Y2,Z2,Z1>(P24, Ez_page);
 
         real_t contract = full_3D_contract<X2, Y2, Z1>(P13XY, P24Z);
-        sum_over_s += contract;
+        I[l] = contract;
     }
+
+    real_t sum_over_s = Tensor_1D_1D_product(wIs, I);
     return sum_over_s;
 }
 
