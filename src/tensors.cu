@@ -109,6 +109,19 @@ real_t Tensor_1D_Impl::operator[](int idx) const
     return data.at(idx);
 }
 
+template<class Index1, class Index2, class Index3>
+void Hadamard<Index1, Index2, Index3>::calculate(
+    const Tensor_3D<Index1, Index2, Index3> &t1,
+    const Tensor_3D<Index1, Index2, Index3> &t2,
+    Tensor_3D<Index1, Index2, Index3> result
+)
+{
+    real_t *result_data_ptr = result.get_data();
+    const real_t *t1_data_ptr = t1.get_data();
+    const real_t *t2_data_ptr = t2.get_data();
+
+
+}
 
 
 

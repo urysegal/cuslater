@@ -2,6 +2,7 @@
 #include "grids.h"
 #include <vector>
 #include <memory>
+#include <string>
 
 namespace cuslater
 {
@@ -129,6 +130,9 @@ public:
         static_assert(std::is_base_of<Tensor_Index, Index2>::value, "Index2 not derived from Tensor_Index");
         static_assert(std::is_base_of<Tensor_Index, Index3>::value, "Index3 not derived from Tensor_Index");
     }
+    real_t *get_data();
+    const real_t *get_data() const;
+
 };
 
 
@@ -164,6 +168,9 @@ public:
         Tensor_3D<Index1, Index2, Index3> result
     );
 };
+
+
+
 
 template<class I1, class I2, class S> void calculate_exponent_part(Tensor_3D<I1, I2, S> &ex);
 
