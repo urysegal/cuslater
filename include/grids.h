@@ -32,7 +32,12 @@ private:
 
 class Grid_3D : public Grid {
 public:
-    Grid_3D(const Grid_1D &, const Grid_1D &, const Grid_1D &);
+    Grid_3D(const Grid_1D &g1, const Grid_1D &g2, const Grid_1D &g3) :
+        sizes ({ g1.size(), g2.size(), g3.size() })
+                  { }
+    std::tuple<int, int, int> get_sizes() const { return sizes ;}
+private:
+    std::tuple<int, int, int> sizes;
 };
 
 

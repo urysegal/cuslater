@@ -2,9 +2,11 @@
 #include <string>
 #include <algorithm>
 #include <array>
+#include <unordered_map>
 #include "grids.h"
 #include "sto.h"
 #include "tensors.h"
+#include "gputensors.h"
 
 #define ASSERT assert
 
@@ -41,10 +43,8 @@ real_t calculate(const std::array<STO_Basis_Function, 4> &basis_functions)
     calculate_basis_function_values(basis_functions[1], P3) ;
     calculate_basis_function_values(basis_functions[3], P4) ;
 
-    Tensor_3D<X1,Y1,Z1> P13(r_grid);
-    Hadamard<X1,Y1,Z1>().calculate(P1, P3, P13);
-    Tensor_3D<X2,Y2,Z2> P24(r_grid);
-    Hadamard<X2,Y2,Z2>().calculate(P2, P4, P24);
+    auto P13 = Hadamard<X1,Y1,Z1>().calculate(P1, P3);
+    auto P24 = Hadamard<X2,Y2,Z2>().calculate(P2, P4);
 
     Logarithmic_1D_Grid s_grid(0,1000,50);
 
@@ -76,18 +76,18 @@ real_t calculate(const std::array<STO_Basis_Function, 4> &basis_functions)
 
         // Get rid of X1 dimension
         Tensor_2D<X1, X2> Ex_page(e_slice_grid_x, wEx, l);
-        Tensor_3D<X2, Y1, Z1> P13X(r_grid);
-        P13X = tensor_product_3D_with_2D_Contract_1st<X1,Y1,Z1,X2>(P13, Ex_page);
+        //Tensor_3D<X2, Y1, Z1> P13X(r_grid);
+        auto P13X = tensor_product_3D_with_2D_Contract_1st<X1,Y1,Z1,X2>(P13, Ex_page);
 
         // Get rid of Y1 dimension
-        Tensor_3D<X2, Y2, Z1> P13XY(r_grid);
+        //Tensor_3D<X2, Y2, Z1> P13XY(r_grid);
         Tensor_2D<Y1, Y2> Ey_page(e_slice_grid_y, wEy, l);
-        P13XY = tensor_product_3D_with_2D_Contract_2nd<X2,Y1,Z1,Y2>(P13X, Ey_page);
+        auto P13XY = tensor_product_3D_with_2D_Contract_2nd<X2,Y1,Z1,Y2>(P13X, Ey_page);
 
         // Get rid of Z1 dimension
         Tensor_2D<Z1, Z2> Ez_page(e_slice_grid_z, wEz, l);
-        Tensor_3D<X2, Y2, Z1> P24Z(r_grid);
-        P24Z = tensor_product_3D_with_2D_Contract_3rd<X2,Y2,Z2,Z1>(P24, Ez_page);
+        //Tensor_3D<X2, Y2, Z1> P24Z(r_grid);
+        auto P24Z = tensor_product_3D_with_2D_Contract_3rd<X2,Y2,Z2,Z1>(P24, Ez_page);
 
         real_t contract = full_3D_contract<X2, Y2, Z1>(P13XY, P24Z);
         I[l] = contract;
@@ -110,17 +110,38 @@ real_t Tensor_1D_Impl::operator[](int idx) const
 }
 
 template<class Index1, class Index2, class Index3>
-void Hadamard<Index1, Index2, Index3>::calculate(
+Tensor_3D<Index1, Index2, Index3> Hadamard<Index1, Index2, Index3>::calculate(
     const Tensor_3D<Index1, Index2, Index3> &t1,
-    const Tensor_3D<Index1, Index2, Index3> &t2,
-    Tensor_3D<Index1, Index2, Index3> result
+    const Tensor_3D<Index1, Index2, Index3> &t2
 )
 {
-    real_t *result_data_ptr = result.get_data();
+    auto grid = t1.get_grid();
+    auto t2grid = t2.get_grid();
+    auto grid_size = grid.get_sizes();
+    auto grid2_size = grid.get_sizes();
+
+    ASSERT(std::get<0>(grid_size) == std::get<0>(grid2_size));
+    ASSERT(std::get<1>(grid_size) == std::get<1>(grid2_size));
+    ASSERT(std::get<2>(grid_size) == std::get<2>(grid2_size));
+
+    Tensor_3D<Index1, Index2, Index3> res(grid);
+
     const real_t *t1_data_ptr = t1.get_data();
     const real_t *t2_data_ptr = t2.get_data();
+    real_t *result_data = res.get_data();
 
+    std::vector<int> modes;
+    std::unordered_map<int, int64_t> extent;
 
+    modes = { 'x','y','z' };
+
+    extent.emplace('x', std::get<0>(grid_size));
+    extent.emplace('y', std::get<1>(grid_size));
+    extent.emplace('z', std::get<2>(grid_size));
+
+    auto rv = hadamar( modes,  extent, t1_data_ptr, t2_data_ptr, result_data);
+
+    return res;
 }
 
 
