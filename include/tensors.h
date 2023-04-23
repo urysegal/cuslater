@@ -71,20 +71,7 @@ private:
 };
 
 
-class Tensor_3D_Impl
-{
-public:
-    Tensor_3D_Impl(const Grid_3D &_grid) : grid(_grid) {}
 
-    const real_t *get_page_data(unsigned int page_no) const;
-
-    const Grid_3D &get_grid() const { return grid; }
-
-protected:
-
-    const Grid_3D &grid;
-
-};
 
 
 template<class Index>
@@ -122,7 +109,28 @@ private:
     std::unique_ptr<Tensor_2D_Impl> _impl;
 };
 
+class Tensor_3D_Impl
+{
+public:
+    Tensor_3D_Impl(const Grid_3D &_grid) : grid(_grid)
+    {
+        auto sizes= grid.get_sizes();
+        data.resize(std::get<0>(sizes) * std::get<1>(sizes) * std::get<2>(sizes) );
+    }
 
+    const real_t *get_page_data(unsigned int page_no) const
+    {
+        auto sizes= grid.get_sizes();
+        return data.data() + ( sizeof (real_t) * std::get<0>(sizes) * std::get<1>(sizes) ) ;
+    }
+
+    const Grid_3D &get_grid() const { return grid; }
+
+protected:
+    const Grid_3D &grid;
+    std::vector<real_t> data;
+
+};
 template<class Index1, class Index2, class Index3>
 class Tensor_3D : public Tensor_3D_Impl {
 public:
@@ -131,8 +139,6 @@ public:
         static_assert(std::is_base_of<Tensor_Index, Index1>::value, "Index1 not derived from Tensor_Index");
         static_assert(std::is_base_of<Tensor_Index, Index2>::value, "Index2 not derived from Tensor_Index");
         static_assert(std::is_base_of<Tensor_Index, Index3>::value, "Index3 not derived from Tensor_Index");
-        auto sizes= grid.get_sizes();
-        data.resize(std::get<0>(sizes) * std::get<1>(sizes) * std::get<2>(sizes) );
     }
 
     Tensor_3D(const cuslater::Tensor_3D<Index1, Index2, Index3> &&other) : Tensor_3D_Impl(other.grid)
@@ -143,8 +149,6 @@ public:
     //Tensor_3D<Index1, Index2, Index3> & operator=(Tensor_3D<Index1, Index2, Index3> &&) ;
     real_t *get_data() { return data.data(); }
     const real_t *get_data() const { return data.data(); }
-private:
-    std::vector<real_t> data;
 };
 
 
