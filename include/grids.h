@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include <exception>
 
 namespace cuslater {
 
@@ -24,6 +25,17 @@ public:
     Grid_2D(const Grid_1D &g1, const Grid_1D &g2) : modes({g1,g2}) {}
 
     std::pair<int, int> size() const { return std::make_pair<int, int>(modes.first.size(), modes.second.size());}
+    const Grid_1D& get_grid(int g) const {
+        switch (g) {
+            case  0:
+                return std::get<0>(modes);
+            case  1:
+                return std::get<1>(modes);
+            default:
+                throw std::exception();
+        }
+    }
+
 private:
     std::pair<const Grid_1D &, const Grid_1D &> modes ;
 };
@@ -33,11 +45,26 @@ private:
 class Grid_3D : public Grid {
 public:
     Grid_3D(const Grid_1D &g1, const Grid_1D &g2, const Grid_1D &g3) :
-        sizes ({ g1.size(), g2.size(), g3.size() })
+        sizes ({ g1.size(), g2.size(), g3.size() }),
+        grids({g1,g2,g3})
                   { }
     std::tuple<int, int, int> get_sizes() const { return sizes ;}
+    const Grid_1D& get_grid(int g) const {
+        switch (g) {
+            case  0:
+                return std::get<0>(grids);
+            case  1:
+                return std::get<1>(grids);
+            case  2:
+                return std::get<2>(grids);
+            default:
+                throw std::exception();
+        }
+    }
 private:
     std::tuple<int, int, int> sizes;
+    std::tuple<const Grid_1D &, const Grid_1D &, const Grid_1D &> grids;
+
 };
 
 

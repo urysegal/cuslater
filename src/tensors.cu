@@ -60,6 +60,14 @@ namespace cuslater {
         return sum_over_s;
     }
 
+template<class Index1, class Index2>
+Tensor_2D<Index1, Index2>::Tensor_2D(const Grid_2D &_grid, const Tensor_3D_Impl &tensor_3d, int page)
+{
+    static_assert(std::is_base_of<Tensor_Index, Index1>::value, "Index1 not derived from Tensor_Index");
+    static_assert(std::is_base_of<Tensor_Index, Index2>::value, "Index2 not derived from Tensor_Index");
+    const real_t *data = tensor_3d.get_page_data(page);
+    _impl = std::make_unique<Tensor_2D_Impl_Ref>(_grid, data);
+}
 
 
 
@@ -109,26 +117,53 @@ Tensor_3D<Index1, Index2, Index3> Hadamard<Index1, Index2, Index3>::calculate(
 
     return res;
 }
-template<class I1, class I2, class S> void calculate_exponent_part(Tensor_3D<I1, I2, S> &ex) {}
 
 template
     <class Contraction_Index, class A_Index2, class A_Index3, class B_Index2>
 Tensor_3D<B_Index2, A_Index2, A_Index3>
-tensor_product_3D_with_2D_Contract_1st (const Tensor_3D<Contraction_Index, A_Index2, A_Index3> &,
-                                        const Tensor_2D<Contraction_Index, B_Index2> &);
+tensor_product_3D_with_2D_Contract_1st (const Tensor_3D<Contraction_Index, A_Index2, A_Index3> &t1,
+                                        const Tensor_2D<Contraction_Index, B_Index2> &t2)
+{
+    const Grid_1D & x_grid =  t2.get_grid(1);
+    const Grid_1D & y_grid =  t1.get_grid(1);
+    const Grid_1D & z_grid =  t1.get_grid(2);
+
+    General_3D_Grid grid(x_grid, y_grid, z_grid);
+    Tensor_3D<B_Index2, A_Index2, A_Index3> res(grid);
+    return res;
+}
 
 
 template
     <class A_Index1, class Contraction_Index, class A_Index3, class B_Index2>
 Tensor_3D<A_Index1, B_Index2, A_Index3>
-tensor_product_3D_with_2D_Contract_2nd (const Tensor_3D<A_Index1, Contraction_Index, A_Index3> &,
-                                        const Tensor_2D<Contraction_Index, B_Index2> &);
+tensor_product_3D_with_2D_Contract_2nd (const Tensor_3D<A_Index1, Contraction_Index, A_Index3> &t1,
+                                        const Tensor_2D<Contraction_Index, B_Index2> &t2)
+{
+    const Grid_1D & x_grid =  t1.get_grid(0);
+    const Grid_1D & y_grid =  t2.get_grid(1);
+    const Grid_1D & z_grid =  t1.get_grid(2);
+
+    General_3D_Grid grid(x_grid, y_grid, z_grid);
+    Tensor_3D<A_Index1, B_Index2, A_Index3> res(grid);
+    return res;
+}
 
 template
     <class A_Index1, class A_Index2, class Contraction_Index, class B_Index1>
 Tensor_3D<A_Index1, A_Index2, B_Index1>
-tensor_product_3D_with_2D_Contract_3rd (const Tensor_3D<A_Index1, A_Index2, Contraction_Index> &,
-                                        const Tensor_2D<B_Index1, Contraction_Index> &);
+tensor_product_3D_with_2D_Contract_3rd (const Tensor_3D<A_Index1, A_Index2, Contraction_Index> &t1,
+                                        const Tensor_2D<B_Index1, Contraction_Index> &t2)
+{
+    const Grid_1D & x_grid =  t1.get_grid(0);
+    const Grid_1D & y_grid =  t1.get_grid(1);
+    const Grid_1D & z_grid =  t2.get_grid(0);
+
+    General_3D_Grid grid(x_grid, y_grid, z_grid);
+    Tensor_3D<A_Index1, A_Index2, B_Index1> res(grid);
+    return res;
+
+}
 
 template<class Index1, class Index2, class Index3>
 real_t full_3D_contract(
@@ -142,6 +177,8 @@ template<class Index> real_t Tensor_1D_1D_product(const Tensor_1D<Index> &t1, co
 {
     return 0;
 }
+
+template<class I1, class I2, class S> void calculate_exponent_part(Tensor_3D<I1, I2, S> &ex) {}
 
 
 

@@ -43,6 +43,8 @@ public:
     {
     }
     virtual ~Tensor_2D_Impl() = default;
+    const Grid_1D &get_grid(int g) const { return grid.get_grid(g); }
+
 protected:
     const Grid_2D &grid;
 };
@@ -97,13 +99,8 @@ public:
         static_assert(std::is_base_of<Tensor_Index, Index2>::value, "Index2 not derived from Tensor_Index");
         _impl = std::make_unique<Tensor_2D_Impl_Owner>(_grid);
     }
-    Tensor_2D(const Grid_2D &_grid, const Tensor_3D_Impl &tensor_3d, int page)
-    {
-        static_assert(std::is_base_of<Tensor_Index, Index1>::value, "Index1 not derived from Tensor_Index");
-        static_assert(std::is_base_of<Tensor_Index, Index2>::value, "Index2 not derived from Tensor_Index");
-        const real_t *data = tensor_3d.get_page_data(page);
-        _impl = std::make_unique<Tensor_2D_Impl_Ref>(_grid, data);
-    }
+    Tensor_2D(const Grid_2D &_grid, const Tensor_3D_Impl &tensor_3d, int page);
+    const Grid_1D &get_grid(int g) const { return _impl->get_grid(g); }
 
 private:
     std::unique_ptr<Tensor_2D_Impl> _impl;
@@ -125,6 +122,7 @@ public:
     }
 
     const Grid_3D &get_grid() const { return grid; }
+    const Grid_1D &get_grid(int g) const { return grid.get_grid(g); }
 
 protected:
     const Grid_3D &grid;
