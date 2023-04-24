@@ -27,7 +27,6 @@ struct Quantum_Numbers {
 
 class STO_Basis_Function_Info {
 
-    sto_coefficient_t normalization_coefficient; /// Normalization Coefficient N(n,alpha) of the radial part. also known as N
     sto_exponent_t exponent; /// alpha of the radial part. also known as alpha
     Quantum_Numbers quantum_numbers;     /// Quantum numbers for this basis function
 
@@ -61,7 +60,10 @@ public:
     /// Construct an STO style basis function detail object.
     /// \param exponent_ alpha of the radial part.
     /// \param quantum_numbers Set of quantum numbers for this function
-    STO_Basis_Function_Info( sto_exponent_t exponent_, const Quantum_Numbers &quantum_numbers);
+    STO_Basis_Function_Info( sto_exponent_t exponent_, const Quantum_Numbers &quantum_numbers_) :  exponent(exponent_),
+                                                                                                  quantum_numbers(quantum_numbers_)
+    {}
+
 
 };
 
@@ -75,7 +77,9 @@ public:
     /// Construct a basis function located at a specific coordinates
     /// \param function_info Basis function information
     /// \param location Cartesian center of the function
-    STO_Basis_Function(STO_Basis_Function_Info function_info_, center_t location_);
+    STO_Basis_Function(STO_Basis_Function_Info function_info_, center_t location_) :
+        function_info(function_info_), center(location_)
+    {}
 
     /// Get the set of quantum numbers for this basis function
     /// \return set of quantum numbers

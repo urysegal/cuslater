@@ -46,7 +46,7 @@ void gpu_calculate_s_values(const std::vector<real_t> &points, real_t *result)
     }
 
    cudaMemcpyToSymbol(inv_sqrt_pi, &_inv_sqrt_pi,  sizeof(double));
-   cudaMemcpy(s_points, points.data(), sizeof(double) *N, cudaMemcpyHostToDevice);
+   cudaMemcpyToSymbol(s_points, points.data(), sizeof(double) *N);
    cudaMalloc(&d_result, N*sizeof(double));
    calculate_s_value<<<(N+255)/256, 256>>>(N, d_result);
    cudaMemcpy(result, d_result, N*sizeof(double ), cudaMemcpyDeviceToHost);
