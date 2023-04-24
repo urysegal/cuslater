@@ -74,13 +74,17 @@ private:
 class Logarithmic_1D_Grid : public Grid_1D
 {
 public:
-    Logarithmic_1D_Grid(real_t _from, real_t _to, int _steps): Grid_1D(_steps),
-    from(_from) , to(_to), steps(_steps)
-    {}
+    Logarithmic_1D_Grid(real_t _to, int _steps): Grid_1D(_steps),
+     to(_to), steps(_steps)
+    {
+        real_t upper_bound = to*2.0;
+        for ( int i = 0 ; i < steps ; ++i ) {
+            points.emplace_back(upper_bound / pow(2.0,i+1));
+        }
+    }
     real_t operator[](unsigned int n) const;
     const std::vector<real_t> & get_data() const override { return points; }
 private:
-    real_t from=0;
     real_t to=0;
     int steps =0;
     std::vector<real_t> points;

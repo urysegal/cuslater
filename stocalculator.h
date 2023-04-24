@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include "include/grids.h"
 #include "include/sto.h"
-#include "include/tensors.h"
+#include "include/tensors.cuh"
 #include "include/gputensors.h"
 
 namespace cuslater {

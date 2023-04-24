@@ -2,8 +2,8 @@
 #include <array>
 #include "../include/grids.h"
 #include "../include/sto.h"
-#include "../include/tensors.h"
-#include "../cuslater.h"
+#include "../include/tensors.cuh"
+#include "../stocalculator.h"
 #include <stdio.h>
 #include <stdlib.h>
 

@@ -1,4 +1,4 @@
-#include "cuslater.h"
+#include "../stocalculator.h"
 
 #define ASSERT assert
 

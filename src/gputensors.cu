@@ -31,7 +31,7 @@
 #include <array>
 #include "grids.h"
 #include "sto.h"
-#include "tensors.h"
+#include "tensors.cuh"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -156,7 +156,6 @@ int hadamar( std::vector<int> &modes,  std::unordered_map<int, int64_t> &extent,
                                                typeC, CUTENSOR_OP_IDENTITY));
 
 
-    double minTimeCUTENSOR = 1e100;
         HANDLE_CUDA_ERROR(cudaDeviceSynchronize());
         timer.start();
         err = cutensorElementwiseBinary(&handle,
@@ -169,7 +168,6 @@ int hadamar( std::vector<int> &modes,  std::unordered_map<int, int64_t> &extent,
         {
             printf("ERROR: %s\n", cutensorGetErrorString(err) );
         }
-        minTimeCUTENSOR = (minTimeCUTENSOR < time)? minTimeCUTENSOR : time;
 
     HANDLE_CUDA_ERROR(cudaMemcpy2D(D_d, sizeM, D_d, sizeM, sizeM, 1, cudaMemcpyDefault));
 
@@ -180,7 +178,7 @@ int hadamar( std::vector<int> &modes,  std::unordered_map<int, int64_t> &extent,
     transferedBytes += ((float)alpha != 0.f) ? sizeM : 0;
     transferedBytes += ((float)gamma != 0.f) ? sizeM : 0;
     transferedBytes /= 1e9;
-    printf("cuTensor: %.2f GB/s\n", transferedBytes / minTimeCUTENSOR);
+    printf("cuTensor: %.2f GB/s\n", transferedBytes / time);
     printf("memcpy: %.2f GB/s\n", 2 * sizeM / minTimeMEMCPY / 1e9 );
 
     if (A_d) cudaFree(A_d);
