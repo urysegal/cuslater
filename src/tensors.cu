@@ -8,6 +8,9 @@ namespace cuslater {
     real_t Four_Center_STO_Integrals_Calculator::calculate(const std::array<STO_Basis_Function, 4> &basis_functions)
     {
 
+        Tensor_1D<S> wIs(s_grid);
+        calculate_s_values(wIs);
+
         Tensor_3D<X1, Y1, Z1> P1(r_grid);
         Tensor_3D<X2, Y2, Z2> P2(r_grid);
         Tensor_3D<X1, Y1, Z1> P3(r_grid);
@@ -21,9 +24,6 @@ namespace cuslater {
         auto P13 = Hadamard<X1, Y1, Z1>().calculate(P1, P3);
         auto P24 = Hadamard<X2, Y2, Z2>().calculate(P2, P4);
 
-        Tensor_1D<S> wIs(s_grid);
-
-        calculate_s_values(wIs);
 
         Tensor_3D<X1, X2, S> wEx(ex_grid);
         Tensor_3D<Y1, Y2, S> wEy(ey_grid);
@@ -92,7 +92,7 @@ Tensor_3D<Index1, Index2, Index3> Hadamard<Index1, Index2, Index3>::calculate(
     auto grid = t1.get_grid();
     auto t2grid = t2.get_grid();
     auto grid_size = grid.get_sizes();
-    auto grid2_size = grid.get_sizes();
+    auto grid2_size = t2grid.get_sizes();
 
         ASSERT(std::get<0>(grid_size) == std::get<0>(grid2_size));
         ASSERT(std::get<1>(grid_size) == std::get<1>(grid2_size));
@@ -171,7 +171,14 @@ real_t full_3D_contract(
     const Tensor_3D<Index1, Index2, Index3> &
 ) { return 0;}
 
-void calculate_s_values(Tensor_1D_Impl &t) {}
+
+void calculate_s_values(Tensor_1D_Impl &t)
+{
+    real_t *result_data = t.get_data();
+    gpu_calculate_s_values(t.get_grid().get_data() , result_data);
+}
+
+
 void calculate_basis_function_values(const STO_Basis_Function &, Tensor_3D_Impl &)  {}
 template<class Index> real_t Tensor_1D_1D_product(const Tensor_1D<Index> &t1, const Tensor_1D<Index> &t2)
 {

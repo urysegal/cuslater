@@ -1,6 +1,7 @@
 #pragma once
 #include <map>
 #include <exception>
+#include <vector>
 
 namespace cuslater {
 
@@ -13,9 +14,10 @@ public:
 
 
 class Grid_1D : public Grid {
-    Grid_1D(int _size) : grid_size(_size) {}
 public:
+    Grid_1D(int _size) : grid_size(_size) {}
     unsigned int size() const { return grid_size; }
+    virtual const std::vector<real_t> & get_data() const  = 0;
 private:
     int grid_size = 0;
 };
@@ -68,17 +70,49 @@ private:
 };
 
 
+
 class Logarithmic_1D_Grid : public Grid_1D
 {
 public:
-    Logarithmic_1D_Grid(real_t from, real_t to, int steps);
+    Logarithmic_1D_Grid(real_t _from, real_t _to, int _steps): Grid_1D(_steps),
+    from(_from) , to(_to), steps(_steps)
+    {}
     real_t operator[](unsigned int n) const;
-
+    const std::vector<real_t> & get_data() const override { return points; }
+private:
+    real_t from=0;
+    real_t to=0;
+    int steps =0;
+    std::vector<real_t> points;
 };
 
 class Equidistance_1D_Grid : public Grid_1D {
 public:
-    Equidistance_1D_Grid(real_t from, real_t to, int steps);
+    Equidistance_1D_Grid(real_t _from, real_t _to, int _steps) : Grid_1D(_steps),
+     from(_from), to(_to), steps(_steps)
+    {}
+    real_t operator[](unsigned int n) const;
+    const std::vector<real_t> & get_data() const override
+    {
+        if ( points.empty() ) {
+            calculate_points();
+        }
+        return points;
+    }
+
+private:
+
+    void calculate_points() const
+    {
+        auto s = (to-from)/double(steps);
+        for ( int i = 0 ; i < steps ; ++ i) {
+            points.emplace_back(from + i*s);
+        }
+    }
+    real_t from = 0;
+    real_t to = 0;
+    int steps = 0;
+    mutable std::vector<real_t> points;
 };
 
 class General_3D_Grid : public Grid_3D {

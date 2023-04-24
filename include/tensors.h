@@ -28,6 +28,9 @@ public:
 
     real_t &operator[](int idx) ;
     real_t operator[](int idx) const ;
+    const Grid_1D &get_grid() const { return grid; }
+    real_t *get_data() { return data.data(); }
+    const real_t *get_data() const { return data.data(); }
 
 protected:
     const Grid_1D &grid;

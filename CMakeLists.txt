@@ -3,11 +3,14 @@ project(cuSlater CUDA)
 
 
 set(CMAKE_CUDA_STANDARD 14)
+
+set(COMPILE_FLAGS -g -Wall -Xcompiler -Werror)
+
 include_directories(${cuSlater_SOURCE_DIR} ${cuSlater_SOURCE_DIR}/include)
 add_library(cuSlater cuslater.cu src/gputensors.cu src/tensors.cu include/grids.h include/sto.h include/tensors.h
-        include/gputensors.h cuslater.h)
+        include/gputensors.h cuslater.h src/svalues.cu)
 target_link_libraries(cuSlater cutensor cublasLt)
-
+target_compile_options(cuSlater PUBLIC ${COMPILE_FLAGS})
 
 set_target_properties(cuSlater PROPERTIES
         CUDA_SEPARABLE_COMPILATION ON)
@@ -16,3 +19,4 @@ add_executable(test examples/test.cu cuslater.h)
 add_dependencies(test cuSlater)
 target_include_directories(test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(test cuSlater cublasLt)
+target_compile_options(test PUBLIC ${COMPILE_FLAGS})
