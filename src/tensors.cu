@@ -179,7 +179,21 @@ void calculate_s_values(Tensor_1D_Impl &t)
 }
 
 
-void calculate_basis_function_values(const STO_Basis_Function &, Tensor_3D_Impl &)  {}
+void calculate_basis_function_values(const STO_Basis_Function &f, Tensor_3D_Impl &t)
+{
+    real_t *result_data = t.get_data();
+    auto const &grid = t.get_grid();
+    auto const &center = f.get_center();
+    auto const &q = f.get_quantum_numbers();
+
+    gpu_calculate_sto_function_values(f.get_exponent(),
+                                      center[0], center[1], center[2],
+                                      q.n, q.l, q.m,
+                                      grid.get_grid(0).get_data(), grid.get_grid(1).get_data(), grid.get_grid(2).get_data(),
+                                      result_data);
+}
+
+
 template<class Index> real_t Tensor_1D_1D_product(const Tensor_1D<Index> &t1, const Tensor_1D<Index> &t2)
 {
     return 0;

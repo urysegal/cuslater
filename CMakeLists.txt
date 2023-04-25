@@ -8,7 +8,7 @@ set(COMPILE_FLAGS -g -Wall -Xcompiler -Werror)
 
 include_directories(${cuSlater_SOURCE_DIR} ${cuSlater_SOURCE_DIR}/include)
 add_library(cuSlater stocalculator.cu src/gputensors.cu src/tensors.cu include/grids.h include/sto.h include/tensors.cuh
-        include/gputensors.h stocalculator.h src/svalues.cu)
+        include/gputensors.h stocalculator.h src/svalues.cu src/stovalues.cu)
 target_link_libraries(cuSlater cutensor cublasLt)
 target_compile_options(cuSlater PUBLIC ${COMPILE_FLAGS})
 target_include_directories(cuSlater PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/include)

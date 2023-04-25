@@ -127,6 +127,9 @@ public:
     const Grid_3D &get_grid() const { return grid; }
     const Grid_1D &get_grid(int g) const { return grid.get_grid(g); }
 
+    real_t *get_data() { return data.data(); }
+    const real_t * get_data() const { return data.data(); }
+
 protected:
     const Grid_3D &grid;
     std::vector<real_t> data;

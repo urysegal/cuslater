@@ -34,7 +34,7 @@ public:
 
     /// Get the set of quantum numbers for this basis function
     /// \return set of quantum numbers for this basis function
-    const Quantum_Numbers &get_quantum_numbers() const;
+    const Quantum_Numbers &get_quantum_numbers() const { return  quantum_numbers; }
 
     /// Set the quantum numbers for this basis function
     /// \param quantum_numbers set of quantum numbers to use
@@ -42,18 +42,12 @@ public:
 
     /// Get the alpha used by this basis function
     /// \return the alpha used by this basis function
-    sto_exponent_t get_exponent() const ;
+    sto_exponent_t get_exponent() const  { return exponent; }
 
     /// Set the alpha used by this basis function
     /// \param e alpha to use
     void set_exponent(sto_exponent_t e) ;
 
-    /// Get the normalization_coefficient used by this basis function
-    /// \return the normalization_coefficient used by this basis function
-    sto_coefficient_t get_coefficient() const ;
-    /// Set the normalization_coefficient used by this basis function
-    /// \param c normalization_coefficient to use
-    void set_coefficient(sto_coefficient_t c) ;
 
 
 public:
@@ -83,19 +77,15 @@ public:
 
     /// Get the set of quantum numbers for this basis function
     /// \return set of quantum numbers
-    const Quantum_Numbers &get_quantum_numbers() const;
+    const Quantum_Numbers &get_quantum_numbers() const { return function_info.get_quantum_numbers(); }
 
     /// Get the alpha used by this basis function
     /// \return the alpha used by this basis function
-    sto_exponent_t get_exponent() const;
-
-    /// Get the normalization_coefficient used by this basis function
-    /// \return the normalization_coefficient used by this basis function
-    sto_coefficient_t get_normalization_coefficient() const;
+    sto_exponent_t get_exponent() const { return function_info.get_exponent(); }
 
     /// Get the spatial center of this basis function
     /// \return the spatial center of this basis function
-    center_t get_center() const;
+    center_t get_center() const { return center; }
 
 
 };
