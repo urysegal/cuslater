@@ -16,19 +16,40 @@
 #include <cuda_runtime.h>
 
 #include <cutensor.h>
-#define MAX_S_POINTS 512 // You can go to 4K, but cache size is just 8K.
 
-__constant__ double inv_sqrt_pi;
-__constant__ double s_points[MAX_S_POINTS];
+#define MAX_CONST_MEMORY (64*1024)
+#define MAX_CONST_DOUBLES (MAX_CONST_MEMORY/sizeof(double))
+#define MAX_AXIS_POINTS (MAX_CONST_DOUBLES/4)
+
+__constant__ double x_grid_points[MAX_AXIS_POINTS];
+__constant__ double y_grid_points[MAX_AXIS_POINTS];
+__constant__ double z_grid_points[MAX_AXIS_POINTS];
 
 
 __global__
-void calculate_sto_value( int N, double *res)
+void calculate_sto_value_S_orbital( cuslater::sto_exponent_t exponent,
+                          double x, double y, double z, int x_dim,
+                          double *res)
 {
-    int i = blockIdx.x*blockDim.x + threadIdx.x;
-    if ( i < N ) {
-        double s_value = s_points[i];
-        res[i] = inv_sqrt_pi * (1.0 / sqrt(s_value));
+    const double coeff = .28209479177387814897 ; // 0.5*(1/sqrt(pi))
+
+    int i = (blockIdx.z* (blockDim.x *blockDim.y)) ;
+    i+= blockIdx.y * blockDim.x ;
+
+    int xpos = 256*blockIdx.x;
+    xpos += threadIdx.x;
+    i+= xpos;
+
+    if ( xpos < x_dim ) {
+        double x_value = x_grid_points[xpos];
+        double y_value = x_grid_points[blockIdx.y];
+        double z_value = x_grid_points[blockIdx.z];
+
+        x_value -= x;
+        y_value -= y;
+        z_value -= z;
+        double r = sqrt(x_value*x_value + y_value * y_value + z_value *z_value);
+        res[i] = coeff * exp(-exponent*r);
     }
 }
 
@@ -44,17 +65,24 @@ gpu_calculate_sto_function_values(
 )
 {
     double *d_result = nullptr;
-    int N = points.size();
+    unsigned int PX = x_grid.size();
+    unsigned int PY = y_grid.size();
+    unsigned int PZ = z_grid.size();
 
-    if ( N > MAX_S_POINTS ) {
+    if ( PX > MAX_AXIS_POINTS or PY > MAX_AXIS_POINTS or PZ > MAX_AXIS_POINTS) {
         throw std::exception();
     }
 
-    cudaMemcpyToSymbol(inv_sqrt_pi, &_inv_sqrt_pi,  sizeof(double));
-    cudaMemcpyToSymbol(s_points, points.data(), sizeof(double) *N);
-    cudaMalloc(&d_result, N*sizeof(double));
-    calculate_s_value<<<(N+255)/256, 256>>>(N, d_result);
-    cudaMemcpy(result, d_result, N*sizeof(double ), cudaMemcpyDeviceToHost);
+    cudaMemcpyToSymbol(x_grid_points, x_grid.data(), sizeof(double) * PX);
+    cudaMemcpyToSymbol(y_grid_points, y_grid.data(), sizeof(double) * PY);
+    cudaMemcpyToSymbol(z_grid_points, z_grid.data(), sizeof(double) * PZ);
+
+    cudaMalloc(&d_result, PX*PY*PZ*sizeof(double));
+    dim3 block3d((PX+255)/256, PY, PZ);
+
+    calculate_sto_value_S_orbital<<<block3d, 256>>>(exponent, x, y, z, x_grid.size(), d_result);
+
+    cudaMemcpy(result, d_result, PX*PY*PZ*sizeof(double), cudaMemcpyDeviceToHost);
     cudaFree(d_result);
 }
 
