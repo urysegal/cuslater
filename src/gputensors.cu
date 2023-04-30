@@ -29,9 +29,6 @@
 
 #include <assert.h>
 #include <array>
-#include "grids.h"
-#include "sto.h"
-#include "tensors.cuh"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -43,23 +40,23 @@
 
 #include <cuda_runtime.h>
 #include <cutensor.h>
-#include "../cuslater.cuh"
+#include "../include/cuslater.cuh"
 
 namespace cuslater {
 
 
 
 
-int hadamar( std::vector<int> &modes,  std::unordered_map<int, int64_t> &extent, const real_t *A, const real_t *C,
-             real_t *D)
+int hadamar( std::vector<int> &modes,  std::unordered_map<int, int64_t> &extent, const double *A, const double *C,
+             double *D)
 {
 
     cudaDataType_t typeA = CUDA_R_64F;
     cudaDataType_t typeC = CUDA_R_64F;
     cudaDataType_t typeCompute = CUDA_R_64F;
 
-    real_t alpha = 1;
-    real_t gamma = 1;
+    double alpha = 1;
+    double gamma = 1;
 
     /**********************
      * Computing: D_{a,b,c} =  A_{a,b,c}  *  C_{a,b,c}
@@ -94,7 +91,7 @@ int hadamar( std::vector<int> &modes,  std::unordered_map<int, int64_t> &extent,
     for (auto mode : modes)
         elements *= extent[mode];
 
-    size_t sizeM = sizeof(real_t) * elements;
+    size_t sizeM = sizeof(double) * elements;
     printf("Total memory: %.2f GiB\n",(sizeM + sizeM)/1024./1024./1024);
 
     void *A_d, *C_d, *D_d;

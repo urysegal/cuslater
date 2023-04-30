@@ -1,9 +1,6 @@
 #include <assert.h>
 #include <array>
-#include "../include/grids.h"
-#include "../include/sto.h"
-#include "../include/tensors.cuh"
-#include "../stocalculator.h"
+#include "gputensors.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -34,7 +31,7 @@ void calculate_s_value( int N, double *res)
 
 namespace cuslater {
 
-void gpu_calculate_s_values(const std::vector<real_t> &points, real_t *result)
+void gpu_calculate_s_values(const std::vector<double> &points, double *result)
 {
     const double pi = 3.14159265358979311599796346854;
     double _inv_sqrt_pi = 1.0 / (sqrt(pi)) ;

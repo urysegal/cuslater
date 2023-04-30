@@ -1,9 +1,6 @@
 #include <assert.h>
 #include <array>
-#include "../include/grids.h"
-#include "../include/sto.h"
-#include "../include/tensors.cuh"
-#include "../stocalculator.h"
+#include "../include/cuslater.cuh"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -27,7 +24,7 @@ __constant__ double z_grid_points[MAX_AXIS_POINTS];
 
 
 __global__
-void calculate_sto_value_S_orbital( cuslater::sto_exponent_t exponent,
+void calculate_sto_value_S_orbital( double exponent,
                           double x, double y, double z, int x_dim,
                           double *res)
 {
@@ -57,11 +54,11 @@ namespace cuslater {
 
 void
 gpu_calculate_sto_function_values(
-    sto_exponent_t exponent,
+    double exponent,
     double x, double y, double z,
-    principal_quantum_number_t n ,angular_quantum_number_t l, magnetic_quantum_number_t m,
+    int n ,int l, int m,
     const std::vector<double> &x_grid, const std::vector<double> &y_grid, const std::vector<double> &z_grid,
-    real_t *result
+    double *result
 )
 {
     double *d_result = nullptr;

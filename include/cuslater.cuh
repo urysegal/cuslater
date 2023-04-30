@@ -49,4 +49,3 @@ private:
 
 }
 
-__global__ void hello();
