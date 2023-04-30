@@ -4,6 +4,9 @@
 
 
 namespace cuslater {
+
+void init_cuslater();
+
 int hadamar(std::vector<int> &modes, std::unordered_map<int, int64_t> &extent, const double *A, const double *C,
             double *D);
 void gpu_calculate_s_values( const std::vector<double> &points, double *result);

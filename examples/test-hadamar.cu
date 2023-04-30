@@ -2,7 +2,7 @@
 
 using namespace std;
 
-#define N (3)
+#define N (100)
 
 int
 main(int argc, const char *argv[])
@@ -12,21 +12,28 @@ main(int argc, const char *argv[])
     extent['x'] = N;
     extent['y'] = N;
     extent['z'] = N;
-    double A[N][N][N];
-    double C[N][N][N];
-    double D[N][N][N];
+    double *A;
+    double *C;
+    double *D;
+
+    A = new double [ N*N*N];
+    C = new double [ N*N*N];
+    D = new double [ N*N*N];
 
     for ( int i = 0U ; i < N ; ++i ) {
         for (int j = 0U; j < N; ++j) {
             for (int k = 0U; k < N; ++k) {
-                A[i][j][k]=2;
-                C[i][j][k]=3;
-                D[i][j][k]=0;
+                A[i*N*N+N*j+k]=2;
+                C[i*N*N+N*j+k]=3;
+                D[i*N*N+N*j+k]=0;
             }
         }
     }
 
     cuslater::hadamar(modes, extent, (const double *)A, (const double *)C, (double *)D);
 
+    delete A;
+    delete C;
+    delete D;
     return 0;
 }

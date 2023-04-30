@@ -41,10 +41,19 @@
 #include <cuda_runtime.h>
 #include <cutensor.h>
 #include "../include/cuslater.cuh"
+#include <cuda.h>
 
 namespace cuslater {
 
-
+void
+init_cuslater()
+{
+    CUresult res;
+    if ( (res=cuInit(0)) != CUDA_SUCCESS ) {
+        fprintf(stderr, "Cannot init CUDA: %d\n",res);
+        exit(1);
+    }
+}
 
 
 int hadamar( std::vector<int> &modes,  std::unordered_map<int, int64_t> &extent, const double *A, const double *C,

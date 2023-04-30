@@ -1,13 +1,12 @@
 cmake_minimum_required(VERSION 3.21)
 project(cuSlater CUDA)
 
-
 set(CMAKE_CUDA_STANDARD 14)
 
 set(COMPILE_FLAGS -g -Wall -Xcompiler -Werror)
 
 include_directories(${cuSlater_SOURCE_DIR} ${cuSlater_SOURCE_DIR}/include)
-add_library(cuSlater src/gputensors.cu
+add_library(cuSlater SHARED src/gputensors.cu
         include/gputensors.h src/svalues.cu src/stovalues.cu)
 target_link_libraries(cuSlater cutensor cublasLt)
 target_compile_options(cuSlater PUBLIC ${COMPILE_FLAGS})
