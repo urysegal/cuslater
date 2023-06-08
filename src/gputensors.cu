@@ -56,7 +56,7 @@ init_cuslater()
 }
 
 
-int hadamar( std::vector<int> &modes,  std::unordered_map<int, int64_t> &extent, const double *A, const double *C,
+int hadamard(std::vector<int> &modes, std::unordered_map<int, int64_t> &extent, const double *A, const double *C,
              double *D)
 {
 

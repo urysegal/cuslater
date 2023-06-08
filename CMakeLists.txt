@@ -15,6 +15,6 @@ target_include_directories(cuSlater PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_C
 set_target_properties(cuSlater PROPERTIES
         CUDA_SEPARABLE_COMPILATION ON)
 
-add_executable(hadamar examples/test-hadamar.cu)
-add_dependencies(hadamar cuSlater)
-target_link_libraries(hadamar cuSlater)
+add_executable(hadamard examples/test-hadamard.cu)
+add_dependencies(hadamard cuSlater)
+target_link_libraries(hadamard cuSlater)
