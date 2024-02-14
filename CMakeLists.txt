@@ -34,6 +34,11 @@ add_library(cuSlater SHARED
 
 
 target_link_libraries(cuSlater ${CUBLASLT_LIBRARY} ${CUTENSOR_LIBRARY} cuda)
+include_directories(${cuSlater_SOURCE_DIR} ${cuSlater_SOURCE_DIR}/include)
+add_library(cuSlater SHARED src/gputensors.cu
+        include/gputensors.h src/svalues.cu src/stovalues.cu
+		src/evalInnerIntegral.cu)
+target_link_libraries(cuSlater cutensor cublasLt)
 target_compile_options(cuSlater PUBLIC ${COMPILE_FLAGS})
 target_include_directories(cuSlater PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
