@@ -31,7 +31,7 @@ function evaluate_inner(input_data::InputData)
 				input_data.x_axis_points,input_data.y_axis_points,input_data.z_axis_points,C_NULL )
 end
 function evaluate_inner(input_data::InputData, result::Ptr{Float64})
-	sum_integral = ccall((:evaluateInner, libSlater), Cdouble, 
+	sum_integral = ccall((cuslater::evaluateInner, libSlater), Cdouble, 
 				(Ptr{Cdouble},Ptr{Cdouble},Ptr{Cdouble},Ptr{Cdouble}, 
 				Cdouble, 
 				Ptr{Cdouble}, 

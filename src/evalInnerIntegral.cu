@@ -12,12 +12,14 @@
 #include <chrono>
 #include <cuda_runtime.h>
 #include <cutensor.h>
-
+#include "../include/evalInnerIntegral.h"
+namespace cuslater {
 __constant__ double c1[3];
 __constant__ double c2[3];
 __constant__ double c3[3];
 __constant__ double c4[3];
 __constant__ double w[3];
+
 
 __global__
 void evalInnerIntegral(	double* d_x_grid_points,
@@ -109,8 +111,6 @@ double make_1d_grid(double start, double stop, unsigned int N, std::vector<doubl
 
 
 
-extern "C" {
-
     void launch_reduceSum(double *input, double *output, int size, int block_size, int num_blocks)
     { 
     	double *d_input = nullptr;
@@ -138,7 +138,7 @@ extern "C" {
 	double *d_x_grid = nullptr;
 	double *d_y_grid = nullptr;
 	double *d_z_grid = nullptr;
-	double result[x_axis_points*y_axis_points*z_axis_points]; 
+	double *result = new double[x_axis_points*y_axis_points*z_axis_points](); 
 
     	//Initialize Timer Variables for GPU computations
    	cudaEvent_t startGPU,stopGPU, startTransfer,stopTransfer, startReduce, stopReduce;
@@ -258,4 +258,5 @@ extern "C" {
 	return sumGPU; 
 }
 
-}	
+}
+

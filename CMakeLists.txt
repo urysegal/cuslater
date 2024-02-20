@@ -13,7 +13,7 @@ find_package(CUDAToolkit 12.0 REQUIRED)
 
 include_directories(${cuSlater_SOURCE_DIR} ${cuSlater_SOURCE_DIR}/include )
 
-add_library(cuSlater SHARED src/gputensors.cu src/svalues.cu src/stovalues.cu src/evalInnerIntegral.cu)
+add_library(cuSlater SHARED src/gputensors.cu include/gputensors.h src/svalues.cu src/stovalues.cu src/evalInnerIntegral.cu include/evalInnerIntegral.h)
 
 target_link_libraries(cuSlater  cutensor cuda)
 target_compile_options(cuSlater PUBLIC ${COMPILE_FLAGS})
@@ -25,3 +25,8 @@ set_target_properties(cuSlater PROPERTIES
 add_executable(hadamard examples/test-hadamard.cu)
 add_dependencies(hadamard cuSlater)
 target_link_libraries(hadamard cuSlater)
+
+add_executable(evaluate examples/test-evalInner.cu)
+add_dependencies(evaluate cuSlater)
+target_link_libraries(evaluate cuSlater)
+
