@@ -15,6 +15,17 @@ __device__ double atomicAddDouble(double* address, double val) {
     } while (assumed != old);
 
     return __longlong_as_double(old);
+ 	// compute function value
+	// exp(-|x1-c1| - |x1-c2| -|x1+r*w_hat - c3| - |x1 + rw_hat -c4|
+	// constants needed: r, c1,c2,c3,c4
+	double term1 = sqrt( (xvalue-c1[0])*(xvalue-c1[0]) + (yvalue-c1[1])*(yvalue-c1[1]) + (zvalue - c1[2])*(zvalue-c1[2]));
+	double term2 = sqrt( (xvalue-c2[0])*(xvalue-c2[0]) + (yvalue-c2[1])*(yvalue-c2[1]) + (zvalue - c2[2])*(zvalue-c2[2]));
+	double term3 = sqrt( (xvalue-c3[0]+r*w[0])*(xvalue-c3[0]+r*w[0]) + (yvalue-c3[1]+r*w[1])*(yvalue-c3[1]+r*w[1]) + (zvalue - c3[2]+r*w[2])*(zvalue-c3[2]+r*w[2]));
+	double term4 = sqrt( (xvalue-c4[0]+r*w[0])*(xvalue-c4[0]+r*w[0]) + (yvalue-c4[1]+r*w[1])*(yvalue-c4[1]+r*w[1]) + (zvalue - c4[2]+r*w[2])*(zvalue-c4[2]+r*w[2]));
+
+	double exponent = -term1 - term2 - term3 -term4;
+	res[idx] = exp(exponent);	
+	}
 }
 
 #define THREADS_PER_BLOCK 128
@@ -427,6 +438,13 @@ double evaluateInner(double* c1234_input,
 //        checkCudaError(cudaMalloc(&d_term12r_arr, x_axis_points*y_axis_points*z_axis_points));
 
         double *d_x_grid = nullptr;
+    double evaluateInner(double* c1_input, double* c2_input, double* c3_input, double* c4_input, double r, double* w_input, double* xrange, double* yrange, double* zrange, unsigned int x_axis_points, unsigned int y_axis_points, unsigned int z_axis_points, double *result_array)
+    { 
+   	if (result_array == nullptr){
+		std::cout<< "null ptr received"	<< std::endl;
+	}
+	double *d_result = nullptr;
+	double *d_x_grid = nullptr;
 	double *d_y_grid = nullptr;
 	double *d_z_grid = nullptr;
 	double *d_x_weights = nullptr;
@@ -483,6 +501,37 @@ double evaluateInner(double* c1234_input,
 //                                                         d_x_grid, d_x_grid, d_x_grid,
 //                                                         d_x_weights,d_x_weights, d_x_weights,
 //                                                         x_grid.size(),r, d_w, d_term12r_arr, d_result);
+	// Copy Constants to GPU const memory
+   	cudaMemcpyToSymbol(c1, c1_input, sizeof(double) * 3);
+   	cudaMemcpyToSymbol(c2, c2_input, sizeof(double) * 3);
+   	cudaMemcpyToSymbol(c3, c3_input, sizeof(double) * 3);
+   	cudaMemcpyToSymbol(c4, c4_input, sizeof(double) * 3);
+   	cudaMemcpyToSymbol(w, w_input, sizeof(double) * 3);
+//	std::cout << "Allocating Memory on GPU" << std::endl;
+   	// Evaluate Funciton on GPU and Time it
+   	cudaMalloc(&d_result, PX*PY*PZ*sizeof(double));
+   	cudaMalloc(&d_x_grid, PX*sizeof(double));
+   	cudaMalloc(&d_y_grid, PY*sizeof(double));
+   	cudaMalloc(&d_z_grid, PZ*sizeof(double));
+
+//	std::cout << "Copying data on GPU" << std::endl;
+   	cudaMemcpy(d_x_grid, x_grid.data(), PX*sizeof(double), cudaMemcpyHostToDevice);
+   	cudaMemcpy(d_y_grid, y_grid.data(), PY*sizeof(double), cudaMemcpyHostToDevice);
+   	cudaMemcpy(d_z_grid, z_grid.data(), PZ*sizeof(double), cudaMemcpyHostToDevice);
+   	
+	dim3 block3d((PX+255)/256, PY, PZ);
+   	dim3 threads3d(256, 1, 1);
+   	cudaEventRecord(startGPU);
+   	evalInnerIntegral<<<block3d,threads3d>>>( d_x_grid, d_y_grid, d_z_grid, x_grid.size(),r, d_result);
+   	cudaDeviceSynchronize();
+   	cudaEventRecord(stopGPU);
+//	cudaError_t err = cudaGetLastError();
+//	std::cout << "Error: "<< err << std::endl;
+   	//Transfer Vector back to CPU and time transfer
+   	cudaEventRecord(startTransfer);
+   	cudaMemcpy(result, d_result, PX*PY*PZ*sizeof(double), cudaMemcpyDeviceToHost);
+   	cudaEventRecord(stopTransfer);
+   	cudaDeviceSynchronize();
 
 
    	//Reduce vector on GPU within each block

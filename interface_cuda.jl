@@ -10,7 +10,8 @@ const libSlater = "/arc/project/st-greif-1/gkluhana/cuslater/libcuSlater.so"  # 
 struct InputData
     c::Vector{Float64}
 # Load the shared library
-const libSlater = "/arc/project/st-greif-1/gkluhana/cuslater/libcuSlater.so"  # Update the path
+const libSlater = "/home/gkluhana/sfw/cuslater/libcuSlater.so"  # Update the path
+
 # define the structs and function defined in C
 struct InputData
     c1::Vector{Float64}
@@ -26,6 +27,7 @@ struct InputData
     z_axis_points::Int64
     y_axis_points::Int64
 end
+<<<<<<< HEAD
 function create_InputData(rval,wx,wy,wz,nx)
 InputData(
 	  [0.0,0.0,0.0,     #c1
@@ -94,10 +96,16 @@ end
 function evaluate_inner(input_data::InputData, gpu_num::Int,d_results_ptr::Ref{Ptr{Cdouble}})
 	sum_integral = ccall((:evaluateInner, libSlater), Cdouble,
 				(Ptr{Cdouble},
+=======
+function evaluate_inner(input_data::InputData)
+	sum_integral = ccall((:evaluateInner, libSlater), Cdouble, 
+				(Ptr{Cdouble},Ptr{Cdouble},Ptr{Cdouble},Ptr{Cdouble}, 
+>>>>>>> 0a886f4 (gputesnors compiles correctly)
 				Cdouble, 
 				Ptr{Cdouble}, 
 				Ptr{Cdouble},Ptr{Cdouble},Ptr{Cdouble},
 				Cint,Cint,Cint, 
+<<<<<<< HEAD
 				Ref{Ptr{Cdouble}},
 				Cint), 
 				input_data.c,
@@ -161,6 +169,16 @@ function evaluate_inner_stream(input_data::InputDataStreams, gpu_num::Int )
 				gpu_num )
 end
 function evaluate_inner(input_data::InputData, gpu_num::Int, result::Ptr{Float64})
+=======
+				Ptr{Cdouble}), 
+				input_data.c1,input_data.c2,input_data.c3,input_data.c4, 
+				input_data.r, 
+				input_data.w, 
+				input_data.xrange,input_data.yrange,input_data.zrange,  
+				input_data.x_axis_points,input_data.y_axis_points,input_data.z_axis_points,C_NULL )
+end
+function evaluate_inner(input_data::InputData, result::Ptr{Float64})
+>>>>>>> 0a886f4 (gputesnors compiles correctly)
 	sum_integral = ccall((:evaluateInner, libSlater), Cdouble, 
 				(Ptr{Cdouble},Ptr{Cdouble},Ptr{Cdouble},Ptr{Cdouble}, 
 				Cdouble, 
