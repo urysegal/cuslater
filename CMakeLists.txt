@@ -54,7 +54,7 @@ find_package(CUDAToolkit 12.0 REQUIRED)
 
 include_directories(${cuSlater_SOURCE_DIR} ${cuSlater_SOURCE_DIR}/include )
 
-add_library(cuSlater SHARED src/gputensors.cu src/svalues.cu src/stovalues.cu src/evalInnerIntegral.cu)
+add_library(cuSlater SHARED src/gputensors.cu include/gputensors.h src/svalues.cu src/stovalues.cu src/evalInnerIntegral.cu include/evalInnerIntegral.h)
 
 target_link_libraries(cuSlater  cutensor cuda)
 >>>>>>> 0a886f4 (gputesnors compiles correctly)
@@ -77,8 +77,15 @@ add_dependencies(testgrids cuSlater)
 add_dependencies(simple cuSlater)
 
 target_link_libraries(hadamard cuSlater)
+<<<<<<< HEAD
 target_link_libraries(evaluate cuSlater)
 target_link_libraries(legendre cuSlater)
 target_link_libraries(testgrids cuSlater)
 target_link_libraries(simple cuSlater)
+=======
+
+add_executable(evaluate examples/test-evalInner.cu)
+add_dependencies(evaluate cuSlater)
+target_link_libraries(evaluate cuSlater)
+>>>>>>> f54066d (fix and test file)
 

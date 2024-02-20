@@ -178,8 +178,12 @@ function evaluate_inner(input_data::InputData, gpu_num::Int, result::Ptr{Float64
 				input_data.x_axis_points,input_data.y_axis_points,input_data.z_axis_points,C_NULL )
 end
 function evaluate_inner(input_data::InputData, result::Ptr{Float64})
+<<<<<<< HEAD
 >>>>>>> 0a886f4 (gputesnors compiles correctly)
 	sum_integral = ccall((:evaluateInner, libSlater), Cdouble, 
+=======
+	sum_integral = ccall((cuslater::evaluateInner, libSlater), Cdouble, 
+>>>>>>> f54066d (fix and test file)
 				(Ptr{Cdouble},Ptr{Cdouble},Ptr{Cdouble},Ptr{Cdouble}, 
 				Cdouble, 
 				Ptr{Cdouble}, 

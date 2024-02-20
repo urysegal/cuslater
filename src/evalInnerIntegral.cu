@@ -1,6 +1,7 @@
 #include "cudaProfiler.h"
 #include "../include/evalInnerIntegral.h"
 #include <chrono>
+<<<<<<< HEAD
 #include "cooperative_groups.h"
 namespace cg = cooperative_groups;
 
@@ -13,6 +14,41 @@ __device__ double atomicAddDouble(double* address, double val) {
         assumed = old;
         old = atomicCAS(address_as_ull, assumed, __double_as_longlong(val + __longlong_as_double(assumed)));
     } while (assumed != old);
+=======
+#include <cuda_runtime.h>
+#include <cutensor.h>
+#include "../include/evalInnerIntegral.h"
+namespace cuslater {
+__constant__ double c1[3];
+__constant__ double c2[3];
+__constant__ double c3[3];
+__constant__ double c4[3];
+__constant__ double w[3];
+
+
+__global__
+void evalInnerIntegral(	double* d_x_grid_points,
+			double* d_y_grid_points,
+			double* d_z_grid_points,  
+			int x_dim,
+                          double r, double *res)
+{
+	int bx = blockIdx.x;    
+	int by = blockIdx.y;
+    	int bz = blockIdx.z;
+    	int tx = threadIdx.x;
+    	int ty = threadIdx.y;
+    	int tz = threadIdx.z;
+	int h = gridDim.z*blockDim.z;
+	int d = gridDim.y*blockDim.y;
+        int xpos = 256*blockIdx.x;
+	xpos += threadIdx.x;
+	int idx = h*d*(blockDim.x*bx + tx)+ d*(blockDim.y*by + ty)+ (blockDim.z*bz + tz);
+        if ( idx < x_dim*x_dim*x_dim ) {
+        double xvalue = d_x_grid_points[xpos];
+        double yvalue = d_y_grid_points[blockIdx.y];
+        double zvalue = d_z_grid_points[blockIdx.z];
+>>>>>>> f54066d (fix and test file)
 
     return __longlong_as_double(old);
  	// compute function value
@@ -125,12 +161,43 @@ void evaluateConstantTerm(double* d_c,	double* d_x_grid_points,
                 double ydiffc_1 = yvalue - d_c[1];
                 double zdiffc_1 = zvalue - d_c[2];
 
+<<<<<<< HEAD
                 double xdiffc_2 = xvalue - d_c[3];
                 double ydiffc_2 = yvalue - d_c[4];
                 double zdiffc_2 = zvalue - d_c[5];
                 double term1 = sqrt(xdiffc_1 * xdiffc_1 + ydiffc_1 * ydiffc_1 + zdiffc_1 * zdiffc_1);
                 double term2 = sqrt(xdiffc_2 * xdiffc_2 + ydiffc_2 * ydiffc_2 + zdiffc_2 * zdiffc_2);
                 res[grid_t_idx] = -term1 - term2 + r;
+=======
+double make_1d_grid(double start, double stop, unsigned int N, std::vector<double>* grid){
+	auto val = start;
+	auto step = (stop - start) / N; 	
+   	for (unsigned int i=0;i < N; ++i){
+   	    grid->push_back(val);
+//	    std::cout << "pushed value to grid: " << val << std::endl;
+	    val += step;	
+   	}
+	return step;
+}
+
+
+
+    void launch_reduceSum(double *input, double *output, int size, int block_size, int num_blocks)
+    { 
+    	double *d_input = nullptr;
+    	double *d_output = nullptr;
+    	cudaMalloc(&d_input, size*sizeof(double));
+	cudaMalloc(&d_output, num_blocks*sizeof(double));
+	
+    	cudaMemcpy(d_input, input, size*sizeof(double), cudaMemcpyHostToDevice);
+	reduceSum<<<num_blocks, block_size, block_size*sizeof(double)>>>(d_input,d_output,size);   
+	cudaError_t error = cudaGetLastError();
+    	cudaMemcpy(output,d_output, num_blocks*sizeof(double), cudaMemcpyDeviceToHost);
+	std::cout << "cuda error after reduceSum function:" << error << std::endl;
+	std::cout << "output vector after calling reduceSum" << std::endl;
+    	for (int i=0; i < num_blocks; i++){
+		std::cout << output[i] << std::endl;	
+>>>>>>> f54066d (fix and test file)
         }
 }
 __global__
@@ -447,12 +514,28 @@ double evaluateInner(double* c1234_input,
 	double *d_x_grid = nullptr;
 	double *d_y_grid = nullptr;
 	double *d_z_grid = nullptr;
+<<<<<<< HEAD
 	double *d_x_weights = nullptr;
 	double *d_y_weights = nullptr;
 	double *d_z_weights = nullptr;
 	
 	double *d_w = nullptr;
         double *d_c1234 = nullptr;
+=======
+	double *result = new double[x_axis_points*y_axis_points*z_axis_points](); 
+
+    	//Initialize Timer Variables for GPU computations
+   	cudaEvent_t startGPU,stopGPU, startTransfer,stopTransfer, startReduce, stopReduce;
+   	cudaEventCreate(&startGPU);
+   	cudaEventCreate(&stopGPU);
+   	cudaEventCreate(&startTransfer);
+   	cudaEventCreate(&stopTransfer);
+   	cudaEventCreate(&startReduce);
+   	cudaEventCreate(&stopReduce);
+
+   	// dummy uniform values for x, y, and z grid, keeping them between 0 and 1
+   	// not strictly within sphere
+>>>>>>> f54066d (fix and test file)
 
    	std::vector<double> x_grid;
    	std::vector<double> y_grid;
@@ -590,6 +673,7 @@ double evaluateInnerPreProcessed(thrust::device_vector<double>& d_c1234,
             cuProfilerStart();
 	    HANDLE_CUDA_ERROR(cudaSetDevice(gpu_num));
 
+<<<<<<< HEAD
 	     IntegrateReduce<<<blocks,threads>>>(thrust::raw_pointer_cast(d_c1234.data()),  
                                    thrust::raw_pointer_cast(d_x_grid.data()),     
                                    thrust::raw_pointer_cast(d_x_grid.data()),       
@@ -622,3 +706,7 @@ void postProcessIntegral(double** d_results, int nl)
 
 
 }
+=======
+}
+
+>>>>>>> f54066d (fix and test file)
