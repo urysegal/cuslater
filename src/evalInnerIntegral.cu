@@ -52,7 +52,7 @@ void evalInnerIntegral(	double* d_x_grid_points,
 
 	double exponent = -term1 - term2 - term3 -term4;
 	res[idx] = exp(exponent);	
-    }
+	}
 }
 
 __global__
@@ -131,7 +131,9 @@ extern "C" {
 
     double evaluateInner(double* c1_input, double* c2_input, double* c3_input, double* c4_input, double r, double* w_input, double* xrange, double* yrange, double* zrange, unsigned int x_axis_points, unsigned int y_axis_points, unsigned int z_axis_points, double *result_array)
     { 
-   	 	
+   	if (result_array == nullptr){
+		std::cout<< "null ptr received"	<< std::endl;
+	}
 	double *d_result = nullptr;
 	double *d_x_grid = nullptr;
 	double *d_y_grid = nullptr;
@@ -170,13 +172,14 @@ extern "C" {
    	cudaMemcpyToSymbol(c3, c3_input, sizeof(double) * 3);
    	cudaMemcpyToSymbol(c4, c4_input, sizeof(double) * 3);
    	cudaMemcpyToSymbol(w, w_input, sizeof(double) * 3);
-
+//	std::cout << "Allocating Memory on GPU" << std::endl;
    	// Evaluate Funciton on GPU and Time it
    	cudaMalloc(&d_result, PX*PY*PZ*sizeof(double));
    	cudaMalloc(&d_x_grid, PX*sizeof(double));
    	cudaMalloc(&d_y_grid, PY*sizeof(double));
    	cudaMalloc(&d_z_grid, PZ*sizeof(double));
 
+//	std::cout << "Copying data on GPU" << std::endl;
    	cudaMemcpy(d_x_grid, x_grid.data(), PX*sizeof(double), cudaMemcpyHostToDevice);
    	cudaMemcpy(d_y_grid, y_grid.data(), PY*sizeof(double), cudaMemcpyHostToDevice);
    	cudaMemcpy(d_z_grid, z_grid.data(), PZ*sizeof(double), cudaMemcpyHostToDevice);
@@ -187,7 +190,8 @@ extern "C" {
    	evalInnerIntegral<<<block3d,threads3d>>>( d_x_grid, d_y_grid, d_z_grid, x_grid.size(),r, d_result);
    	cudaDeviceSynchronize();
    	cudaEventRecord(stopGPU);
-
+//	cudaError_t err = cudaGetLastError();
+//	std::cout << "Error: "<< err << std::endl;
    	//Transfer Vector back to CPU and time transfer
    	cudaEventRecord(startTransfer);
    	cudaMemcpy(result, d_result, PX*PY*PZ*sizeof(double), cudaMemcpyDeviceToHost);
