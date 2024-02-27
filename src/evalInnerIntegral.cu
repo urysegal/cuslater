@@ -58,8 +58,7 @@ void evalInnerIntegral(	double* d_x_grid_points,
 	double term2 = sqrt( (xvalue-c2[0])*(xvalue-c2[0]) + (yvalue-c2[1])*(yvalue-c2[1]) + (zvalue - c2[2])*(zvalue-c2[2]));
 	double term3 = sqrt( (xvalue-c3[0]+r*w[0])*(xvalue-c3[0]+r*w[0]) + (yvalue-c3[1]+r*w[1])*(yvalue-c3[1]+r*w[1]) + (zvalue - c3[2]+r*w[2])*(zvalue-c3[2]+r*w[2]));
 	double term4 = sqrt( (xvalue-c4[0]+r*w[0])*(xvalue-c4[0]+r*w[0]) + (yvalue-c4[1]+r*w[1])*(yvalue-c4[1]+r*w[1]) + (zvalue - c4[2]+r*w[2])*(zvalue-c4[2]+r*w[2]));
-
-	double exponent = -term1 - term2 - term3 -term4;
+	double exponent = -term1 - term2 - term3 -term4 + r;
 	res[idx] = exp(exponent);	
 	}
 }
@@ -507,9 +506,9 @@ double evaluateInner(double* c1234_input,
         double *d_x_grid = nullptr;
     double evaluateInner(double* c1_input, double* c2_input, double* c3_input, double* c4_input, double r, double* w_input, double* xrange, double* yrange, double* zrange, unsigned int x_axis_points, unsigned int y_axis_points, unsigned int z_axis_points, double *result_array)
     { 
-   	if (result_array == nullptr){
-		std::cout<< "null ptr received"	<< std::endl;
-	}
+//   	if (result_array == nullptr){
+//		std::cout<< "null ptr received"	<< std::endl;
+//	}
 	double *d_result = nullptr;
 	double *d_x_grid = nullptr;
 	double *d_y_grid = nullptr;
@@ -630,6 +629,7 @@ double evaluateInner(double* c1234_input,
    	double sumGPU=0.0;
         HANDLE_CUDA_ERROR(cudaMemcpy(&sumGPU, d_result, sizeof(double), cudaMemcpyDeviceToHost));
 
+<<<<<<< HEAD
    	//std::cout << "Sum on GPU: " << sumGPU << std::endl;
 
         HANDLE_CUDA_ERROR(cudaFree(d_result));
@@ -652,6 +652,21 @@ __global__ void accumulateSum(double result,
     double sum = *d_sum;
     sum+= result*d_r_weights[r_i]*d_l_weights[l_i];
     *d_sum = sum;
+=======
+   	// Report Values and Times
+//   	std::cout << "Sum on GPU: " << sumGPU << std::endl;
+//   	std::cout << "GPU Calculation time: " << millisecondsGPU << " ms" << std::endl;
+//   	std::cout << "Calculations performed: "<< PX*PY*PZ << std::endl;
+//   	std::cout << "Time for Reduction on GPU: " << millisecondsReduce << " ms" << std::endl; 	   
+//   	std::cout << "Time taken for remaining summation: " << elapsed_time_cpu_remaining << " microseconds" << std::endl;
+//   	std::cout << "Time for data transfer: " << millisecondsTransfer << " ms" << std::endl; 	   
+//   	std::cout << "Bytes Transferred: " << PX*PY*PZ*sizeof(double) <<std::endl;
+//   	std::cout << "Sum on CPU: " << sumCPU << std::endl;
+//   	std::cout << "Time taken for sequential summation: " << elapsed_time_cpu << " microseconds" << std::endl;
+   	
+   	cudaFree(d_result);
+	return sumGPU; 
+>>>>>>> 88cd7ee (lior sum)
 }
 double evaluateInnerPreProcessed(thrust::device_vector<double>& d_c1234, 
                                  double r,
