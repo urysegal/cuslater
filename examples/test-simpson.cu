@@ -20,7 +20,7 @@ main(int argc, const char *argv[])
 	unsigned int y_axis_points = 9;
 	unsigned int z_axis_points = 9;
 	double *result_array=NULL;
-	auto sum = cuslater::evaluateInner( c1, c2, c3,c4, r, w, xrange,  yrange, zrange, x_axis_points, y_axis_points, z_axis_points, result_array);
+	auto sum = cuslater::evaluateInner( c1, c2, c3,c4, r, w, xrange,  yrange, zrange, x_axis_points, y_axis_points, z_axis_points, result_array, 0);
 
 	std::cout << "nx,ny,nz: " << x_axis_points << std::endl;
 	std::cout << "Sum from evaluateInner: " << sum << std::endl;

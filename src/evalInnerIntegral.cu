@@ -190,11 +190,15 @@ void make_1d_grid_simpson(double start, double stop, unsigned int N, std::vector
         }
     }
 
-    double evaluateInner(double* c1_input, double* c2_input, double* c3_input, double* c4_input, double r, double* w_input, double* xrange, double* yrange, double* zrange, unsigned int x_axis_points, unsigned int y_axis_points, unsigned int z_axis_points, double *result_array)
+    double evaluateInner(double* c1_input, double* c2_input, double* c3_input, double* c4_input, double r, double* w_input, double* xrange, double* yrange, double* zrange, unsigned int x_axis_points, unsigned int y_axis_points, unsigned int z_axis_points, double *result_array, int gpu_num)
     { 
 //   	if (result_array == nullptr){
 //		std::cout<< "null ptr received"	<< std::endl;
 //	}
+	cudaSetDevice(gpu_num);
+	//int device;
+    	//cudaGetDevice(&device);
+    	//std::cout << "Selected GPU device: " << device << std::endl;
 	double *d_result = nullptr;
 	double *d_x_grid = nullptr;
 	double *d_y_grid = nullptr;
@@ -202,7 +206,7 @@ void make_1d_grid_simpson(double start, double stop, unsigned int N, std::vector
 	double *d_x_weights = nullptr;
 	double *d_y_weights = nullptr;
 	double *d_z_weights = nullptr;
-
+	
 	double *d_w = nullptr;
     	//Initialize Timer Variables for GPU computations
 //   	cudaEvent_t startGPU,stopGPU, startTransfer,stopTransfer, startReduce, stopReduce;

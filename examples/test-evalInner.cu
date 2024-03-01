@@ -20,21 +20,21 @@ main(int argc, const char *argv[])
 	unsigned int y_axis_points = 45;
 	unsigned int z_axis_points = 45;
 	double *result_array=NULL;
-	auto sum = cuslater::evaluateInner( c1, c2, c3,c4, r, w, xrange,  yrange, zrange, x_axis_points, y_axis_points, z_axis_points, result_array);
+	auto sum = cuslater::evaluateInner( c1, c2, c3,c4, r, w, xrange,  yrange, zrange, x_axis_points, y_axis_points, z_axis_points, result_array,0);
 	std::cout << "nx,ny,nz: " << x_axis_points << std::endl;
 	std::cout << "Sum from evaluateInner: " << sum << std::endl;
 
 	x_axis_points = 225;
 	y_axis_points = 225;
 	z_axis_points = 225;
-	sum = cuslater::evaluateInner( c1, c2, c3,c4, r, w, xrange,  yrange, zrange, x_axis_points, y_axis_points, z_axis_points, result_array);
+	sum = cuslater::evaluateInner( c1, c2, c3,c4, r, w, xrange,  yrange, zrange, x_axis_points, y_axis_points, z_axis_points, result_array,0);
 	std::cout << "nx,ny,nz: " << x_axis_points << std::endl;
 	std::cout << "Sum from evaluateInner: " << sum << std::endl;
 
 	x_axis_points = 450;
 	y_axis_points = 450;
 	z_axis_points = 450;
-	sum = cuslater::evaluateInner( c1, c2, c3,c4, r, w, xrange,  yrange, zrange, x_axis_points, y_axis_points, z_axis_points, result_array);
+	sum = cuslater::evaluateInner( c1, c2, c3,c4, r, w, xrange,  yrange, zrange, x_axis_points, y_axis_points, z_axis_points, result_array,0);
 	std::cout << "nx,ny,nz: " << x_axis_points << std::endl;
 	std::cout << "Sum from evaluateInner: " << sum << std::endl;
 }

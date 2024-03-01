@@ -22,6 +22,6 @@ double make_1d_grid(double start, double stop, unsigned int N, std::vector<doubl
 
 extern "C" {
 void launch_reduceSum(double *input, double *output, int size, int block_size, int num_blocks);
-    double evaluateInner(double* c1_input, double* c2_input, double* c3_input, double* c4_input, double r, double* w_input, double* xrange, double* yrange, double* zrange, unsigned int x_axis_points, unsigned int y_axis_points, unsigned int z_axis_points, double *result_array);
+    double evaluateInner(double* c1_input, double* c2_input, double* c3_input, double* c4_input, double r, double* w_input, double* xrange, double* yrange, double* zrange, unsigned int x_axis_points, unsigned int y_axis_points, unsigned int z_axis_points, double *result_array, int gpu_num);
 }
 }

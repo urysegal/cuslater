@@ -53,10 +53,10 @@ function evaluate_broadcast(nr_start::Int=10,nl_start::Int=2,nx::Int=9)
 	r_sums = zeros(nr,1)
 	for l in 1:nl
 		rdata = [create_InputData(rval,lxgrid[l],lygrid[l],lzgrid[l],nx) for rval in rnodes_new]
-		r_sums .= evaluate_inner.(rdata)
+		r_sums .= evaluate_inner.(rdata,0)
 		r_sums .= r_sums .* rweights_new
 		r_sum  = sum(r_sums)			
-	#		integral_sum += evaluate_inner(rwdata[(l-1)*nr + r])*rweights_new[r]*lweights_new[l]
+	#		integral_sum += evaluate_inner(rwdata[(l-1)*nr + r],0)*rweights_new[r]*lweights_new[l]
 		integral_sum += r_sum * lweights_new[l]
 		println("Computed for l = ",l)
 	end	
@@ -68,11 +68,13 @@ end
 function parallel_integral_sum(rweights_new, lweights_new, lxgrid, lygrid, lzgrid, nx, rnodes_new)
     l_ctr = Atomic{Int}(0) # Atomic variable to safely track the number of threads executed 
     nl = length(lxgrid)
+	gpu_num = 1
 	l_sum = zeros(nl,1)
 	    @threads for l in 1:nl
+		thread_id = threadid()
 	        r_sums = zeros(length(rnodes_new)) # Initialize an array to store intermediate sums
 		rdata = [create_InputData(rval,lxgrid[l],lygrid[l],lzgrid[l],nx) for rval in rnodes_new]
-		r_sums .= evaluate_inner.(rdata)
+		r_sums .= evaluate_inner.(rdata,thread_id)
 		r_sums .= r_sums .* rweights_new
 		r_sum  = sum(r_sums)			
 		l_sum[l] = r_sum * lweights_new[l]  
@@ -111,11 +113,11 @@ function evaluate_broadcast_parallel(nr_start::Int=10,nl_start::Int=2,nx::Int=9)
 end
 
 
-nv=3*(73:10:200)
-nr = 192 
-l_pick = 17
-for n in nv
-        println("Computing for n=($n)")
-        println("For n=($n), liortensors gives:",evaluate_broadcast(nr,l_pick,n))
-end
+#nv=3*(73:10:200)
+#nr = 192 
+#l_pick = 17
+#for n in nv
+#        println("Computing for n=($n)")
+#        println("For n=($n), liortensors gives:",evaluate_broadcast(nr,l_pick,n))
+#end
 
