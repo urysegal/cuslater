@@ -21,9 +21,9 @@ InputData(
 	  [3.0,0.0,0.0],      #c4
 	  rval,               # r
 	  [wx,wy,wz],      #w
-	  [-7.0,8.0],        #xrange
-	  [-7.0,8.0],        #yrange
-	  [-7.0,8.0],        #zrange
+	  [-10.0,11.0],        #xrange
+	  [-10.0,11.0],        #yrange
+	  [-10.0,11.0],        #zrange
 	  nx,              # x_axis_points
 	  nx,              # y_axis_points
 	  nx               # z_axis_points
@@ -85,6 +85,28 @@ function parallel_integral_sum(rweights_new, lweights_new, lxgrid, lygrid, lzgri
     println("l_sum_vec: ", l_sum)
     return integral_sum[]
 end
+function parallel_integral_sum_lr(rweights_new, lweights_new, lxgrid, lygrid, lzgrid, nx, rnodes_new)
+    l_ctr = Atomic{Int}(0) # Atomic variable to safely track the number of threads executed 
+    nl = length(lxgrid)
+	nr = length(rnodes_new)
+	gpu_num = 1
+	nlr = nl*nr
+	lr_sum = zeros(nlr,1)
+	@threads for i in 1:nlr
+		thread_id = threadid()
+		l_i = cld(i,nr)
+		r_i = mod(i,nr) + 1
+		rdata = create_InputData(rnodes_new[r_i],lxgrid[l_i],lygrid[l_i],lzgrid[l_i],nx) 
+		lr_sum[i] = evaluate_inner(rdata,mod(thread_id,4)) * rweights_new[r_i]	* lweights_new[l_i]  
+	        atomic_add!(l_ctr, 1) # Update the ctr atomically
+		if ( mod(l_ctr[],1000)==0 )
+			println("computed for l_i: ",l_i," r_i: ",r_i, " computed= ",l_ctr[]," / ",nlr)
+		end
+	end
+	integral_sum = sum(lr_sum)
+#    println("l_sum_vec: ", lr_sum)
+    return integral_sum[]
+end
 function evaluate_broadcast_parallel(nr_start::Int=10,nl_start::Int=2,nx::Int=9)
 	#initialize data
 	rdata = InputData[]
@@ -106,7 +128,7 @@ function evaluate_broadcast_parallel(nr_start::Int=10,nl_start::Int=2,nx::Int=9)
 	#rwdata = [create_InputData(rval,lxgrid[l],lygrid[l],lzgrid[l],nx) for l in 1:nl for rval in  rnodes_new ]
 	nl = length(lzgrid)
 	integral_sum = 0
-	result = parallel_integral_sum(rweights_new, lweights_new, lxgrid, lygrid, lzgrid, nx, rnodes_new)
+	result = parallel_integral_sum_lr(rweights_new, lweights_new, lxgrid, lygrid, lzgrid, nx, rnodes_new)
 	result = 4/pi * result 
 	println("nr = ",nr_start,", nl = ",nl)
 	return result 
