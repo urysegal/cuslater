@@ -13,69 +13,89 @@
 #include <cuda_runtime.h>
 #include <cutensor.h>
 #include "../include/evalInnerIntegral.h"
+
 namespace cuslater {
-__constant__ double c1[3];
-__constant__ double c2[3];
-__constant__ double c3[3];
-__constant__ double c4[3];
+//__constant__ double c1[3];
+//__constant__ double c2[3];
+//__constant__ double c3[3];
+//__constant__ double c4[3];
 
 
 __global__
-void evalInnerIntegral(	double* d_x_grid_points,
+void evalInnerIntegral(	double* d_c, double* d_x_grid_points,
 			double* d_y_grid_points,
 			double* d_z_grid_points,  
 			int x_dim,
-                          double r,double* w, double *res)
+                          double r,double* w, double *res
+			)
 {
 	int bx = blockIdx.x;    
 	int by = blockIdx.y;
-    	int bz = blockIdx.z;
-    	int tx = threadIdx.x;
-    	int ty = threadIdx.y;
-    	int tz = threadIdx.z;
+    int bz = blockIdx.z;
+    int tx = threadIdx.x;
+    int ty = threadIdx.y;
+    int tz = threadIdx.z;
 	int h = gridDim.z*blockDim.z;
 	int d = gridDim.y*blockDim.y;
-        int xpos = 256*blockIdx.x;
+    int xpos = 256*blockIdx.x;
 	xpos += threadIdx.x;
 	int idx = h*d*(blockDim.x*bx + tx)+ d*(blockDim.y*by + ty)+ (blockDim.z*bz + tz);
-        if ( idx < x_dim*x_dim*x_dim ) {
+    if ( idx < x_dim*x_dim*x_dim ) {
         double xvalue = d_x_grid_points[xpos];
         double yvalue = d_y_grid_points[blockIdx.y];
         double zvalue = d_z_grid_points[blockIdx.z];
 
- 	// compute function value
-	// exp(-|x1-c1| - |x1-c2| -|x1+r*w_hat - c3| - |x1 + rw_hat -c4|
-	// constants needed: r, c1,c2,c3,c4
-	double term1 = sqrt( (xvalue-c1[0])*(xvalue-c1[0]) + (yvalue-c1[1])*(yvalue-c1[1]) + (zvalue - c1[2])*(zvalue-c1[2]));
-	double term2 = sqrt( (xvalue-c2[0])*(xvalue-c2[0]) + (yvalue-c2[1])*(yvalue-c2[1]) + (zvalue - c2[2])*(zvalue-c2[2]));
-	double term3 = sqrt( (xvalue-c3[0]+r*w[0])*(xvalue-c3[0]+r*w[0]) + (yvalue-c3[1]+r*w[1])*(yvalue-c3[1]+r*w[1]) + (zvalue - c3[2]+r*w[2])*(zvalue-c3[2]+r*w[2]));
-	double term4 = sqrt( (xvalue-c4[0]+r*w[0])*(xvalue-c4[0]+r*w[0]) + (yvalue-c4[1]+r*w[1])*(yvalue-c4[1]+r*w[1]) + (zvalue - c4[2]+r*w[2])*(zvalue-c4[2]+r*w[2]));
-	double exponent = -term1 - term2 - term3 -term4 ;
-	res[idx] = exp(exponent);	
-	}
+        // compute function value
+        // exp(-|x1-c1| - |x1-c2| -|x1+r*w_hat - c3| - |x1 + rw_hat -c4|
+        // constants needed: r, c1,c2,c3,c4
+        double xdiffc_1 = xvalue-d_c[0];
+        double ydiffc_1 = yvalue-d_c[1];
+        double zdiffc_1 = zvalue-d_c[2];
+
+        double xdiffc_2 = xvalue-d_c[3];
+        double ydiffc_2 = yvalue-d_c[4];
+        double zdiffc_2 = zvalue-d_c[5];
+
+        double xdiffc_3 = xvalue-d_c[6]+    r*w[0];
+        double ydiffc_3 = yvalue-d_c[7]+    r*w[1];
+        double zdiffc_3 = zvalue-d_c[8]+    r*w[2];
+
+        double xdiffc_4 = xvalue-d_c[9]+    r*w[0];
+        double ydiffc_4 = yvalue-d_c[10]+   r*w[1];
+        double zdiffc_4 = zvalue-d_c[11]+   r*w[2];
+
+        double term1 = sqrt( xdiffc_1*xdiffc_1 + ydiffc_1*ydiffc_1 + zdiffc_1*zdiffc_1);
+        double term2 = sqrt( xdiffc_2*xdiffc_2 + ydiffc_2*ydiffc_2 + zdiffc_2*zdiffc_2 );
+        double term3 = sqrt(xdiffc_3*xdiffc_3 + ydiffc_3*ydiffc_3 + zdiffc_3*zdiffc_3 );
+        double term4 = sqrt( xdiffc_4*xdiffc_4 + ydiffc_4*ydiffc_4 + zdiffc_4*zdiffc_4);
+        double exponent = -term1 - term2 - term3 -term4 ;
+        res[idx] = exp(exponent);
+    }
 }
 __global__
-void evalInnerIntegralSimpson(	double* d_x_grid_points,
+void evalInnerIntegralSimpson(double* d_c,	double* d_x_grid_points,
 			double* d_y_grid_points,
 			double* d_z_grid_points,
 			double* d_x_weights,
 			double* d_y_weights,  
 			double* d_z_weights,  
 			int x_dim,
-                          double r,double *w, double *res)
+            double r,double *w, double *res
+			)
 {
-	int bx = blockIdx.x;    
+	int bx = blockIdx.x;
 	int by = blockIdx.y;
-    	int bz = blockIdx.z;
-    	int tx = threadIdx.x;
-    	int ty = threadIdx.y;
-    	int tz = threadIdx.z;
+    int bz = blockIdx.z;
+    int tx = threadIdx.x;
+    int ty = threadIdx.y;
+    int tz = threadIdx.z;
 	int h = gridDim.z*blockDim.z;
 	int d = gridDim.y*blockDim.y;
-        int xpos = 256*blockIdx.x;
+    int xpos = 256*blockIdx.x;
 	xpos += threadIdx.x;
 	int idx = h*d*(blockDim.x*bx + tx)+ d*(blockDim.y*by + ty)+ (blockDim.z*bz + tz);
-        if ( idx < x_dim*x_dim*x_dim ) {
+
+    if ( idx < x_dim*x_dim*x_dim ) {
         double xvalue = d_x_grid_points[xpos];
         double yvalue = d_y_grid_points[blockIdx.y];
         double zvalue = d_z_grid_points[blockIdx.z];
@@ -84,121 +104,113 @@ void evalInnerIntegralSimpson(	double* d_x_grid_points,
         double dy = d_y_weights[blockIdx.y];
         double dz = d_z_weights[blockIdx.z];
 
- 	// compute function value
-	// exp(-|x1-c1| - |x1-c2| -|x1+r*w_hat - c3| - |x1 + rw_hat -c4|
-	// constants needed: r, c1,c2,c3,c4
-	double term1 = sqrt( (xvalue-c1[0])*(xvalue-c1[0]) + (yvalue-c1[1])*(yvalue-c1[1]) + (zvalue - c1[2])*(zvalue-c1[2]));
-	double term2 = sqrt( (xvalue-c2[0])*(xvalue-c2[0]) + (yvalue-c2[1])*(yvalue-c2[1]) + (zvalue - c2[2])*(zvalue-c2[2]));
-	double term3 = sqrt( (xvalue-c3[0]+r*w[0])*(xvalue-c3[0]+r*w[0]) + (yvalue-c3[1]+r*w[1])*(yvalue-c3[1]+r*w[1]) + (zvalue - c3[2]+r*w[2])*(zvalue-c3[2]+r*w[2]));
-	double term4 = sqrt( (xvalue-c4[0]+r*w[0])*(xvalue-c4[0]+r*w[0]) + (yvalue-c4[1]+r*w[1])*(yvalue-c4[1]+r*w[1]) + (zvalue - c4[2]+r*w[2])*(zvalue-c4[2]+r*w[2]));
-	double exponent = -term1 - term2 - term3 -term4 + r ;
-	res[idx] = exp(exponent)*dx*dy*dz;	
-//	res[idx] = dx;
-	}
+        // compute function value
+        // exp(-|x1-c1| - |x1-c2| -|x1+r*w_hat - c3| - |x1 + rw_hat -c4|
+        // constants needed: r, c1,c2,c3,c4
+        double xdiffc_1 = xvalue-d_c[0];
+        double ydiffc_1 = yvalue-d_c[1];
+        double zdiffc_1 = zvalue-d_c[2];
+
+        double xdiffc_2 = xvalue-d_c[3];
+        double ydiffc_2 = yvalue-d_c[4];
+        double zdiffc_2 = zvalue-d_c[5];
+
+        double xdiffc_3 = xvalue-d_c[6]+    r*w[0];
+        double ydiffc_3 = yvalue-d_c[7]+    r*w[1];
+        double zdiffc_3 = zvalue-d_c[8]+    r*w[2];
+
+        double xdiffc_4 = xvalue-d_c[9]+    r*w[0];
+        double ydiffc_4 = yvalue-d_c[10]+   r*w[1];
+        double zdiffc_4 = zvalue-d_c[11]+   r*w[2];
+
+        double term1 = sqrt( xdiffc_1*xdiffc_1 + ydiffc_1*ydiffc_1 + zdiffc_1*zdiffc_1);
+        double term2 = sqrt( xdiffc_2*xdiffc_2 + ydiffc_2*ydiffc_2 + zdiffc_2*zdiffc_2 );
+        double term3 = sqrt(xdiffc_3*xdiffc_3 + ydiffc_3*ydiffc_3 + zdiffc_3*zdiffc_3 );
+        double term4 = sqrt( xdiffc_4*xdiffc_4 + ydiffc_4*ydiffc_4 + zdiffc_4*zdiffc_4);
+
+        double exponent = -term1 - term2 - term3 -term4 + r ;
+        res[idx] = exp(exponent)*dx*dy*dz;
+        //	res[idx] = dx;
+    }
 }
+    __global__
+    void evalInnerIntegralSimpson2(double* d_c,	double* d_x_grid_points,
+                                  double* d_y_grid_points,
+                                  double* d_z_grid_points,
+                                  double* d_x_weights,
+                                  double* d_y_weights,
+                                  double* d_z_weights,
+                                  int x_dim,
+                                  double r,double *w, double *res
+    )
+    {
+        int b_idx = blockIdx.x;
+        int t_idx = threadIdx.x;
+        int grid_t_idx = b_idx * blockDim.x + t_idx;
+        int z_size = x_dim * x_dim;
+        int z_idx = grid_t_idx/z_size;
+        int y_size = x_dim;
+        int y_idx = (grid_t_idx - z_idx*z_size)/y_size;
+        int x_idx = grid_t_idx - z_idx*z_size - y_idx*y_size;
+        if ( grid_t_idx < x_dim*x_dim*x_dim ) {
+            double xvalue = d_x_grid_points[x_idx];
+            double yvalue = d_y_grid_points[y_idx];
+            double zvalue = d_z_grid_points[z_idx];
 
-__global__
-void multiplyVolumeElement(int x_dim,
-			double dxdydz,
-			double *res)
-{
-	int bx = blockIdx.x;    
-	int by = blockIdx.y;
-    	int bz = blockIdx.z;
-    	int tx = threadIdx.x;
-    	int ty = threadIdx.y;
-    	int tz = threadIdx.z;
-	int h = gridDim.z*blockDim.z;
-	int d = gridDim.y*blockDim.y;
-        int xpos = 256*blockIdx.x;
-	xpos += threadIdx.x;
-	int idx = h*d*(blockDim.x*bx + tx)+ d*(blockDim.y*by + ty)+ (blockDim.z*bz + tz);
+            double dx = d_x_weights[x_idx];
+            double dy = d_y_weights[y_idx];
+            double dz = d_z_weights[z_idx];
 
-        if ( idx < x_dim*x_dim*x_dim ) {
-		res[idx] = res[idx]*dxdydz;	
-    	}
-}
+            // compute function value
+            // exp(-|x1-c1| - |x1-c2| -|x1+r*w_hat - c3| - |x1 + rw_hat -c4|
+            // constants needed: r, c1,c2,c3,c4
+            double xdiffc_1 = xvalue-d_c[0];
+            double ydiffc_1 = yvalue-d_c[1];
+            double zdiffc_1 = zvalue-d_c[2];
 
-__global__ 
-void reduceSum(double *input, double *output,  int size)
-{
-	extern __shared__ double tsum[];
-	int id = threadIdx.x;
-	int tid = blockDim.x*blockIdx.x + threadIdx.x;
-	int stride = gridDim.x*blockDim.x;
-	tsum[id] = 0.0;
-	for(int k = tid; k<size; k+=stride) tsum[id] += input[k];
-	__syncthreads();
-	
-	for(int k = blockDim.x /2; k>0; k/=2) {
-		if(id<k) tsum[id] += tsum[id+k];
-	__syncthreads();
-	}
-	if (id==0) output[blockIdx.x] = tsum[0];
+            double xdiffc_2 = xvalue-d_c[3];
+            double ydiffc_2 = yvalue-d_c[4];
+            double zdiffc_2 = zvalue-d_c[5];
 
-}
+            double xdiffc_3 = xvalue-d_c[6]+    r*w[0];
+            double ydiffc_3 = yvalue-d_c[7]+    r*w[1];
+            double zdiffc_3 = zvalue-d_c[8]+    r*w[2];
 
-double make_1d_grid(double start, double stop, unsigned int N, std::vector<double>* grid){
-	auto val = start;
-	auto step = (stop - start) / N; 	
-   	for (unsigned int i=0;i < N; ++i){
-   	    grid->push_back(val);
-//	    std::cout << "pushed value to grid: " << val << std::endl;
-	    val += step;	
-   	}
-	return step;
-}
+            double xdiffc_4 = xvalue-d_c[9]+    r*w[0];
+            double ydiffc_4 = yvalue-d_c[10]+   r*w[1];
+            double zdiffc_4 = zvalue-d_c[11]+   r*w[2];
 
-void make_1d_grid_simpson(double start, double stop, unsigned int N, std::vector<double>* grid, std::vector<double>* weights){
-	// N must be multiple of 3
-	auto node = start;
-	auto h = (stop - start) / N; 
-	auto weight_factor = h * (3.0/8.0);
-   	for (unsigned int i=0;i < N+1; ++i){
-   	    grid->push_back(node);
-		if (((i ) % 3 == 0 && i > 0) && (i < (N))){
-			weights -> push_back(weight_factor * 2);
-		}
-		else if (( i > 0) && (i < (N))){
-			weights -> push_back(weight_factor * 3);
-		}
-		else{ 
-			weights -> push_back(weight_factor);
-		}
-	    node += h;
-	    	
-   	}
-}
+            double term1 = sqrt( xdiffc_1*xdiffc_1 + ydiffc_1*ydiffc_1 + zdiffc_1*zdiffc_1);
+            double term2 = sqrt( xdiffc_2*xdiffc_2 + ydiffc_2*ydiffc_2 + zdiffc_2*zdiffc_2 );
+            double term3 = sqrt(xdiffc_3*xdiffc_3 + ydiffc_3*ydiffc_3 + zdiffc_3*zdiffc_3 );
+            double term4 = sqrt( xdiffc_4*xdiffc_4 + ydiffc_4*ydiffc_4 + zdiffc_4*zdiffc_4);
 
-
-
-    void launch_reduceSum(double *input, double *output, int size, int block_size, int num_blocks)
-    { 
-    	double *d_input = nullptr;
-    	double *d_output = nullptr;
-    	cudaMalloc(&d_input, size*sizeof(double));
-	cudaMalloc(&d_output, num_blocks*sizeof(double));
-	
-    	cudaMemcpy(d_input, input, size*sizeof(double), cudaMemcpyHostToDevice);
-	reduceSum<<<num_blocks, block_size, block_size*sizeof(double)>>>(d_input,d_output,size);   
-	cudaError_t error = cudaGetLastError();
-    	cudaMemcpy(output,d_output, num_blocks*sizeof(double), cudaMemcpyDeviceToHost);
-	std::cout << "cuda error after reduceSum function:" << error << std::endl;
-	std::cout << "output vector after calling reduceSum" << std::endl;
-    	for (int i=0; i < num_blocks; i++){
-		std::cout << output[i] << std::endl;	
+            double exponent = -term1 - term2 - term3 -term4 + r ;
+            res[grid_t_idx] = exp(exponent)*dx*dy*dz;
+//            	res[grid_t_idx] =x_dim*x_dim*x_dim;
         }
     }
-
-    double evaluateInner(double* c1_input, double* c2_input, double* c3_input, double* c4_input, double r, double* w_input, double* xrange, double* yrange, double* zrange, unsigned int x_axis_points, unsigned int y_axis_points, unsigned int z_axis_points, double *result_array, int gpu_num)
+	double* preProcessIntegral(double *c1234_input)
+	{
+    // Copy Constants to GPU  memory
+	double* d_c1234;
+    cudaMalloc(&d_c1234, 12*sizeof(double));
+   	cudaMemcpy(d_c1234, c1234_input, 12*sizeof(double), cudaMemcpyHostToDevice);
+	return d_c1234;
+	}
+    double evaluateInner(double* c1234_input,
+                         double r,
+                         double* w_input,
+                         double* xrange, double* yrange, double* zrange,
+                         unsigned int x_axis_points, unsigned int y_axis_points, unsigned int z_axis_points,
+                         double *result_array, int gpu_num)
     { 
 //   	if (result_array == nullptr){
 //		std::cout<< "null ptr received"	<< std::endl;
 //	}
+
 	cudaSetDevice(gpu_num);
-	//int device;
-    	//cudaGetDevice(&device);
-    	//std::cout << "Selected GPU device: " << device << std::endl;
+
 	double *d_result = nullptr;
 	double *d_x_grid = nullptr;
 	double *d_y_grid = nullptr;
@@ -208,6 +220,7 @@ void make_1d_grid_simpson(double start, double stop, unsigned int N, std::vector
 	double *d_z_weights = nullptr;
 	
 	double *d_w = nullptr;
+        double *d_c1234 = nullptr;
     	//Initialize Timer Variables for GPU computations
 //   	cudaEvent_t startGPU,stopGPU, startTransfer,stopTransfer, startReduce, stopReduce;
 //   	cudaEventCreate(&startGPU);
@@ -227,45 +240,33 @@ void make_1d_grid_simpson(double start, double stop, unsigned int N, std::vector
 	std::vector<double> x_weights;
    	std::vector<double> y_weights;
    	std::vector<double> z_weights;
-	// TODO:  Read the x,y,z points from a file --- Simpson has uniform points so should be same.
-	//	  Confirm same points from simpson
-	//	  Read the weights for those points from a file
-	// 	  Write new multiply function that multiplies with the weights, maybe do it in the original evaluate function
-
-//	double dx= make_1d_grid(xrange[0],xrange[1],x_axis_points, &x_grid);
-//	double dy= make_1d_grid(yrange[0],yrange[1],y_axis_points, &y_grid);
-//	double dz= make_1d_grid(zrange[0],zrange[1],z_axis_points, &z_grid);
 
 	make_1d_grid_simpson(xrange[0],xrange[1],x_axis_points, &x_grid, &x_weights);
 	make_1d_grid_simpson(yrange[0],yrange[1],y_axis_points, &y_grid, &y_weights);
 	make_1d_grid_simpson(zrange[0],zrange[1],z_axis_points, &z_grid, &z_weights);
-	
-//	double dxdydz = dx*dy*dz;
 
    	unsigned int PX = x_grid.size();
    	unsigned int PY = y_grid.size();
    	unsigned int PZ = z_grid.size();
 
-	// Copy Constants to GPU const memory
-   	cudaMemcpyToSymbol(c1, c1_input, sizeof(double) * 3);
-   	cudaMemcpyToSymbol(c2, c2_input, sizeof(double) * 3);
-   	cudaMemcpyToSymbol(c3, c3_input, sizeof(double) * 3);
-   	cudaMemcpyToSymbol(c4, c4_input, sizeof(double) * 3);
-//	std::cout << "Allocating Memory on GPU" << std::endl;
-   	// Evaluate Funciton on GPU and Time it
-   	cudaMalloc(&d_result, PX*PY*PZ*sizeof(double));
-   	cudaMalloc(&d_x_grid, PX*sizeof(double));
-   	cudaMalloc(&d_y_grid, PY*sizeof(double));
-   	cudaMalloc(&d_z_grid, PZ*sizeof(double));
-   	cudaMalloc(&d_x_weights, PX*sizeof(double));
-   	cudaMalloc(&d_y_weights, PY*sizeof(double));
-   	cudaMalloc(&d_z_weights, PZ*sizeof(double));
-   	cudaMalloc(&d_w, 3*sizeof(double));
-	double *result = new double[(PX)*(PY)*(PZ)](); 
-	assert(PX== (x_axis_points+1));
-	assert(PY== (y_axis_points+1));
-	assert(PZ== (z_axis_points+1));
-//	std::cout << "Copying data on GPU" << std::endl;
+    // Allocate memory on GPU
+    // TODO: write a preprocess function that generates and saves grids and weights on GPU
+    cudaMalloc(&d_x_grid, PX*sizeof(double));
+    cudaMalloc(&d_y_grid, PY*sizeof(double));
+    cudaMalloc(&d_z_grid, PZ*sizeof(double));
+    cudaMalloc(&d_x_weights, PX*sizeof(double));
+    cudaMalloc(&d_y_weights, PY*sizeof(double));
+    cudaMalloc(&d_z_weights, PZ*sizeof(double));
+    cudaMalloc(&d_w, 3*sizeof(double));
+    cudaMalloc(&d_c1234, 12*sizeof(double));
+
+   	// Evaluate Funciton on GPU
+    assert(PX== (x_axis_points+1));
+    assert(PY== (y_axis_points+1));
+    assert(PZ== (z_axis_points+1));
+    //TODO: this array is not needed if not saving data, remove allocation
+
+
    	cudaMemcpy(d_x_grid, x_grid.data(), PX*sizeof(double), cudaMemcpyHostToDevice);
    	cudaMemcpy(d_y_grid, y_grid.data(), PY*sizeof(double), cudaMemcpyHostToDevice);
    	cudaMemcpy(d_z_grid, z_grid.data(), PZ*sizeof(double), cudaMemcpyHostToDevice);
@@ -273,58 +274,65 @@ void make_1d_grid_simpson(double start, double stop, unsigned int N, std::vector
    	cudaMemcpy(d_y_weights, y_weights.data(), PY*sizeof(double), cudaMemcpyHostToDevice);
    	cudaMemcpy(d_z_weights, z_weights.data(), PZ*sizeof(double), cudaMemcpyHostToDevice);
    	cudaMemcpy(d_w, w_input, 3*sizeof(double), cudaMemcpyHostToDevice);
+        cudaMemcpy(d_c1234, c1234_input, 12*sizeof(double), cudaMemcpyHostToDevice);
 
-	dim3 block3d((PX+255)/256, PY, PZ);
-   	dim3 threads3d(256, 1, 1);
-//   	cudaEventRecord(startGPU);
-   	evalInnerIntegralSimpson<<<block3d,threads3d>>>( d_x_grid, d_y_grid, d_z_grid,d_x_weights, d_y_weights, d_z_weights, x_grid.size(),r, d_w, d_result);
-   	cudaDeviceSynchronize();
+//    dim3 block3d((PX+255)/256, PY, PZ);
+//    dim3 threads3d(256, 1, 1);//   	cudaEventRecord(startGPU);
+
+    cudaMalloc(&d_result, PX *PY*PZ*sizeof(double));
+//    double *result = new double[(PX)*(PY)*(PZ)]();
+        int threads = 256; // Max threads per block
+        int blocks = (PX*PY*PZ + threads -1)/threads; // Max blocks, multiple of SM = 80
+//        evalInnerIntegralSimpson<<<block3d,threads3d>>>(d_c1234, d_x_grid, d_y_grid, d_z_grid,d_x_weights, d_y_weights, d_z_weights, x_grid.size(),r, d_w, d_result);
+        evalInnerIntegralSimpson2<<<blocks,threads>>>(d_c1234,
+                                                      d_x_grid, d_y_grid, d_z_grid,
+                                                      d_x_weights, d_y_weights, d_z_weights,
+                                                      x_grid.size(),r, d_w, d_result);
+
+   	//cudaDeviceSynchronize();
 //   	cudaEventRecord(stopGPU);
 //	cudaError_t err = cudaGetLastError();
-//	std::cout << "Error: "<< err << std::endl;
+
    	//Transfer Vector back to CPU and time transfer
 //   	cudaEventRecord(startTransfer);
 //   	cudaMemcpy(result, d_result, PX*PY*PZ*sizeof(double), cudaMemcpyDeviceToHost);
 //   	cudaDeviceSynchronize();
 //   	cudaEventRecord(stopTransfer);
 
- //	Debug values
- //	     std::cout << "Result vector values:" << std::endl;
- //	   for (unsigned int i = 0; i < PX*PY*PZ; ++i) {
- //	       std::cout << result[i] << " ";
- //	   }
+// //	Debug values
+// 	     std::cout << "Result vector values:" << std::endl;
+// 	   for (unsigned int i = 0; i < PX*PY*PZ; ++i) {
+// 	       std::cout << result[i] << " ";
+// 	   }
    	
-   	//multiplyVolumeElement<<<block3d,threads3d>>>( x_grid.size(), dxdydz, d_result);
-   	 
-   	//Reduce vector on GPU within each block and time it
+
+   	//Reduce vector on GPU within each block
 //   	cudaEventRecord(startReduce);
-   	int blockSize = 256;
-   	int numBlocks = (PX*PY*PZ+255)/256;
-   	reduceSum<<<numBlocks, blockSize, blockSize* sizeof(double)>>>(d_result, d_result, PX* PY* PZ);
-   	int numBlocksReduced=numBlocks;
-   	
-   	while (numBlocks > blockSize)
+threads = 1024; // Max threads per block
+blocks = 2048; // Max blocks, multiple of SM = 80
+
+   	reduceSum<<<blocks, threads, threads* sizeof(double)>>>(d_result, d_result, PX* PY* PZ);
+        int    numBlocksReduced = blocks;
+       while (blocks > threads)
    	    {
-   	        numBlocksReduced = (numBlocks+255)/256;
-   	        numBlocksReduced = (numBlocks+255)/256;
-   		    reduceSum<<<numBlocksReduced, blockSize, blockSize* sizeof(double)>>>(d_result, d_result, numBlocks);
-   	        numBlocks = numBlocksReduced;
+   	        numBlocksReduced = (blocks+threads-1)/threads;
+   		    reduceSum<<<numBlocksReduced, threads, threads* sizeof(double)>>>(d_result, d_result, blocks);
+            blocks = numBlocksReduced;
    	    }
   // 	cudaEventRecord(stopReduce);
-   	cudaDeviceSynchronize();
-   	
-   	// copy reduced vector of size < 256 to cpu and sum remaining vector
+//   	cudaDeviceSynchronize();
+    reduceSum<<<1, blocks, blocks* sizeof(double)>>>(d_result, d_result, blocks);
+
+        // copy reduced vector of size < 256 to cpu and sum remaining vector
+       // TODO fix summation for array of length <256 in reduceSum funciton
    	double sumGPU=0.0;
-   	double *cpu_sum_array =(double*)malloc(numBlocksReduced*sizeof(double));    
-   	cudaMemcpy(cpu_sum_array, d_result, numBlocksReduced*sizeof(double), cudaMemcpyDeviceToHost);
+   	cudaMemcpy(&sumGPU, d_result, sizeof(double), cudaMemcpyDeviceToHost);
 //  	auto start_time_cpu_remaining = std::chrono::high_resolution_clock::now();
-   	for (int i = 0; i < numBlocksReduced; ++i) {
-   		sumGPU += cpu_sum_array[i];
-   	}
+
 //   	auto end_time_cpu_remaining = std::chrono::high_resolution_clock::now();
 //   	auto elapsed_time_cpu_remaining = std::chrono::duration_cast<std::chrono::microseconds>(end_time_cpu_remaining - start_time_cpu_remaining).count();
- 
-   	
+
+
    	// Calculate elapsed time
 //   	float millisecondsGPU = 0.0f;
 //   	cudaEventElapsedTime(&millisecondsGPU, startGPU, stopGPU);
@@ -343,7 +351,7 @@ void make_1d_grid_simpson(double start, double stop, unsigned int N, std::vector
 //   	std::cout << "Bytes Transferred: " << PX*PY*PZ*sizeof(double) <<std::endl;
 //   	std::cout << "Sum on CPU: " << sumCPU << std::endl;
 //   	std::cout << "Time taken for sequential summation: " << elapsed_time_cpu << " microseconds" << std::endl;
-	delete[] result;	   	
+//	delete[] result;
    	cudaFree(d_result);
    	cudaFree(d_x_grid);
    	cudaFree(d_y_grid);
@@ -351,7 +359,9 @@ void make_1d_grid_simpson(double start, double stop, unsigned int N, std::vector
    	cudaFree(d_x_weights);
    	cudaFree(d_y_weights);
    	cudaFree(d_z_weights);
-	return sumGPU; 
+    cudaFree(d_c1234);
+
+	return sumGPU;
 }
 
 }

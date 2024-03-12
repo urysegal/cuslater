@@ -15,10 +15,10 @@ end
 # Define a function to create InputData instances
 function create_InputData(rval,wx,wy,wz,nx)
 InputData(
-	  [0.0,0.0,0.0],      #c1
-	  [1.0,0.0,0.0],      #c2
-	  [2.0,0.0,0.0],      #c3
-	  [3.0,0.0,0.0],      #c4
+	  [0.0,0.0,0.0,     #c1
+	  1.0,0.0,0.0,      #c2
+	  2.0,0.0,0.0,      #c3
+	  3.0,0.0,0.0],     #c4
 	  rval,               # r
 	  [wx,wy,wz],      #w
 	  [-10.0,11.0],        #xrange
@@ -68,13 +68,13 @@ end
 function parallel_integral_sum(rweights_new, lweights_new, lxgrid, lygrid, lzgrid, nx, rnodes_new)
     l_ctr = Atomic{Int}(0) # Atomic variable to safely track the number of threads executed 
     nl = length(lxgrid)
-	gpu_num = 1
+	gpu_num = 4
 	l_sum = zeros(nl,1)
 	    @threads for l in 1:nl
 		thread_id = threadid()
 	        r_sums = zeros(length(rnodes_new)) # Initialize an array to store intermediate sums
 		rdata = [create_InputData(rval,lxgrid[l],lygrid[l],lzgrid[l],nx) for rval in rnodes_new]
-		r_sums .= evaluate_inner.(rdata,thread_id)
+		r_sums .= evaluate_inner.(rdata,mod(thread_id,gpu_num))
 		r_sums .= r_sums .* rweights_new
 		r_sum  = sum(r_sums)			
 		l_sum[l] = r_sum * lweights_new[l]  
@@ -89,7 +89,7 @@ function parallel_integral_sum_lr(rweights_new, lweights_new, lxgrid, lygrid, lz
     l_ctr = Atomic{Int}(0) # Atomic variable to safely track the number of threads executed 
     nl = length(lxgrid)
 	nr = length(rnodes_new)
-	gpu_num = 1
+	gpu_num = 0
 	nlr = nl*nr
 	lr_sum = zeros(nlr,1)
 	@threads for i in 1:nlr
