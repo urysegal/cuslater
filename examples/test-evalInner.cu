@@ -16,9 +16,9 @@ main(int argc, const char *argv[])
 	double xrange[] = {-5,6};
 	double yrange[] = {-5,6};
 	double zrange[] = {-5,6};
-	unsigned int x_axis_points = 45;
-	unsigned int y_axis_points = 45;
-	unsigned int z_axis_points = 45;
+	unsigned int x_axis_points = 501;
+	unsigned int y_axis_points = 501;
+	unsigned int z_axis_points = 501;
 	double *result_array=NULL;
 //	auto d_c = cuslater::preProcessIntegral( c);
 	auto sum = cuslater::evaluateInner( c,r, w, xrange,  yrange, zrange, x_axis_points, y_axis_points, z_axis_points, result_array,0);

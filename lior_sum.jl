@@ -68,18 +68,18 @@ end
 function parallel_integral_sum(rweights_new, lweights_new, lxgrid, lygrid, lzgrid, nx, rnodes_new)
     l_ctr = Atomic{Int}(0) # Atomic variable to safely track the number of threads executed 
     nl = length(lxgrid)
-	gpu_num = 4
+	gpu_num = 2
 	l_sum = zeros(nl,1)
 	    @threads for l in 1:nl
-		thread_id = threadid()
-	        r_sums = zeros(length(rnodes_new)) # Initialize an array to store intermediate sums
-		rdata = [create_InputData(rval,lxgrid[l],lygrid[l],lzgrid[l],nx) for rval in rnodes_new]
-		r_sums .= evaluate_inner.(rdata,mod(thread_id,gpu_num))
-		r_sums .= r_sums .* rweights_new
-		r_sum  = sum(r_sums)			
-		l_sum[l] = r_sum * lweights_new[l]  
-	        atomic_add!(l_ctr, 1) # Update the ctr atomically
-		println("computed for l: ",l, " l_ctr= ",l_ctr)
+            thread_id = threadid()
+            r_sums = zeros(length(rnodes_new)) # Initialize an array to store intermediate sums
+            rdata = [create_InputData(rval,lxgrid[l],lygrid[l],lzgrid[l],nx) for rval in rnodes_new]
+            r_sums .= evaluate_inner.(rdata,mod(thread_id,gpu_num))
+            r_sums .= r_sums .* rweights_new
+            r_sum  = sum(r_sums)
+            l_sum[l] = r_sum * lweights_new[l]
+            atomic_add!(l_ctr, 1) # Update the ctr atomically
+            println("computed for l: ",l, " l_ctr= ",l_ctr)
 	   end
 	integral_sum = sum(l_sum)
     println("l_sum_vec: ", l_sum)
@@ -89,7 +89,7 @@ function parallel_integral_sum_lr(rweights_new, lweights_new, lxgrid, lygrid, lz
     l_ctr = Atomic{Int}(0) # Atomic variable to safely track the number of threads executed 
     nl = length(lxgrid)
 	nr = length(rnodes_new)
-	gpu_num = 0
+	gpu_num = 1
 	nlr = nl*nr
 	lr_sum = zeros(nlr,1)
 	@threads for i in 1:nlr
@@ -97,7 +97,7 @@ function parallel_integral_sum_lr(rweights_new, lweights_new, lxgrid, lygrid, lz
 		l_i = cld(i,nr)
 		r_i = mod(i,nr) + 1
 		rdata = create_InputData(rnodes_new[r_i],lxgrid[l_i],lygrid[l_i],lzgrid[l_i],nx) 
-		lr_sum[i] = evaluate_inner(rdata,mod(thread_id,4)) * rweights_new[r_i]	* lweights_new[l_i]  
+		lr_sum[i] = evaluate_inner(rdata,mod(thread_id,gpu_num)) * rweights_new[r_i]	* lweights_new[l_i]
 	        atomic_add!(l_ctr, 1) # Update the ctr atomically
 		if ( mod(l_ctr[],1000)==0 )
 			println("computed for l_i: ",l_i," r_i: ",r_i, " computed= ",l_ctr[]," / ",nlr)
@@ -130,11 +130,12 @@ function evaluate_broadcast_parallel(nr_start::Int=10,nl_start::Int=2,nx::Int=9)
 	integral_sum = 0
 	result = parallel_integral_sum_lr(rweights_new, lweights_new, lxgrid, lygrid, lzgrid, nx, rnodes_new)
 	result = 4/pi * result 
-	println("nr = ",nr_start,", nl = ",nl)
+	println("nr = ",nr_start,", nl = ",nl, " nx= ",nx)
+	println("Result= ", result)
 	return result 
 end
 
-
+evaluate_broadcast_parallel(550,18,498)
 #nv=3*(73:10:200)
 #nr = 192 
 #l_pick = 17
