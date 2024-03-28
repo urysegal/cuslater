@@ -1,37 +1,76 @@
 #pragma once
-#include <vector>
-#include <unordered_map>
 #include "../include/utilities.h"
+#include <cutensor.h>
+#include <cuda_profiler_api.h>
+#include <cuda_runtime.h>
+
+#include "../include/grids.h"
+
 
 namespace cuslater{
-__global__
-void evalInnerIntegral(	double* d_x_grid_points,
-			double* d_y_grid_points,
-			double* d_z_grid_points,  
-			int x_dim,
-                          double r, double *res);
-__global__
-void multiplyVolumeElement(int x_dim,
-			double dxdydz,
-			double *res);
 
-__global__
-void evalInnerIntegralSimpson(double* d_c,	double* d_x_grid_points,
-                              double* d_y_grid_points,
-                              double* d_z_grid_points,
-                              double* d_x_weights,
-                              double* d_y_weights,
-                              double* d_z_weights,
-                              int x_dim,
-                              double r,double *w, double *res
-);
+        __global__
+        void evaluateReduceInnerIntegrand(double* d_c,	double* d_x_grid_points,
+                                      double* d_y_grid_points,
+                                      double* d_z_grid_points,
+                                      double* d_x_weights,
+                                      double* d_y_weights,
+                                      double* d_z_weights,
+                                      int x_dim,
+                                      double r,double *w, double *res
+        );
+	__global__
+	void evaluateConstantTerm(double* d_c,	double* d_x_grid_points,
+                                       double* d_y_grid_points,
+                                       double* d_z_grid_points,
+                                       int x_dim,
+                                       double r, double *res);
+
+        __global__
+        void evaluateReduceInnerIntegrand2(double* d_c,	double* d_x_grid_points,
+                               double* d_y_grid_points,
+                               double* d_z_grid_points,
+                               double* d_x_weights,
+                               double* d_y_weights,
+                               double* d_z_weights,
+                               int x_dim,
+                               double r,double l_x, double l_y, double l_z,
+                               double *term12r_arr,
+                               double *res);
+
+        __global__
+        void evaluateInnerIntegrand(double* d_c,	double* d_x_grid_points,
+                        double* d_y_grid_points,
+                        double* d_z_grid_points,
+                        double* d_x_weights,
+                        double* d_y_weights,
+                        double* d_z_weights,
+                        int x_dim,
+                        double r,double *w, double *res
+        );
+	__global__ 
+	void accumulateSum(double* d_result, double* d_sum);
 
 
-double make_1d_grid(double start, double stop, unsigned int N, std::vector<double>* grid);
+                extern "C" {
+                double** preProcessIntegral(int total_grid_points, int &num_grids, int &max_grids );
 
-extern "C" {
-void launch_reduceSum(double *input, double *output, int size, int block_size, int num_blocks);
-	double* preProcessIntegral(double *c1234_input);
-    double evaluateInner(double* d_c1234, double r, double* w_input, double* xrange, double* yrange, double* zrange, unsigned int x_axis_points, unsigned int y_axis_points, unsigned int z_axis_points, double *result_array, int gpu_num);
-}
+                double evaluateInner(double* d_c1234, double r,
+                                     double* w_input,
+                                     double* xrange, double* yrange, double* zrange,
+                                     unsigned int x_axis_points, unsigned int y_axis_points, unsigned int z_axis_points,
+                                     double **d_results_ptr, int gpu_num);
+
+                double evaluateInnerPreProcessed(double* d_c,
+                                     double r,
+                                     double l_x, double l_y, double l_z,
+                                     double* d_x_grid,   double* d_x_weights, unsigned int x_axis_points,
+					double* d_r_weights, int r_i, 
+					double* d_l_weights, int l_i,
+					double* d_term12r, double* d_result, 
+					double* d_sum, int blocks, int threads, int gpu_num);
+
+                void postProcessIntegral(double** d_results, int nl);
+
+    }
 }

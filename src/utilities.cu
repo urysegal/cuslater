@@ -1,43 +1,21 @@
 //
 // Created by gkluhana on 04/03/24.
 //
+
 #include "../include/utilities.h"
-#include <cassert>
-
 namespace cuslater{
-    void make_1d_grid_simpson(double start, double stop, unsigned int N, std::vector<double>* grid, std::vector<double>* weights){
-        // N must be multiple of 3
-        assert( N % 3 == 0);
 
-        auto node = start;
-        auto h = (stop - start) / N;
-        auto weight_factor = h * (3.0/8.0);
-        for (unsigned int i=0;i < N+1; ++i){
-            grid->push_back(node);
-            if (((i ) % 3 == 0 && i > 0) && (i < (N))){
-                weights -> push_back(weight_factor * 2);
-            }
-            else if (( i > 0) && (i < (N))){
-                weights -> push_back(weight_factor * 3);
-            }
-            else{
-                weights -> push_back(weight_factor);
-            }
-            node += h;
 
+    void getAvailableMemory(size_t& availableMemory) {
+        size_t free_bytes, total_bytes;
+        cudaError_t  err = cudaMemGetInfo(&free_bytes, &total_bytes);
+        if (err != cudaSuccess){
+                printf("Error: %s\n", cudaGetErrorString(err));
         }
+        availableMemory = free_bytes;
     }
 
-    double make_1d_grid(double start, double stop, unsigned int N, std::vector<double>* grid){
-        auto val = start;
-        auto step = (stop - start) / N;
-        for (unsigned int i=0;i < N; ++i){
-            grid->push_back(val);
-//	    std::cout << "pushed value to grid: " << val << std::endl;
-            val += step;
-        }
-        return step;
-    }
+
     __device__
     unsigned long upper_power_of_two(unsigned long v)
     {
@@ -49,7 +27,6 @@ namespace cuslater{
         v |= v >> 16;
         v++;
         return v;
-
     }
 
     __global__
@@ -70,6 +47,41 @@ namespace cuslater{
         if (id==0) output[blockIdx.x] = tsum[0];
     }
 
+    __global__
+    void reduceSumWrapper(double *d_results_i, int blocks, int threads){
+            //Reduce vector on GPU within each block
+            int blocks_evaluated = blocks;
+            int numBlocksReduced = (blocks+threads-1)/threads;
+            // Reduce vector down to < threads_per_block
+            while (blocks > threads)
+            {
+                    reduceSum<<<numBlocksReduced, threads, threads* sizeof(double)>>>(d_results_i, d_results_i, blocks);
+                    blocks = numBlocksReduced;
+                    numBlocksReduced = (blocks+threads-1)/threads;
+            }
+
+            // Reduce vector down to 1 value
+            reduceSum<<<1, blocks, blocks* sizeof(double)>>>(d_results_i, d_results_i, blocks);
+            blocks = blocks_evaluated;
+    }
+
+    __global__
+    void reduceSumWithWeights(double *input, double *output, double *weights,  int size)
+    {
+            extern __shared__ double tsum[];
+            int id = threadIdx.x;
+            int tid = blockDim.x*blockIdx.x + threadIdx.x;
+            int stride = gridDim.x*blockDim.x;
+            tsum[id] = 0.0;
+            for(int k = tid; k<size; k+=stride) tsum[id] += input[k]*weights[k];
+            __syncthreads();
+            int block2 = upper_power_of_two(static_cast<unsigned long>(blockDim.x));
+            for(int k = block2 /2; k>0; k >>=1) {
+                    if(id<k && id+k<blockDim.x) tsum[id] += tsum[id+k];
+                    __syncthreads();
+            }
+            if (id==0) output[blockIdx.x] = tsum[0];
+    }
 
     __global__
     void reduceSumFast(const float* __restrict data,float* __restrict sums, int n)

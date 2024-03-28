@@ -1,19 +1,43 @@
 //
 // Created by gkluhana on 04/03/24.
 //
+#include "cuslater.cuh"
+
+
 #include <vector>
+#include <cassert>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <assert.h>
+#include <array>
+#include <stdio.h>
+#include <stdlib.h>
+#include <exception>
+#include <chrono>
+#include <unordered_map>
+
 #include "cooperative_groups.h"
 #include "cooperative_groups/reduce.h"
+#include <cuda_runtime_api.h>
+
+
 namespace cg = cooperative_groups;
 namespace cuslater{
-    void make_1d_grid_simpson(double start, double stop, unsigned int N,
-                              std::vector<double>* grid, std::vector<double>* weights);
 
-    double make_1d_grid(double start, double stop, unsigned int N,
-                        std::vector<double>* grid);
+    void getAvailableMemory(size_t& availableMemory);
 
     __global__
     void reduceSum(double *output,double *input,   int size);
+
+    __global__
+    void reduceSumWrapper(double* d_results_w_i, int blocks, int threads);
+
+    __global__
+    void reduceSumWithWeights(double *input, double *output, double *weights,  int size);
+
+
     __device__
     unsigned long upper_power_of_two(unsigned long v);
 
