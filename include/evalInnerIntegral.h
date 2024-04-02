@@ -3,7 +3,8 @@
 #include <cutensor.h>
 #include <cuda_profiler_api.h>
 #include <cuda_runtime.h>
-
+#include <thrust/device_vector.h>
+#include <thrust/reduce.h>
 #include "../include/grids.h"
 
 
@@ -49,7 +50,10 @@ namespace cuslater{
                         double r,double *w, double *res
         );
 	__global__ 
-	void accumulateSum(double* d_result, double* d_sum);
+	void accumulateSum(double* result,				 
+				double* d_r_weights,int r_i, 
+				double* d_l_weights,int l_i, 
+				 double* d_sum);
 
 
                 extern "C" {
@@ -61,14 +65,22 @@ namespace cuslater{
                                      unsigned int x_axis_points, unsigned int y_axis_points, unsigned int z_axis_points,
                                      double **d_results_ptr, int gpu_num);
 
-                double evaluateInnerPreProcessed(double* d_c,
-                                     double r,
-                                     double l_x, double l_y, double l_z,
-                                     double* d_x_grid,   double* d_x_weights, unsigned int x_axis_points,
-					double* d_r_weights, int r_i, 
-					double* d_l_weights, int l_i,
-					double* d_term12r, double* d_result, 
-					double* d_sum, int blocks, int threads, int gpu_num);
+		double evaluateInnerPreProcessed(thrust::device_vector<double>& d_c1234, 
+                                 double r,
+                                 double l_x, double l_y, double l_z,
+                                 thrust::device_vector<double>& d_x_grid, 
+                                 thrust::device_vector<double>& d_x_weights, 
+                                 unsigned int x_axis_points,
+                                 thrust::device_vector<double>& d_r_weights, 
+                                 int r_i,  
+                                 thrust::device_vector<double>& d_l_weights, 
+                                 int l_i,
+                                 thrust::device_vector<double>& d_term12r, 
+                                 thrust::device_vector<double>& d_result, 
+                                 double* d_sum, 
+                                 int blocks, 
+                                 int threads, 
+                                 int gpu_num); 
 
                 void postProcessIntegral(double** d_results, int nl);
 

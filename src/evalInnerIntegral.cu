@@ -1,13 +1,23 @@
 #include "cudaProfiler.h"
 #include "../include/evalInnerIntegral.h"
+#include <chrono>
+#include "cooperative_groups.h"
+namespace cg = cooperative_groups;
+
 namespace cuslater {
-//__constant__ double c1[3];
-//__constant__ double c2[3];
-//__constant__ double c3[3];
-//__constant__ double c4[3];
+__device__ double atomicAddDouble(double* address, double val) {
+    unsigned long long int* address_as_ull = (unsigned long long int*)address;
+    unsigned long long int old = *address_as_ull, assumed;
+
+    do {
+        assumed = old;
+        old = atomicCAS(address_as_ull, assumed, __double_as_longlong(val + __longlong_as_double(assumed)));
+    } while (assumed != old);
+
+    return __longlong_as_double(old);
+}
+
 #define THREADS_PER_BLOCK 128
-
-
 __global__
 void evaluateReduceInnerIntegrand(double* d_c,	double* d_x_grid_points,
                               double* d_y_grid_points,
@@ -112,7 +122,6 @@ void evaluateConstantTerm(double* d_c,	double* d_x_grid_points,
                 res[grid_t_idx] = -term1 - term2 + r;
         }
 }
-
 __global__
 void evaluateReduceInnerIntegrand2(double* d_c,	double* d_x_grid_points,
                                       double* d_y_grid_points,
@@ -125,17 +134,14 @@ void evaluateReduceInnerIntegrand2(double* d_c,	double* d_x_grid_points,
                                       double *term12r_arr,
                                       double *res)
     {
-            int b_idx = blockIdx.x;
+            int idx = blockIdx.x * blockDim.x + threadIdx.x;
             int t_idx = threadIdx.x;
-            int grid_t_idx = b_idx * blockDim.x + t_idx;
-            int z_size = x_dim * x_dim;
-            int z_idx = grid_t_idx/z_size;
-            int y_size = x_dim;
-            int y_idx = (grid_t_idx - z_idx*z_size)/y_size;
-            int x_idx = grid_t_idx - z_idx*z_size - y_idx*y_size;
             __shared__ volatile double local_sum[THREADS_PER_BLOCK];
-            if ( grid_t_idx < x_dim*x_dim*x_dim ) {
-                    double xvalue = d_x_grid_points[x_idx];
+            if ( idx < x_dim*x_dim*x_dim ) {
+                    int z_idx = idx / (x_dim * x_dim);
+		    int y_idx = (idx / x_dim) % x_dim;
+		    int x_idx = idx % x_dim;
+		    double xvalue = d_x_grid_points[x_idx];
                     double yvalue = d_y_grid_points[y_idx];
                     double zvalue = d_z_grid_points[z_idx];
 
@@ -153,12 +159,13 @@ void evaluateReduceInnerIntegrand2(double* d_c,	double* d_x_grid_points,
                     double xdiffc_4 = xvalue-d_c[9]+    r*l_x;
                     double ydiffc_4 = yvalue-d_c[10]+   r*l_y;
                     double zdiffc_4 = zvalue-d_c[11]+   r*l_z;
-                    double term12r = term12r_arr[grid_t_idx];
+                    double term12r = term12r_arr[idx];
                     double term3 = sqrt(xdiffc_3*xdiffc_3 + ydiffc_3*ydiffc_3 + zdiffc_3*zdiffc_3 );
                     double term4 = sqrt( xdiffc_4*xdiffc_4 + ydiffc_4*ydiffc_4 + zdiffc_4*zdiffc_4);
                     double exponent =  term12r - term3 -term4 ;
                     local_sum[t_idx] = exp(exponent)*dx*dy*dz;
-            } else {
+            } 
+	    else {
                     local_sum[t_idx] = 0.0f;
             }
             __syncthreads();
@@ -171,9 +178,133 @@ void evaluateReduceInnerIntegrand2(double* d_c,	double* d_x_grid_points,
             }
             if (t_idx == 0) {
                     res[blockIdx.x] = local_sum[0];
-//   		res[blockIdx.x] = w[0];
+//   	 	res[blockIdx.x] = d_x_grid_points[x_idx];
             }
     } //evaluateReduceInnerIntegrand2
+__global__
+void IntegrateReduce(double* d_c,	double* d_x_grid_points,
+                                      double* d_y_grid_points,
+                                      double* d_z_grid_points,
+                                      double* d_x_weights,
+                                      double* d_y_weights,
+                                      double* d_z_weights,
+                                      int x_dim,
+                                      double r,double l_x, double l_y, double l_z,
+                                      double *res){
+	auto grid = cg::this_grid();
+	auto block = cg::this_thread_block();
+	auto warp = cg::tiled_partition<32>(block);
+	
+	double v = 0.0;
+	auto N = x_dim*x_dim*x_dim;
+	if (threadIdx.x == 0) res[blockIdx.x] = 0;
+	for (int tid = grid.thread_rank(); tid< N; tid+=grid.size())
+	{
+		auto z_idx = tid / (x_dim*x_dim);
+		auto y_idx = (tid / x_dim) % x_dim;
+		auto x_idx = tid % x_dim;
+		
+                double xvalue = d_x_grid_points[x_idx];
+                double yvalue = d_y_grid_points[y_idx];
+                double zvalue = d_z_grid_points[z_idx];
+		
+		
+                double dx = d_x_weights[x_idx];
+                double dy = d_y_weights[y_idx];
+                double dz = d_z_weights[z_idx];
+
+                double xdiffc_1 = xvalue-d_c[0];
+                double ydiffc_1 = yvalue-d_c[1];
+                double zdiffc_1 = zvalue-d_c[2];
+
+                double xdiffc_2 = xvalue-d_c[3];
+                double ydiffc_2 = yvalue-d_c[4];
+                double zdiffc_2 = zvalue-d_c[5];
+
+                double xdiffc_3 = xvalue-d_c[6]+    r*l_x;
+                double ydiffc_3 = yvalue-d_c[7]+    r*l_y;
+                double zdiffc_3 = zvalue-d_c[8]+    r*l_z;
+
+                double xdiffc_4 = xvalue-d_c[9]+    r*l_x;
+                double ydiffc_4 = yvalue-d_c[10]+   r*l_y;
+                double zdiffc_4 = zvalue-d_c[11]+   r*l_z;
+
+                double term1 = sqrt( xdiffc_1*xdiffc_1 + ydiffc_1*ydiffc_1 + zdiffc_1*zdiffc_1 );
+                double term2 = sqrt( xdiffc_2*xdiffc_2 + ydiffc_2*ydiffc_2 + zdiffc_2*zdiffc_2 );
+                double term3 = sqrt( xdiffc_3*xdiffc_3 + ydiffc_3*ydiffc_3 + zdiffc_3*zdiffc_3 );
+                double term4 = sqrt( xdiffc_4*xdiffc_4 + ydiffc_4*ydiffc_4 + zdiffc_4*zdiffc_4 );
+
+                double exponent = -term1 - term2 - term3 -term4 + r ;
+		v += exp(exponent)*dx*dy*dz;
+		//v +=1 ;
+
+	}
+	
+	warp.sync();
+	
+	v += warp.shfl_down( v , 16); 
+	v += warp.shfl_down( v , 8); 
+	v += warp.shfl_down( v , 4); 
+	v += warp.shfl_down( v , 2); 
+	v += warp.shfl_down( v , 1);
+
+	if (warp.thread_rank() == 0 )
+		atomicAddDouble(&res[block.group_index().x], v); 
+}
+
+__global__
+void evaluateIntegrandReduceZ(double* d_c,	double* d_x_grid_points,
+                                      double* d_y_grid_points,
+                                      double* d_z_grid_points,
+                                      double* d_x_weights,
+                                      double* d_y_weights,
+                                      double* d_z_weights,
+                                      int x_dim,
+                                      double r,double l_x, double l_y, double l_z,
+                                      double *res)
+    {
+            int idx = blockIdx.x * blockDim.x + threadIdx.x;
+            if ( idx < x_dim*x_dim ) {
+		    int y_idx = idx / x_dim;
+		    int x_idx = idx % x_dim;
+		    double xvalue = d_x_grid_points[x_idx];
+                    double yvalue = d_y_grid_points[y_idx];
+
+                    double dx = d_x_weights[x_idx];
+                    double dy = d_y_weights[y_idx];
+                    double xdiffc_1 = xvalue-d_c[0];
+                    double ydiffc_1 = yvalue-d_c[1];
+
+                    double xdiffc_2 = xvalue-d_c[3];
+                    double ydiffc_2 = yvalue-d_c[4];
+
+                    double xdiffc_3 = xvalue-d_c[6]+    r*l_x;
+              	    double ydiffc_3 = yvalue-d_c[7]+    r*l_y;
+                    
+                    double xdiffc_4 = xvalue-d_c[9]+    r*l_x;
+                    double ydiffc_4 = yvalue-d_c[10]+   r*l_y;
+		    res[idx] = 0.0;
+		    for (int z_idx =0; z_idx <x_dim; ++z_idx){
+                         double zvalue = d_z_grid_points[z_idx];
+                   	 double dz = d_z_weights[z_idx];
+                   	 // compute function value
+                   	 // exp(-|x1-c1| - |x1-c2| -|x1+r*w_hat - c3| - |x1 + rw_hat -c4|
+                   	 // constants needed: r, c1,c2,c3,c4
+                   	 // First six are precomputed
+                         double zdiffc_1 = zvalue-d_c[2];
+                         double zdiffc_2 = zvalue-d_c[5];
+                   	 double zdiffc_3 = zvalue-d_c[8]+    r*l_z;
+                   	 double zdiffc_4 = zvalue-d_c[11]+   r*l_z;
+               	 	 double term1 = sqrt(xdiffc_1 * xdiffc_1 + ydiffc_1 * ydiffc_1 + zdiffc_1 * zdiffc_1);
+                	 double term2 = sqrt(xdiffc_2 * xdiffc_2 + ydiffc_2 * ydiffc_2 + zdiffc_2 * zdiffc_2);
+                   	 double term3 = sqrt(xdiffc_3*xdiffc_3 + ydiffc_3*ydiffc_3 + zdiffc_3*zdiffc_3 );
+                   	 double term4 = sqrt( xdiffc_4*xdiffc_4 + ydiffc_4*ydiffc_4 + zdiffc_4*zdiffc_4);
+                   	 double exponent =  -term1 - term2- term3 -term4 + r ;
+                   	 res[idx] += exp(exponent)*dx*dy*dz;
+            	    }
+	}
+
+ } //evaluateReduceInnerIntegrandz
 
 __global__
 void evaluateInnerIntegrand(double* d_c,	double* d_x_grid_points,
@@ -381,57 +512,54 @@ double evaluateInner(double* c1234_input,
 	return sumGPU;
 }//evaluateInner
 
-__global__ void accumulateSum(double* d_result, 
+__global__ void accumulateSum(double result, 
 					double* d_r_weights,int r_i, 
 					double* d_l_weights,int l_i, 
 					double* d_sum)
 {
     double sum = *d_sum;
-    sum+= d_result[0]*d_r_weights[r_i]*d_l_weights[l_i];
+    sum+= result*d_r_weights[r_i]*d_l_weights[l_i];
     *d_sum = sum;
 }
-
-double evaluateInnerPreProcessed(double* d_c1234,
-                         double r,
-                         double l_x, double l_y, double l_z,
-                         double* d_x_grid,   double* d_x_weights, unsigned int x_axis_points,
-			 double* d_r_weights, int r_i, 
-			 double* d_l_weights, int l_i,
-                         double* d_term12r, double* d_result, double* d_sum, int blocks, int threads, int gpu_num)
+double evaluateInnerPreProcessed(thrust::device_vector<double>& d_c1234, 
+                                 double r,
+                                 double l_x, double l_y, double l_z,
+                                 thrust::device_vector<double>& d_x_grid, 
+                                 thrust::device_vector<double>& d_x_weights, 
+                                 unsigned int x_axis_points,
+                                 thrust::device_vector<double>& d_r_weights, 
+                                 int r_i,  
+                                 thrust::device_vector<double>& d_l_weights, 
+                                 int l_i,
+                                 thrust::device_vector<double>& d_term12r, 
+                                 thrust::device_vector<double>& d_result, 
+                                 double* d_sum, 
+                                 int blocks, 
+                                 int threads, 
+                                 int gpu_num) 
     {
             cuProfilerStart();
 	    HANDLE_CUDA_ERROR(cudaSetDevice(gpu_num));
-            //double *d_w = nullptr;
-            //HANDLE_CUDA_ERROR(cudaMalloc(&d_w, 3*sizeof(double)));
-            //HANDLE_CUDA_ERROR(cudaMemcpy(d_w, w_input, 3*sizeof(double), cudaMemcpyHostToDevice));
 
-            // Evaluate Function on GPU
-            evaluateReduceInnerIntegrand2<<<blocks,threads>>>(d_c1234,
-                                                             d_x_grid, d_x_grid, d_x_grid,
-                                                             d_x_weights, d_x_weights, d_x_weights,
-                                                             x_axis_points,r, l_x, l_y, l_z,
-								d_term12r, 
-								d_result);
-
-
+	     IntegrateReduce<<<blocks,threads>>>(thrust::raw_pointer_cast(d_c1234.data()),  
+                                   thrust::raw_pointer_cast(d_x_grid.data()),     
+                                   thrust::raw_pointer_cast(d_x_grid.data()),       
+                                   thrust::raw_pointer_cast(d_x_grid.data()),       
+                                   thrust::raw_pointer_cast(d_x_weights.data()),  
+                                   thrust::raw_pointer_cast(d_x_weights.data()),    
+                                   thrust::raw_pointer_cast(d_x_weights.data()),    
+                                   x_axis_points,r, l_x, l_y, l_z,                
+	                           thrust::raw_pointer_cast(d_result.data()));
+	        for(long unsigned int i = 0; i < d_result.size(); i++)
+        std::cout << "d_result[" << i << "] = " << d_result[i] << std::endl;
             //Reduce vector on GPU within each block
-            int numBlocksReduced = (blocks+threads-1)/threads;
-            while (blocks > threads)
-            {
-                    reduceSum<<<numBlocksReduced, threads, threads* sizeof(double)>>>(d_result, d_result, blocks);
-                    blocks = numBlocksReduced;
-                    numBlocksReduced = (blocks+threads-1)/threads;
-            }
-            reduceSum<<<1, blocks, blocks* sizeof(double)>>>(d_result, d_result, blocks);
-
-//            double sumGPU=0.0;
-		// Accumulate result on device
-    		accumulateSum<<<1, 1>>>(d_result,
-					d_r_weights,r_i, 
-					d_l_weights,l_i, 
-					d_sum);
-  //          HANDLE_CUDA_ERROR(cudaMemcpy(&sumGPU, d_result, sizeof(double), cudaMemcpyDeviceToHost));
-//            std::cout << "Sum on GPU: " << sumGPU << std::endl;
+	    double sum = thrust::reduce(d_result.begin(),d_result.end(),(double) 0.0, thrust::plus<double>());
+	    // Accumulate result on device
+    	        accumulateSum<<<1, 1>>>(sum,
+	        			thrust::raw_pointer_cast(d_r_weights.data()),
+	        			r_i, 
+	        			thrust::raw_pointer_cast(d_l_weights.data()),l_i, 
+	        			d_sum);
             return 0.0;
 	    cuProfilerStop();
     }//evaluateInner

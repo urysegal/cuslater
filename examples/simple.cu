@@ -11,9 +11,9 @@ using namespace std;
 int
 main(int argc, const char *argv[])
 {
-        int nr = 56;
-        int nl = 74;
-        int nx = 600;
+        int nr = 2;
+        int nl = 6;
+        int nx = 200;
         double c[] = {0,0,0,
                       1,0,0,
                       2,0,0,

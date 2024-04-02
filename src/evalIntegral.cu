@@ -2,9 +2,10 @@
 // Created by gkluhana on 26/03/24.
 //
 #include "../include/evalIntegral.h"
+#include <thrust/device_vector.h>
 const double pi = 3.14159265358979323846;
-#define THREADS_PER_BLOCK 128
-
+#define THREADS_PER_BLOCK 256
+#include <thread>
 namespace cuslater{
 
     double evaluateTotalIntegral( double* c,
@@ -40,50 +41,30 @@ namespace cuslater{
             std::cout << "Initializing Device Variables"<< std::endl;
             double* w = new double[3];
             unsigned int PX = x1_nodes.size();
-            double* d_x_grid = nullptr;
-            double* d_x_weights = nullptr;
-            double* d_r_weights = nullptr;
-            double* d_l_weights = nullptr;
-            double* d_c1234 = nullptr;
-            double* d_result = nullptr;
-            double* d_term12r = nullptr;
-	    double* d_sum;
-
             int threads = THREADS_PER_BLOCK; // Max threads per block
-            int blocks = (nx*nx*nx + threads -1)/threads; // Max blocks, better if multiple of SM = 80
-
-            HANDLE_CUDA_ERROR(cudaMalloc(&d_result, blocks*sizeof(double)));
-            HANDLE_CUDA_ERROR(cudaMalloc(&d_term12r, PX*PX*PX*sizeof(double)));
-            HANDLE_CUDA_ERROR(cudaMalloc(&d_x_grid, PX*sizeof(double)));
-            HANDLE_CUDA_ERROR(cudaMalloc(&d_x_weights, PX*sizeof(double)));
-            HANDLE_CUDA_ERROR(cudaMalloc(&d_r_weights, nr*sizeof(double)));
-            HANDLE_CUDA_ERROR(cudaMalloc(&d_l_weights, nl*sizeof(double)));
-            HANDLE_CUDA_ERROR(cudaMalloc(&d_c1234, 12*sizeof(double)));
+            int blocks = 160; // Max blocks, better if multiple of SM = 80
+	    std::cout << "Total Threads: " << blocks*threads << std::endl;
+	    std::cout << "Total Grid Points: " << nx*nx*nx << std::endl; 
+	    thrust::device_vector<double> d_x_grid(PX);
+	    thrust::device_vector<double> d_x_weights(PX);
+	    thrust::device_vector<double> d_r_weights(nr);
+	    thrust::device_vector<double> d_l_weights(nl);
+	    thrust::device_vector<double> d_c1234(12);
+	    thrust::device_vector<double> d_result(blocks);
+	    thrust::device_vector<double> d_term12r(1);
+	    thrust::copy(x1_nodes.begin(), x1_nodes.end(), d_x_grid.begin());
+	    thrust::copy(x1_weights.begin(), x1_weights.end(), d_x_weights.begin());
+	    thrust::copy(r_weights.begin(), r_weights.end(), d_r_weights.begin());
+	    thrust::copy(l_weights.begin(), l_weights.end(), d_l_weights.begin());
+	    thrust::copy(c, c + 12, d_c1234.begin());
+	    double* d_sum;
             HANDLE_CUDA_ERROR(cudaMalloc(&d_sum, sizeof(double)));
-
-            HANDLE_CUDA_ERROR(cudaMemcpy(d_x_grid, x1_nodes.data(), PX*sizeof(double), cudaMemcpyHostToDevice));
-            HANDLE_CUDA_ERROR(cudaMemcpy(d_x_weights, x1_weights.data(), PX*sizeof(double), cudaMemcpyHostToDevice));
-            HANDLE_CUDA_ERROR(cudaMemcpy(d_r_weights, r_weights.data(), nr*sizeof(double), cudaMemcpyHostToDevice));
-            HANDLE_CUDA_ERROR(cudaMemcpy(d_l_weights, l_weights.data(), nl*sizeof(double), cudaMemcpyHostToDevice));
-            HANDLE_CUDA_ERROR(cudaMemcpy(d_c1234, c, 12*sizeof(double), cudaMemcpyHostToDevice));
 	    HANDLE_CUDA_ERROR(cudaMemset(d_sum, 0, sizeof(double)));
-            // Check Number of points are correct for x1 grid
-            // assert(PX== (x_axis_points));
-            // assert(PY== (y_axis_points));
-            // assert(PZ== (z_axis_points));
             double sum = 0.0;
             std::cout << "Evaluating Integral for all values of r and l" << std::endl;
 	    cudaProfilerStart();
             for (int i=0; i < nr; ++i) {
-			
-		    evaluateConstantTerm<<<blocks,threads>>>(d_c1234, 
-						d_x_grid, d_x_grid, d_x_grid,
-						nx, 
-						r_nodes[i], d_term12r);
                     for (int j = 0; j < nl; ++j) {
-                            w[0] = l_nodes_x[j];
-                            w[1] = l_nodes_y[j];
-                            w[2] = l_nodes_z[j];
                             sum = evaluateInnerPreProcessed(d_c1234,
                                                              r_nodes[i],
                                                              l_nodes_x[j], l_nodes_y[j], l_nodes_z[j],
@@ -102,11 +83,6 @@ namespace cuslater{
 	    cudaProfilerStop();
             sum *= (4.0/pi);
 	    //
-            HANDLE_CUDA_ERROR(cudaFree(d_result));
-            HANDLE_CUDA_ERROR(cudaFree(d_x_grid));
-            HANDLE_CUDA_ERROR(cudaFree(d_x_weights));
-            HANDLE_CUDA_ERROR(cudaFree(d_c1234));
-	    HANDLE_CUDA_ERROR(cudaFree(d_sum));
             // sum up result, multiply with constant and return
             return sum;
     }
