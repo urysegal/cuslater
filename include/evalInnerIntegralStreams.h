@@ -4,15 +4,13 @@
 #pragma once
 #include "../include/utilities.h"
 #include <cutensor.h>
-#include <cuda_profiler_api.h>
-#include <cuda_runtime.h>
 #include "../include/grids.h"
 
 
 namespace cuslater{
 
     __global__
-    void evaluateInnerIntegrand(double* d_c,	double* d_x_grid_points,
+    void evaluateIntegrandX1(double* d_c,	double* d_x_grid_points,
                                 double* d_y_grid_points,
                                 double* d_z_grid_points,
                                 double* d_x_weights,
