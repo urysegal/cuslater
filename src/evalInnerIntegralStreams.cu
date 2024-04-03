@@ -134,7 +134,7 @@ namespace cuslater {
                             //need to make this asynchronous
                             //cudaMemsetAsync(d_results[i],0.0, blocks*sizeof(double), streams[i]);
                             //evaluate grid for current value of l
-                            evaluateInnerIntegrand<<<blocks,threads_eval,0, streams[i]>>>(d_c1234,
+                            evaluateIntegrandX1<<<blocks,threads_eval,0, streams[i]>>>(d_c1234,
                                                                                           d_x_grid, d_x_grid, d_x_grid,
                                                                                           d_x_weights, d_x_weights, d_x_weights,
                                                                                           x_grid.size(),r, d_ws[w_i], d_results[i]);

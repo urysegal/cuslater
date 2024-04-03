@@ -8,7 +8,7 @@ const double pi = 3.14159265358979323846;
 #include <thread>
 namespace cuslater{
 
-    double evaluateTotalIntegral( double* c,
+    double evaluateFourCenterIntegral( double* c,
                                 int nr,  int nl,  int nx,
                                const std::string x1_type) {
 
@@ -62,10 +62,9 @@ namespace cuslater{
 	    HANDLE_CUDA_ERROR(cudaMemset(d_sum, 0, sizeof(double)));
             double sum = 0.0;
             std::cout << "Evaluating Integral for all values of r and l" << std::endl;
-	    cudaProfilerStart();
             for (int i=0; i < nr; ++i) {
                     for (int j = 0; j < nl; ++j) {
-                            sum = evaluateInnerPreProcessed(d_c1234,
+                            sum = evaluateInnerSumX1_rl_preAllocated(d_c1234,
                                                              r_nodes[i],
                                                              l_nodes_x[j], l_nodes_y[j], l_nodes_z[j],
                                                              d_x_grid, d_x_weights, nx,
@@ -80,7 +79,6 @@ namespace cuslater{
                         }
             }
             HANDLE_CUDA_ERROR(cudaMemcpy(&sum, d_sum, sizeof(double), cudaMemcpyDeviceToHost));
-	    cudaProfilerStop();
             sum *= (4.0/pi);
 	    //
             // sum up result, multiply with constant and return
