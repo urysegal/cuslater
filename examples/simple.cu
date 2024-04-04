@@ -11,9 +11,14 @@ using namespace std;
 int
 main(int argc, const char *argv[])
 {
-        int nr = 2;
-        int nl = 6;
-        int nx = 200;
+        int nr = 89;
+        int nl = 590;
+        int nx = 375;
+	if ( argc == 2 and argv[1][0] == 'd' ) {
+		nr = 2;
+		nl = 6;
+		nx = 21;
+	} 
         double c[] = {0,0,0,
                       1,0,0,
                       2,0,0,

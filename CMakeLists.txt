@@ -2,11 +2,12 @@ cmake_minimum_required(VERSION 3.21)
 project(cuSlater CUDA)
 
 set(CMAKE_CUDA_STANDARD 14)
-set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -lineinfo --tool memcheck")
-set(COMPILE_FLAGS -g -Wall -Xcompiler -Werror)
+set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch=SM_70")
+#set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -lineinfo  --tool memcheck -arch=SM_70")
+set(COMPILE_FLAGS -g -O4 -Wall -Xcompiler -Werror)
 
 # Set compiler flags for debug mode
-set(CUDA_NVCC_FLAGS_DEBUG "${CUDA_NVCC_FLAGS_DEBUG} -lineinfo -G -O0")
+set(CUDA_NVCC_FLAGS_DEBUG "${CUDA_NVCC_FLAGS_DEBUG} -lineinfo -G -O0 -arch=SM_70")
 
 set(CUDA_LIB_DIR /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/lib64/)
 find_library(CUBLASLT_LIBRARY
@@ -32,13 +33,15 @@ add_library(cuSlater SHARED
 		include/evalIntegral.h src/evalIntegral.cu
 )
 
+set_property(TARGET cuSlater PROPERTY CUDA_ARCHITECTURES 70)
 
 target_link_libraries(cuSlater ${CUBLASLT_LIBRARY} ${CUTENSOR_LIBRARY} cuda)
-target_compile_options(cuSlater PUBLIC ${COMPILE_FLAGS})
+target_compile_options(cuSlater PUBLIC ${COMPILE_FLAGS} $<$<COMPILE_LANGUAGE:CUDA>:-gencode arch=compute_70,code=sm_70>)
 target_include_directories(cuSlater PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 set_target_properties(cuSlater PROPERTIES
         CUDA_SEPARABLE_COMPILATION ON)
+set_target_properties(cuSlater PROPERTIES CUDA_ARCHITECTURE 70-real)
 
 add_executable(hadamard examples/test-hadamard.cu)
 add_executable(evaluate examples/test-evalInner.cu)
