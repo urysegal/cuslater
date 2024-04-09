@@ -28,7 +28,7 @@ namespace cuslater{
 
 	double evaluateFourCenterIntegral( float* c,
 	                            int nr,  int nl,  int nx,
-	                            const std::string x1_type);
+	                            const std::string x1_type, double tol);
 	double evaluateFourCenterIntegral( float* c,
                                   int nr,  int nl,  int nx,
                                   const std::string x1_type,

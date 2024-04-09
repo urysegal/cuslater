@@ -101,7 +101,7 @@ namespace cuslater{
 
     double evaluateFourCenterIntegral( float* c,
                                 int nr,  int nl,  int nx,
-                               const std::string x1_type) {
+                               const std::string x1_type, double tol) {
 
             // read r grid
             std::cout << "Reading r Grid Files" << std::endl;
@@ -150,7 +150,6 @@ namespace cuslater{
 	    HANDLE_CUDA_ERROR(cudaMemset(d_sum, 0, sizeof(double)));
             double sum = 0.0;
             double delta_sum=0.0;
-	    double tol = 1e-10;
 	    int r_skipped = 0;
             std::cout << "Evaluating Integral for all values of r and l" << std::endl;
                     for (int j = 0; j < nl; ++j) {
@@ -168,14 +167,15 @@ namespace cuslater{
 			}
                     }
                     if (j % 100 == 0) {
-                    std::cout << "computed for l_j:" << j <<"/" << nl << std::endl;
-                        }
+                    	std::cout << "computed for l_j:" << j <<"/" << nl << std::endl;
+                    }
             }
             HANDLE_CUDA_ERROR(cudaMemcpy(&sum, d_sum, sizeof(double), cudaMemcpyDeviceToHost));
             sum *= (4.0/pi);
 	    //
             // sum up result, multiply with constant and return
-            std::cout << "Total values of r skipped for different l's" << r_skipped << std::endl;
+            std::cout << "Tolerance: " << tol << std::endl;
+            std::cout << "Total values of r skipped for different l's: " << r_skipped << "/" << nr*nl << std::endl;
             return sum;
     }
 
