@@ -26,17 +26,17 @@ namespace cuslater{
                         std::vector<double>* grid);
 
     void read_r_grid_from_file(const std::string& filepath,
-                                 std::vector<double>& r_nodes,
-                                 std::vector<double>& r_weights);
+                                 std::vector<float>& r_nodes,
+                                 std::vector<float>& r_weights);
 
     void read_l_grid_from_file(const std::string& filepath,
-                               std::vector<double>& l_nodes_x, std::vector<double>& l_nodes_y,std::vector<double>& l_nodes_z,
-                               std::vector<double>& l_weights);
+                               std::vector<float>& l_nodes_x, std::vector<float>& l_nodes_y,std::vector<float>& l_nodes_z,
+                               std::vector<float>& l_weights);
     void read_x1_1d_grid_from_file(const std::string& filepath,
-                                double &a,
-                                double &b,
-                                std::vector<double>& x1_nodes,
-                                std::vector<double>& x1_weights);
+                                float &a,
+                                float &b,
+                                std::vector<float>& x1_nodes,
+                                std::vector<float>& x1_weights);
 
 
 

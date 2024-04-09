@@ -7,37 +7,29 @@
 #include "grids.h"
 #include "evalInnerIntegral.h"
 namespace cuslater{
-	__global__ 
-	void accumulateSum(double* result,				 
-				double* d_r_weights,int r_i, 
-				double* d_l_weights,int l_i, 
-				 double* d_sum);
+	__global__ void accumulateSum(double result, 
+						float r_weight, 
+						float l_weight, 
+						double* __restrict__ d_sum);
 	__global__
-	void evaluateIntegrandReduceZ(double* d_c,	double* d_x_grid_points,
-	                                      double* d_y_grid_points,
-	                                      double* d_z_grid_points,
-	                                      double* d_x_weights,
-	                                      double* d_y_weights,
-	                                      double* d_z_weights,
-	                                      int x_dim,
-	                                      double r,double l_x, double l_y, double l_z,
-	                                      double *res);
+	void evaluateIntegrandReduceZ(int x_dim,
+	                                      float r, float l_x, float l_y, float l_z,
+	                                      double * __restrict__ res);
 
-	double evaluateInnerSumX1_rl_preAllocated(
-                                 unsigned int x_axis_points,
-                                 int r_i,  
-                                 int l_i,
-                                 thrust::device_vector<double>& d_term12r, 
-                                 thrust::device_vector<double>& d_result, 
-                                 double* d_sum, 
-                                 int blocks, 
-                                 int threads, 
-                                 int gpu_num); 
+	double evaluateInnerSumX1_rl_preAllocated(unsigned int x_axis_points,
+	                                 float r,float l_x,float l_y,float l_z,
+					 float r_weight,float  l_weight,
+	                                 thrust::device_vector<double>& __restrict__ d_result, 
+	                                 double* __restrict__ d_sum, 
+	                                 int blocks, 
+	                                 int threads, 
+	                                 int gpu_num); 
+	    
 
-	double evaluateFourCenterIntegral( double* c,
+	double evaluateFourCenterIntegral( float* c,
 	                            int nr,  int nl,  int nx,
 	                            const std::string x1_type);
-	double evaluateFourCenterIntegral( double* c,
+	double evaluateFourCenterIntegral( float* c,
                                   int nr,  int nl,  int nx,
                                   const std::string x1_type,
                                   int num_gpus);

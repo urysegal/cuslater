@@ -19,7 +19,7 @@ main(int argc, const char *argv[])
 		nl = 6;
 		nx = 21;
 	} 
-        double c[] = {0,0,0,
+        float c[] = {0,0,0,
                       1,0,0,
                       2,0,0,
                       3,0,0};

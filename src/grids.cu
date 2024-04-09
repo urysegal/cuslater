@@ -66,8 +66,8 @@ namespace cuslater {
     }
 
     void read_r_grid_from_file(const std::string& filepath,
-                               std::vector<double>& r_nodes,
-                               std::vector<double>& r_weights){
+                               std::vector<float>& r_nodes,
+                               std::vector<float>& r_weights){
 
     // Open the file
             std::ifstream file(filepath);
@@ -81,7 +81,7 @@ namespace cuslater {
             r_weights.clear();
 
             // Read data from file
-            double node, weight;
+            float node, weight;
             while (file >> node >> weight) {
                     // Store data in vectors
                     r_nodes.push_back(node);
@@ -93,8 +93,8 @@ namespace cuslater {
 
     }
     void read_l_grid_from_file(const std::string& filepath,
-                               std::vector<double>& l_nodes_x, std::vector<double>& l_nodes_y,std::vector<double>& l_nodes_z,
-                               std::vector<double>& l_weights){
+                               std::vector<float>& l_nodes_x, std::vector<float>& l_nodes_y,std::vector<float>& l_nodes_z,
+                               std::vector<float>& l_weights){
             std::ifstream file(filepath);
             if (!file.is_open()) {
                     std::cerr << "Error opening file: " << filepath << std::endl;
@@ -116,16 +116,15 @@ namespace cuslater {
                     l_nodes_z.push_back(nodez);
                     l_weights.push_back(weight);
             }
-
             // Close the file
             file.close();
 
     }
     void read_x1_1d_grid_from_file(const std::string& filepath,
-                                   double &a,
-                                   double &b,
-                                   std::vector<double>& x1_nodes,
-                                   std::vector<double>& x1_weights){
+                                   float &a,
+                                   float &b,
+                                   std::vector<float>& x1_nodes,
+                                   std::vector<float>& x1_weights){
             std::ifstream file(filepath);
             if (!file.is_open()) {
                     std::cerr << "Error opening file: " << filepath << std::endl;
@@ -142,7 +141,7 @@ namespace cuslater {
             x1_weights.clear();
 
             // Read data from file
-            double node, weight;
+            float node, weight;
             while (file >> node >> weight) {
                     // Store data in vectors
                     x1_nodes.push_back(node);
