@@ -150,21 +150,24 @@ namespace cuslater{
 	    HANDLE_CUDA_ERROR(cudaMemset(d_sum, 0, sizeof(double)));
             double sum = 0.0;
             double delta_sum=0.0;
-	    int r_skipped = 0;
+	    int r_skipped = 0; //Number of r values skipped for all Lebedev points
             std::cout << "Evaluating Integral for all values of r and l" << std::endl;
-                    for (int j = 0; j < nl; ++j) {
-            		for (int i=0; i < nr; ++i) {
+                    for (int j = 0; j < nl; ++j) { //loop over each Lebedev point
+            		for (int i=0; i < nr; ++i) { //loop over each r-Laguerre point
+					//calculate the sum over entire x_1 grid with (r_i,l_j)
                             delta_sum = evaluateInnerSumX1_rl_preAllocated(nx,
 							     r_nodes[i], l_nodes_x[j],l_nodes_y[j],l_nodes_z[j],
 							     r_weights[i], l_weights[j],
                                                              d_result, 
-							     d_sum, blocks, threads, 0);
-			if (delta_sum < tol )  {
+							     d_sum, blocks, threads, 0); 
+			if (delta_sum < tol )  { 
+			//if the sum over x_1 is smaller than tol for given l_j, skip the next r_i
 		//		std::cout << "delta_sum smaller than: "<< tol<< " l_j,r= " 
 		//					<< j << " , " << r_nodes[i] << std::endl;
-				r_skipped += nr - i;
-				break;
-			}
+				std::cout << "delta_sum smaller than: "<< tol<< " l_j,r= " << j << " , " << r_nodes[i] << std::endl;
+				r_skipped += nr - i; // the number of skipped itertaions, as i iterations have been evaluated
+				break;//breaks loop over r_i
+			} 
                     }
                     if (j % 100 == 0) {
                     	std::cout << "computed for l_j:" << j <<"/" << nl << std::endl;

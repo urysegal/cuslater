@@ -15,12 +15,12 @@ main(int argc, const char *argv[])
         int nl = 590;
         int nx = 375;
         double tol = 1e-10;	
-	if ( argc == 2 and argv[1][0] == 'd' ) {
+	if ( argc == 2 and argv[1][0] == 'd' ) { //What is argc and argv; what is 'd'
 		nr = 2;
 		nl = 6;
 		nx = 21;
 	} 
-	if ( argc == 3 and argv[1][0] == 't' ) {
+	if ( argc == 3 and argv[1][0] == 't' ) {//what is 't'
 		tol = std::stod(argv[2]);	
 	} 
         float c[] = {0,0,0,
