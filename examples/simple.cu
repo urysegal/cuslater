@@ -14,7 +14,7 @@ main(int argc, const char *argv[])
         int nr = 89;
         int nl = 590;
         int nx = 375;
-        double tol = 1e-10;	
+        double tol = 1e-7;	
 	if ( argc == 2 and argv[1][0] == 'd' ) { //What is argc and argv; what is 'd'
 		nr = 2;
 		nl = 6;
