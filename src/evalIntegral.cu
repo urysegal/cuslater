@@ -9,6 +9,11 @@ const double pi = 3.14159265358979323846;
 __constant__ float d_c[12];
 __constant__ float d_x_grid[600];
 __constant__ float d_x_weights[600];
+__constant__ float d_y_grid[600];
+__constant__ float d_y_weights[600];
+__constant__ float d_z_grid[600];
+__constant__ float d_z_weights[600];
+
 namespace cuslater{
 	__global__ void accumulateSum(double result, 
 						float r_weight, 
@@ -31,10 +36,10 @@ namespace cuslater{
 			    int y_idx = idx / x_dim;
 			    int x_idx = idx % x_dim;
 			    float xvalue = d_x_grid[x_idx];
-	                    float yvalue = d_x_grid[y_idx];
+	                    float yvalue = d_y_grid[y_idx];
 	
 	                    float dx = d_x_weights[x_idx];
-	                    float dy = d_x_weights[y_idx];
+	                    float dy = d_y_weights[y_idx];
 	                    float xdiffc_1 = xvalue-d_c[0];
 	                    float ydiffc_1 = yvalue-d_c[1];
 	                    float xdiffc_2 = xvalue-d_c[3];
@@ -51,8 +56,8 @@ namespace cuslater{
 			    double dxy = dx*dy;
 			    double v = 0.0; 
 			    for (int z_idx =0; z_idx <x_dim; ++z_idx){
-	                         float zvalue = d_x_grid[z_idx];
-	                   	 float dz = d_x_weights[z_idx];
+	                         float zvalue = d_z_grid[z_idx];
+	                   	 float dz = d_z_weights[z_idx];
 	                   	 // compute function value
 	                   	 // exp(-|x1-c1| - |x1-c2| -|x1+r*w_hat - c3| - |x1 + rw_hat -c4|
 	                   	 // constants needed: r, c1,c2,c3,c4
@@ -97,8 +102,19 @@ namespace cuslater{
 		        			d_sum);
 	            return delta_sum;
 	    }//evaluateInner
-
-
+     void generate_x1_from_std(float a,float b,std::vector<float>* x1_standard_nodes, std::vector<float>* x1_standard_weights, std::vector<float>* x1_nodes, std::vector<float>* x1_weights){ 
+		float shift  = (a + b) / 2.0; 
+		float factor = (a - b) / 2.0;
+		float node;
+		float weight;
+		for (int i =0; i < x1_standard_nodes.size() ; ++i) {
+			node = x1_standard_nodes[i] * factor  + shift;
+			x1_nodes->push_back(node);
+			weight = x1_standard_weights[i] * factor;
+			x1_weights->push_back(weight);
+		}	
+		
+	    }
     double evaluateFourCenterIntegral( float* c,
                                 int nr,  int nl,  int nx,
                                const std::string x1_type, double tol) {
@@ -121,17 +137,39 @@ namespace cuslater{
                                   l_nodes_x, l_nodes_y, l_nodes_z,
                                   l_weights);
             // Read x1 grid
-            std::cout << "Reading x1 Grid Files" << std::endl;
+            // Avleen: You can call the funciton three times for initializing different grids for each dimension 
+
+	    std::cout << "Reading x1 Grid Files" << std::endl;
             const std::string x1_filepath = "grid_files/x1_"+x1_type+"_1d_" + std::to_string(nx) + ".grid";
+            std::vector<float> x1_standard_nodes;
+            std::vector<float> x1_standard_weights;
+            read_x1_1d_grid_from_file(x1_filepath, x1_standard_nodes, x1_standard_weights);
+
             std::vector<float> x1_nodes;
             std::vector<float> x1_weights;
-            float a;
-            float b;
-            read_x1_1d_grid_from_file(x1_filepath, a, b, x1_nodes, x1_weights);
+            std::vector<float> y1_nodes;
+            std::vector<float> y1_weights;
+            std::vector<float> z1_nodes;
+            std::vector<float> z1_weights;
+	    // Avleen : You can change these to the min max functions with the centers
+	    // the centers are stored in vector c as [c1x,c1y,c1z, and so on till c4z] 
+	    float ax = -10;
+	    float bx = 11;
+	    float ay = -10;
+	    float by = 11;
+	    float az = -10;
+	    float bz = 11;
+            
+	    generate_x1_from_std(ax,bx, &x1_standard_nodes, &x1_standard_weights, &x1_nodes, &x1_weights); 
+	    generate_x1_from_std(ay,by, &x1_standard_nodes, &x1_standard_weights, &y1_nodes, &y1_weights); 
+	    generate_x1_from_std(az,bz, &x1_standard_nodes, &x1_standard_weights, &z1_nodes, &z1_weights); 
 
-            std::cout << "Initializing Device Variables"<< std::endl;
+	    std::cout << "Initializing Device Variables"<< std::endl;
             double* w = new double[3];
             unsigned int PX = x1_nodes.size();
+            unsigned int PY = y1_nodes.size();
+            unsigned int PZ = z1_nodes.size();
+
             int threads = THREADS_PER_BLOCK; // Max threads per block
             int blocks = (PX*PX+threads-1)/threads; // Max blocks, better if multiple of SM = 80
 	    std::cout << "Total Threads: " << blocks*threads << std::endl;
@@ -141,6 +179,11 @@ namespace cuslater{
 	    //std::cout << x1_nodes[3] << std::endl;
             cudaMemcpyToSymbol(d_x_grid, x1_nodes.data(), PX*sizeof(float));
 	    cudaMemcpyToSymbol(d_x_weights, x1_weights.data(), PX*sizeof(float));
+            cudaMemcpyToSymbol(d_y_grid, y1_nodes.data(), PY*sizeof(float));
+	    cudaMemcpyToSymbol(d_y_weights, y1_weights.data(), PY*sizeof(float));
+            cudaMemcpyToSymbol(d_z_grid, z1_nodes.data(), PZ*sizeof(float));
+	    cudaMemcpyToSymbol(d_z_weights, z1_weights.data(), PZ*sizeof(float));
+	    
 	    double* d_sum;
             thrust::device_vector<float> d_r_weights(nr);
             thrust::device_vector<float> d_l_weights(nl);

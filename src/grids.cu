@@ -121,8 +121,6 @@ namespace cuslater {
 
     }
     void read_x1_1d_grid_from_file(const std::string& filepath,
-                                   float &a,
-                                   float &b,
                                    std::vector<float>& x1_nodes,
                                    std::vector<float>& x1_weights){
             std::ifstream file(filepath);
