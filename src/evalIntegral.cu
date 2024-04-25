@@ -5,6 +5,7 @@
 #include <thrust/device_vector.h>
 const double pi = 3.14159265358979323846;
 #include <thread>
+#include <cmath> //for abs function
 #define THREADS_PER_BLOCK 128 
 __constant__ float d_c[12];
 __constant__ float d_x_grid[600];
@@ -139,7 +140,7 @@ namespace cuslater{
             // Read x1 grid
             // Avleen: You can call the funciton three times for initializing different grids for each dimension 
 
-	    std::cout << "Reading x1 Grid Files" << std::endl;
+	        std::cout << "Reading x1 Grid Files" << std::endl;
             const std::string x1_filepath = "grid_files/x1_"+x1_type+"_1d_" + std::to_string(nx) + ".grid";
             std::vector<float> x1_standard_nodes;
             std::vector<float> x1_standard_weights;
@@ -153,12 +154,12 @@ namespace cuslater{
             std::vector<float> z1_weights;
 	    // Avleen : You can change these to the min max functions with the centers
 	    // the centers are stored in vector c as [c1x,c1y,c1z, and so on till c4z] 
-	    float ax = -10;
-	    float bx = 11;
-	    float ay = -10;
-	    float by = 11;
-	    float az = -10;
-	    float bz = 11;
+	    float ax = std::min(c[0], c[3]) - 10.0 / std::abs(c[0] - c[3])
+	    float bx = std::max(c[0], c[3]) + 10.0 / std::abs(c[0] - c[3])
+	    float ay = std::min(c[1], c[4]) - 10.0 / std::abs(c[1] - c[4])
+	    float by = std::max(c[1], c[4]) + 10.0 / std::abs(c[1] - c[4])
+	    float az = std::min(c[2], c[5]) - 10.0 / std::abs(c[2] - c[5])
+	    float bz = std::max(c[2], c[5]) + 10.0 / std::abs(c[2] - c[5])
             
 	    generate_x1_from_std(ax,bx, &x1_standard_nodes, &x1_standard_weights, &x1_nodes, &x1_weights); 
 	    generate_x1_from_std(ay,by, &x1_standard_nodes, &x1_standard_weights, &y1_nodes, &y1_weights); 
