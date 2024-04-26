@@ -32,7 +32,7 @@ main(int argc, const char *argv[])
 
         auto start = std::chrono::high_resolution_clock::now();
         auto sum = cuslater::evaluateFourCenterIntegral(c,nr,nl,nx,x1_type,tol);
-        auto sum = cuslater::evaluateFourCenterIntegral(c,nr,nl,nx,x1_type,4);
+        //auto sum = cuslater::evaluateFourCenterIntegral(c,nr,nl,nx,x1_type,4);
         auto end = std::chrono::high_resolution_clock::now();
 	    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
         std::cout << "nr: " << nr << " nl: " << nl << " nx: " << nx << std::endl;
