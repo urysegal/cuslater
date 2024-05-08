@@ -25,9 +25,8 @@ namespace cuslater{
 	                                 int threads, 
 	                                 int gpu_num); 
 	    
-	void generate_x1_from_std(float a,float b,
-			const std::vector<float>* x1_standard_nodes, const std::vector<float>* x1_standard_weights,
-		       	std::vector<float>* x1_nodes, std::vector<float>* x1_weights); 
+	void generate_x1_from_std(float a, float b, const std::vector<float>& x1_standard_nodes,
+		const std::vector<float>& x1_standard_weights, std::vector<float>& x1_nodes, std::vector<float>& x1_weights);
 
 	double evaluateFourCenterIntegral( float* c,
 	                            int nr,  int nl,  int nx,
