@@ -103,7 +103,8 @@ namespace cuslater{
 		        			d_sum);
 	            return delta_sum;
 	    }//evaluateInner
-     void generate_x1_from_std(float a, float b, const std::vector<float>& x1_standard_nodes, const std::vector<float>& x1_standard_weights, std::vector<float>& x1_nodes, std::vector<float>& x1_weights) {
+
+    void generate_x1_from_std(float a, float b, const std::vector<float>& x1_standard_nodes, const std::vector<float>& x1_standard_weights, std::vector<float>& x1_nodes, std::vector<float>& x1_weights) {
 		float shift = (a + b) / 2.0;
 		float factor = (a - b) / 2.0;
 		float node;
@@ -115,6 +116,7 @@ namespace cuslater{
 			x1_weights.push_back(weight);
 		}
 	}
+
 
 
 
