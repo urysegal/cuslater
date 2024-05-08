@@ -149,7 +149,7 @@ namespace cuslater{
             // Avleen: You can call the funciton three times for initializing different grids for each dimension 
 
 	        std::cout << "Reading x1 Grid Files" << std::endl;
-            const std::string x1_filepath = "grid_files_adap/leg64/x1_"+x1_type+"_1d_" + std::to_string(nx) + ".grid";
+            const std::string x1_filepath = "grid_files_adap/leg64/x1_"+ x1_type +"_1d_" + std::to_string(nx) + ".grid";
             std::vector<float> x1_standard_nodes;
             std::vector<float> x1_standard_weights;
             read_x1_1d_grid_from_file(x1_filepath, x1_standard_nodes, x1_standard_weights);
