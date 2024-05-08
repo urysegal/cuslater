@@ -129,10 +129,6 @@ namespace cuslater {
                     std::exit(EXIT_FAILURE);
             }
 
-            if (!(file >> a >> b)) {
-                    std::cerr << "Error reading a and b from file." << std::endl;
-                    return; // or handle the error appropriately
-            }
 
             // Clear vectors to ensure they are empty
             x1_nodes.clear();

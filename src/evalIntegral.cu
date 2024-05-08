@@ -141,7 +141,7 @@ namespace cuslater{
             // Avleen: You can call the funciton three times for initializing different grids for each dimension 
 
 	        std::cout << "Reading x1 Grid Files" << std::endl;
-            const std::string x1_filepath = "grid_files/x1_"+x1_type+"_1d_" + std::to_string(nx) + ".grid";
+            const std::string x1_filepath = "grid_files_adap/leg64/x1_"+x1_type+"_1d_" + std::to_string(nx) + ".grid";
             std::vector<float> x1_standard_nodes;
             std::vector<float> x1_standard_weights;
             read_x1_1d_grid_from_file(x1_filepath, x1_standard_nodes, x1_standard_weights);
@@ -154,12 +154,12 @@ namespace cuslater{
             std::vector<float> z1_weights;
 	    // Avleen : You can change these to the min max functions with the centers
 	    // the centers are stored in vector c as [c1x,c1y,c1z, and so on till c4z] 
-	    float ax = std::min(c[0], c[3]) - 10.0 / std::abs(c[0] - c[3])
-	    float bx = std::max(c[0], c[3]) + 10.0 / std::abs(c[0] - c[3])
-	    float ay = std::min(c[1], c[4]) - 10.0 / std::abs(c[1] - c[4])
-	    float by = std::max(c[1], c[4]) + 10.0 / std::abs(c[1] - c[4])
-	    float az = std::min(c[2], c[5]) - 10.0 / std::abs(c[2] - c[5])
-	    float bz = std::max(c[2], c[5]) + 10.0 / std::abs(c[2] - c[5])
+			float ax = std::min(c[0], c[3]) - 10.0 / std::abs(c[0] - c[3]);
+			float bx = std::max(c[0], c[3]) + 10.0 / std::abs(c[0] - c[3]);
+			float ay = std::min(c[1], c[4]) - 10.0 / std::abs(c[1] - c[4]);
+			float by = std::max(c[1], c[4]) + 10.0 / std::abs(c[1] - c[4]);
+			float az = std::min(c[2], c[5]) - 10.0 / std::abs(c[2] - c[5]);
+			float bz = std::max(c[2], c[5]) + 10.0 / std::abs(c[2] - c[5]);
             
 	    generate_x1_from_std(ax,bx, &x1_standard_nodes, &x1_standard_weights, &x1_nodes, &x1_weights); 
 	    generate_x1_from_std(ay,by, &x1_standard_nodes, &x1_standard_weights, &y1_nodes, &y1_weights); 
