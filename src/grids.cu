@@ -120,15 +120,14 @@ namespace cuslater {
             file.close();
 
     }
-    void read_x1_1d_grid_from_file(const std::string& filepath,
-                                   std::vector<float>& x1_nodes,
-                                   std::vector<float>& x1_weights){
+    void read_x1_1d_grid_from_file(const std::string &filepath,
+                                   std::vector<float> &x1_nodes,
+                                   std::vector<float> &x1_weights){
             std::ifstream file(filepath);
             if (!file.is_open()) {
                     std::cerr << "Error opening file: " << filepath << std::endl;
                     std::exit(EXIT_FAILURE);
             }
-
 
             // Clear vectors to ensure they are empty
             x1_nodes.clear();
