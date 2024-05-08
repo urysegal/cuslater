@@ -108,13 +108,14 @@ namespace cuslater{
 		float factor = (a - b) / 2.0;
 		float node;
 		float weight;
-		for (int i = 0; i < x1_standard_nodes.size(); ++i) {
+		for (std::vector<float>::size_type i = 0; i < x1_standard_nodes.size(); ++i) {
 			node = x1_standard_nodes[i] * factor + shift;
 			x1_nodes.push_back(node);
 			weight = x1_standard_weights[i] * factor;
 			x1_weights.push_back(weight);
 		}
 	}
+
 
 
     double evaluateFourCenterIntegral( float* c,
