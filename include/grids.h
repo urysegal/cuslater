@@ -33,8 +33,6 @@ namespace cuslater{
                                std::vector<float>& l_nodes_x, std::vector<float>& l_nodes_y,std::vector<float>& l_nodes_z,
                                std::vector<float>& l_weights);
     void read_x1_1d_grid_from_file(const std::string& filepath,
-                                float &a,
-                                float &b,
                                 std::vector<float>& x1_nodes,
                                 std::vector<float>& x1_weights);
 
