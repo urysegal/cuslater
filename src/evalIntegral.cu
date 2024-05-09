@@ -165,9 +165,9 @@ namespace cuslater{
 			float az = std::min(c[2], c[5]) - 10.0 / std::abs(c[2] - c[5]);
 			float bz = std::max(c[2], c[5]) + 10.0 / std::abs(c[2] - c[5]);
             
-	    generate_x1_from_std(ax,bx, &x1_standard_nodes, &x1_standard_weights, &x1_nodes, &x1_weights); 
-	    generate_x1_from_std(ay,by, &x1_standard_nodes, &x1_standard_weights, &y1_nodes, &y1_weights); 
-	    generate_x1_from_std(az,bz, &x1_standard_nodes, &x1_standard_weights, &z1_nodes, &z1_weights); 
+	    generate_x1_from_std(ax,bx, x1_standard_nodes, x1_standard_weights, x1_nodes, x1_weights); 
+	    generate_x1_from_std(ay,by, x1_standard_nodes, x1_standard_weights, y1_nodes, y1_weights); 
+	    generate_x1_from_std(az,bz, x1_standard_nodes, x1_standard_weights, z1_nodes, z1_weights); 
 
 	    std::cout << "Initializing Device Variables"<< std::endl;
             double* w = new double[3];
