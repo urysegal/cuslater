@@ -106,7 +106,7 @@ namespace cuslater{
 
     void generate_x1_from_std(float a, float b, const std::vector<float>& x1_standard_nodes, const std::vector<float>& x1_standard_weights, std::vector<float>& x1_nodes, std::vector<float>& x1_weights) {
 		float shift = (a + b) / 2.0;
-		float factor = (a - b) / 2.0;
+		float factor = (b - a) / 2.0;
 		float node;
 		float weight;
 		for (std::vector<float>::size_type i = 0; i < x1_standard_nodes.size(); ++i) {
