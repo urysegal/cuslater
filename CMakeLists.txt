@@ -2,19 +2,62 @@ cmake_minimum_required(VERSION 3.21)
 project(cuSlater CUDA)
 
 set(CMAKE_CUDA_STANDARD 14)
+set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch=SM_70")
+#set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -lineinfo  --tool memcheck -arch=SM_70")
+set(COMPILE_FLAGS -g -O4 -Wall -Xcompiler -Werror)
 
-set(COMPILE_FLAGS -g -Wall -Xcompiler -Werror)
+# Set compiler flags for debug mode
+set(CUDA_NVCC_FLAGS_DEBUG "${CUDA_NVCC_FLAGS_DEBUG} -lineinfo -G -O0 -arch=SM_70")
 
-include_directories(${cuSlater_SOURCE_DIR} ${cuSlater_SOURCE_DIR}/include)
-add_library(cuSlater SHARED src/gputensors.cu
-        include/gputensors.h src/svalues.cu src/stovalues.cu)
-target_link_libraries(cuSlater cutensor cublasLt)
-target_compile_options(cuSlater PUBLIC ${COMPILE_FLAGS})
+set(CUDA_LIB_DIR /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/lib64/)
+find_library(CUBLASLT_LIBRARY
+	NAMES cublasLt
+	HINTS ${CUDA_LIB_DIR}
+)
+
+set(CUTENSOR_LIB_DIR /arc/project/st-greif-1/sfw/libcutensor-linux-x86_64-1.6.2.3-archive/)
+find_library(CUTENSOR_LIBRARY
+	NAMES cutensor
+	HINTS ${CUTENSOR_LIB_DIR}
+	PATH_SUFFIXES lib/11.0
+)
+include_directories(${cuSlater_SOURCE_DIR} ${cuSlater_SOURCE_DIR}/include ${CUTENSOR_LIB_DIR}/include 
+)
+add_library(cuSlater SHARED
+		src/gputensors.cu include/gputensors.h
+		src/svalues.cu src/stovalues.cu
+		include/utilities.h src/utilities.cu
+		include/grids.h		src/grids.cu
+		include/evalInnerIntegral.h src/evalInnerIntegral.cu
+		include/evalInnerIntegralStreams.h src/evalInnerIntegralStreams.cu
+		include/evalIntegral.h src/evalIntegral.cu
+)
+
+set_property(TARGET cuSlater PROPERTY CUDA_ARCHITECTURES 70)
+
+target_link_libraries(cuSlater ${CUBLASLT_LIBRARY} ${CUTENSOR_LIBRARY} cuda)
+target_compile_options(cuSlater PUBLIC ${COMPILE_FLAGS} $<$<COMPILE_LANGUAGE:CUDA>:-gencode arch=compute_70,code=sm_70>)
 target_include_directories(cuSlater PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 set_target_properties(cuSlater PROPERTIES
         CUDA_SEPARABLE_COMPILATION ON)
+set_target_properties(cuSlater PROPERTIES CUDA_ARCHITECTURE 70-real)
 
 add_executable(hadamard examples/test-hadamard.cu)
+add_executable(evaluate examples/test-evalInner.cu)
+add_executable(legendre examples/test-legendre.cu)
+add_executable(testgrids examples/test-grids.cu)
+add_executable(simple examples/simple.cu)
+
 add_dependencies(hadamard cuSlater)
+add_dependencies(evaluate cuSlater)
+add_dependencies(legendre cuSlater)
+add_dependencies(testgrids cuSlater)
+add_dependencies(simple cuSlater)
+
 target_link_libraries(hadamard cuSlater)
+target_link_libraries(evaluate cuSlater)
+target_link_libraries(legendre cuSlater)
+target_link_libraries(testgrids cuSlater)
+target_link_libraries(simple cuSlater)
+

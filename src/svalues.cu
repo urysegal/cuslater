@@ -13,7 +13,7 @@
 #include <cuda_runtime.h>
 
 #include <cutensor.h>
-#define MAX_S_POINTS 512 // You can go to 4K, but cache size is just 8K.
+#define MAX_S_POINTS 1 // You can go to 4K, but cache size is just 8K.
 
 __constant__ double inv_sqrt_pi;
 __constant__ double s_points[MAX_S_POINTS];

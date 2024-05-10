@@ -16,7 +16,7 @@
 
 #define MAX_CONST_MEMORY (64*1024)
 #define MAX_CONST_DOUBLES (MAX_CONST_MEMORY/sizeof(double))
-#define MAX_AXIS_POINTS (MAX_CONST_DOUBLES/4)
+#define MAX_AXIS_POINTS  1
 
 __constant__ double x_grid_points[MAX_AXIS_POINTS];
 __constant__ double y_grid_points[MAX_AXIS_POINTS];
