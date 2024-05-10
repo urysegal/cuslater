@@ -1,0 +1,105 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.21"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "cuSlater",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "cuSlater::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-cuSlater-Debug-177fe4d630db6e11b09d.json",
+					"name" : "cuSlater",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "evaluate::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-evaluate-Debug-47c9a4b731e258369efe.json",
+					"name" : "evaluate",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "hadamard::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-hadamard-Debug-11bef27b0e2fd3ad3b1a.json",
+					"name" : "hadamard",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "legendre::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-legendre-Debug-3fef012f30bb6f1a1c3a.json",
+					"name" : "legendre",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "simple::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-simple-Debug-b644a74ec37bf2c3de1b.json",
+					"name" : "simple",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "testgrids::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-testgrids-Debug-67da5eedbe537f6a65f9.json",
+					"name" : "testgrids",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/project/st-greif-1/mewert/cuslater/build",
+		"source" : "/project/st-greif-1/mewert/cuslater"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 5
+	}
+}

@@ -28,8 +28,6 @@ add_library(cuSlater SHARED
 		src/svalues.cu src/stovalues.cu
 		include/utilities.h src/utilities.cu
 		include/grids.h		src/grids.cu
-		include/evalInnerIntegral.h src/evalInnerIntegral.cu
-		include/evalInnerIntegralStreams.h src/evalInnerIntegralStreams.cu
 		include/evalIntegral.h src/evalIntegral.cu
 )
 

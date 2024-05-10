@@ -5,7 +5,9 @@
 #include "cuslater.cuh"
 #include "utilities.h"
 #include "grids.h"
-#include "evalInnerIntegral.h"
+#include <thrust/device_vector.h>
+#include <thrust/reduce.h>
+//#include "evalInnerIntegral.h"
 namespace cuslater{
 	__global__ void accumulateSum(double result, 
 						float r_weight, 

@@ -144,41 +144,11 @@ CMakeFiles/cuSlater.dir/src/grids.cu.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CUDA source to assembly CMakeFiles/cuSlater.dir/src/grids.cu.s"
 	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_ASSEMBLY_SOURCE
 
-CMakeFiles/cuSlater.dir/src/evalInnerIntegral.cu.o: CMakeFiles/cuSlater.dir/flags.make
-CMakeFiles/cuSlater.dir/src/evalInnerIntegral.cu.o: CMakeFiles/cuSlater.dir/includes_CUDA.rsp
-CMakeFiles/cuSlater.dir/src/evalInnerIntegral.cu.o: src/evalInnerIntegral.cu
-CMakeFiles/cuSlater.dir/src/evalInnerIntegral.cu.o: CMakeFiles/cuSlater.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/project/st-greif-1/mewert/cuslater/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CUDA object CMakeFiles/cuSlater.dir/src/evalInnerIntegral.cu.o"
-	/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/nvcc -forward-unknown-to-host-compiler $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/cuSlater.dir/src/evalInnerIntegral.cu.o -MF CMakeFiles/cuSlater.dir/src/evalInnerIntegral.cu.o.d -x cu -rdc=true -c /project/st-greif-1/mewert/cuslater/src/evalInnerIntegral.cu -o CMakeFiles/cuSlater.dir/src/evalInnerIntegral.cu.o
-
-CMakeFiles/cuSlater.dir/src/evalInnerIntegral.cu.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CUDA source to CMakeFiles/cuSlater.dir/src/evalInnerIntegral.cu.i"
-	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_PREPROCESSED_SOURCE
-
-CMakeFiles/cuSlater.dir/src/evalInnerIntegral.cu.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CUDA source to assembly CMakeFiles/cuSlater.dir/src/evalInnerIntegral.cu.s"
-	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_ASSEMBLY_SOURCE
-
-CMakeFiles/cuSlater.dir/src/evalInnerIntegralStreams.cu.o: CMakeFiles/cuSlater.dir/flags.make
-CMakeFiles/cuSlater.dir/src/evalInnerIntegralStreams.cu.o: CMakeFiles/cuSlater.dir/includes_CUDA.rsp
-CMakeFiles/cuSlater.dir/src/evalInnerIntegralStreams.cu.o: src/evalInnerIntegralStreams.cu
-CMakeFiles/cuSlater.dir/src/evalInnerIntegralStreams.cu.o: CMakeFiles/cuSlater.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/project/st-greif-1/mewert/cuslater/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CUDA object CMakeFiles/cuSlater.dir/src/evalInnerIntegralStreams.cu.o"
-	/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/nvcc -forward-unknown-to-host-compiler $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/cuSlater.dir/src/evalInnerIntegralStreams.cu.o -MF CMakeFiles/cuSlater.dir/src/evalInnerIntegralStreams.cu.o.d -x cu -rdc=true -c /project/st-greif-1/mewert/cuslater/src/evalInnerIntegralStreams.cu -o CMakeFiles/cuSlater.dir/src/evalInnerIntegralStreams.cu.o
-
-CMakeFiles/cuSlater.dir/src/evalInnerIntegralStreams.cu.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CUDA source to CMakeFiles/cuSlater.dir/src/evalInnerIntegralStreams.cu.i"
-	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_PREPROCESSED_SOURCE
-
-CMakeFiles/cuSlater.dir/src/evalInnerIntegralStreams.cu.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CUDA source to assembly CMakeFiles/cuSlater.dir/src/evalInnerIntegralStreams.cu.s"
-	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_ASSEMBLY_SOURCE
-
 CMakeFiles/cuSlater.dir/src/evalIntegral.cu.o: CMakeFiles/cuSlater.dir/flags.make
 CMakeFiles/cuSlater.dir/src/evalIntegral.cu.o: CMakeFiles/cuSlater.dir/includes_CUDA.rsp
 CMakeFiles/cuSlater.dir/src/evalIntegral.cu.o: src/evalIntegral.cu
 CMakeFiles/cuSlater.dir/src/evalIntegral.cu.o: CMakeFiles/cuSlater.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/project/st-greif-1/mewert/cuslater/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CUDA object CMakeFiles/cuSlater.dir/src/evalIntegral.cu.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/project/st-greif-1/mewert/cuslater/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CUDA object CMakeFiles/cuSlater.dir/src/evalIntegral.cu.o"
 	/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/nvcc -forward-unknown-to-host-compiler $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/cuSlater.dir/src/evalIntegral.cu.o -MF CMakeFiles/cuSlater.dir/src/evalIntegral.cu.o.d -x cu -rdc=true -c /project/st-greif-1/mewert/cuslater/src/evalIntegral.cu -o CMakeFiles/cuSlater.dir/src/evalIntegral.cu.o
 
 CMakeFiles/cuSlater.dir/src/evalIntegral.cu.i: cmake_force
@@ -196,8 +166,6 @@ cuSlater_OBJECTS = \
 "CMakeFiles/cuSlater.dir/src/stovalues.cu.o" \
 "CMakeFiles/cuSlater.dir/src/utilities.cu.o" \
 "CMakeFiles/cuSlater.dir/src/grids.cu.o" \
-"CMakeFiles/cuSlater.dir/src/evalInnerIntegral.cu.o" \
-"CMakeFiles/cuSlater.dir/src/evalInnerIntegralStreams.cu.o" \
 "CMakeFiles/cuSlater.dir/src/evalIntegral.cu.o"
 
 # External object files for target cuSlater
@@ -208,8 +176,6 @@ CMakeFiles/cuSlater.dir/cmake_device_link.o: CMakeFiles/cuSlater.dir/src/svalues
 CMakeFiles/cuSlater.dir/cmake_device_link.o: CMakeFiles/cuSlater.dir/src/stovalues.cu.o
 CMakeFiles/cuSlater.dir/cmake_device_link.o: CMakeFiles/cuSlater.dir/src/utilities.cu.o
 CMakeFiles/cuSlater.dir/cmake_device_link.o: CMakeFiles/cuSlater.dir/src/grids.cu.o
-CMakeFiles/cuSlater.dir/cmake_device_link.o: CMakeFiles/cuSlater.dir/src/evalInnerIntegral.cu.o
-CMakeFiles/cuSlater.dir/cmake_device_link.o: CMakeFiles/cuSlater.dir/src/evalInnerIntegralStreams.cu.o
 CMakeFiles/cuSlater.dir/cmake_device_link.o: CMakeFiles/cuSlater.dir/src/evalIntegral.cu.o
 CMakeFiles/cuSlater.dir/cmake_device_link.o: CMakeFiles/cuSlater.dir/build.make
 CMakeFiles/cuSlater.dir/cmake_device_link.o: /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/lib64/libcublasLt.so
@@ -217,7 +183,7 @@ CMakeFiles/cuSlater.dir/cmake_device_link.o: /project/st-greif-1/sfw/libcutensor
 CMakeFiles/cuSlater.dir/cmake_device_link.o: CMakeFiles/cuSlater.dir/deviceLinkLibs.rsp
 CMakeFiles/cuSlater.dir/cmake_device_link.o: CMakeFiles/cuSlater.dir/deviceObjects1.rsp
 CMakeFiles/cuSlater.dir/cmake_device_link.o: CMakeFiles/cuSlater.dir/dlink.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/project/st-greif-1/mewert/cuslater/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CUDA device code CMakeFiles/cuSlater.dir/cmake_device_link.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/project/st-greif-1/mewert/cuslater/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CUDA device code CMakeFiles/cuSlater.dir/cmake_device_link.o"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/cuSlater.dir/dlink.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -231,8 +197,6 @@ cuSlater_OBJECTS = \
 "CMakeFiles/cuSlater.dir/src/stovalues.cu.o" \
 "CMakeFiles/cuSlater.dir/src/utilities.cu.o" \
 "CMakeFiles/cuSlater.dir/src/grids.cu.o" \
-"CMakeFiles/cuSlater.dir/src/evalInnerIntegral.cu.o" \
-"CMakeFiles/cuSlater.dir/src/evalInnerIntegralStreams.cu.o" \
 "CMakeFiles/cuSlater.dir/src/evalIntegral.cu.o"
 
 # External object files for target cuSlater
@@ -243,8 +207,6 @@ libcuSlater.so: CMakeFiles/cuSlater.dir/src/svalues.cu.o
 libcuSlater.so: CMakeFiles/cuSlater.dir/src/stovalues.cu.o
 libcuSlater.so: CMakeFiles/cuSlater.dir/src/utilities.cu.o
 libcuSlater.so: CMakeFiles/cuSlater.dir/src/grids.cu.o
-libcuSlater.so: CMakeFiles/cuSlater.dir/src/evalInnerIntegral.cu.o
-libcuSlater.so: CMakeFiles/cuSlater.dir/src/evalInnerIntegralStreams.cu.o
 libcuSlater.so: CMakeFiles/cuSlater.dir/src/evalIntegral.cu.o
 libcuSlater.so: CMakeFiles/cuSlater.dir/build.make
 libcuSlater.so: /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/lib64/libcublasLt.so
@@ -253,7 +215,7 @@ libcuSlater.so: CMakeFiles/cuSlater.dir/cmake_device_link.o
 libcuSlater.so: CMakeFiles/cuSlater.dir/linkLibs.rsp
 libcuSlater.so: CMakeFiles/cuSlater.dir/objects1.rsp
 libcuSlater.so: CMakeFiles/cuSlater.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/project/st-greif-1/mewert/cuslater/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking CUDA shared library libcuSlater.so"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/project/st-greif-1/mewert/cuslater/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CUDA shared library libcuSlater.so"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/cuSlater.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

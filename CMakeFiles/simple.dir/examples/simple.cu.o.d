@@ -257,10 +257,6 @@ CMakeFiles/simple.dir/examples/simple.cu.o : /project/st-greif-1/mewert/cuslater
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cooperative_groups/details/coalesced_reduce.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cooperative_groups/details/functional.h \
     /project/st-greif-1/mewert/cuslater/examples/../include/grids.h \
-    /project/st-greif-1/mewert/cuslater/examples/../include/evalInnerIntegral.h \
-    /project/st-greif-1/mewert/cuslater/examples/../include/../include/utilities.h \
-    /arc/project/st-greif-1/sfw/libcutensor-linux-x86_64-1.6.2.3-archive/include/cutensor.h \
-    /arc/project/st-greif-1/sfw/libcutensor-linux-x86_64-1.6.2.3-archive/include/cutensor/types.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/thrust/device_vector.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/thrust/detail/config.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/thrust/version.h \
@@ -845,7 +841,6 @@ CMakeFiles/simple.dir/examples/simple.cu.o : /project/st-greif-1/mewert/cuslater
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/thrust/detail/device_vector.inl \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/thrust/host_vector.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/thrust/detail/host_vector.inl \
-    /project/st-greif-1/mewert/cuslater/examples/../include/../include/grids.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/iomanip \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/locale \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/locale_facets_nonio.h \

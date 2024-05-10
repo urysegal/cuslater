@@ -314,54 +314,6 @@ examples/test-legendre.cu.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/legendre.dir/build.make CMakeFiles/legendre.dir/examples/test-legendre.cu.s
 .PHONY : examples/test-legendre.cu.s
 
-src/evalInnerIntegral.o: src/evalInnerIntegral.cu.o
-.PHONY : src/evalInnerIntegral.o
-
-# target to build an object file
-src/evalInnerIntegral.cu.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cuSlater.dir/build.make CMakeFiles/cuSlater.dir/src/evalInnerIntegral.cu.o
-.PHONY : src/evalInnerIntegral.cu.o
-
-src/evalInnerIntegral.i: src/evalInnerIntegral.cu.i
-.PHONY : src/evalInnerIntegral.i
-
-# target to preprocess a source file
-src/evalInnerIntegral.cu.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cuSlater.dir/build.make CMakeFiles/cuSlater.dir/src/evalInnerIntegral.cu.i
-.PHONY : src/evalInnerIntegral.cu.i
-
-src/evalInnerIntegral.s: src/evalInnerIntegral.cu.s
-.PHONY : src/evalInnerIntegral.s
-
-# target to generate assembly for a file
-src/evalInnerIntegral.cu.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cuSlater.dir/build.make CMakeFiles/cuSlater.dir/src/evalInnerIntegral.cu.s
-.PHONY : src/evalInnerIntegral.cu.s
-
-src/evalInnerIntegralStreams.o: src/evalInnerIntegralStreams.cu.o
-.PHONY : src/evalInnerIntegralStreams.o
-
-# target to build an object file
-src/evalInnerIntegralStreams.cu.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cuSlater.dir/build.make CMakeFiles/cuSlater.dir/src/evalInnerIntegralStreams.cu.o
-.PHONY : src/evalInnerIntegralStreams.cu.o
-
-src/evalInnerIntegralStreams.i: src/evalInnerIntegralStreams.cu.i
-.PHONY : src/evalInnerIntegralStreams.i
-
-# target to preprocess a source file
-src/evalInnerIntegralStreams.cu.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cuSlater.dir/build.make CMakeFiles/cuSlater.dir/src/evalInnerIntegralStreams.cu.i
-.PHONY : src/evalInnerIntegralStreams.cu.i
-
-src/evalInnerIntegralStreams.s: src/evalInnerIntegralStreams.cu.s
-.PHONY : src/evalInnerIntegralStreams.s
-
-# target to generate assembly for a file
-src/evalInnerIntegralStreams.cu.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cuSlater.dir/build.make CMakeFiles/cuSlater.dir/src/evalInnerIntegralStreams.cu.s
-.PHONY : src/evalInnerIntegralStreams.cu.s
-
 src/evalIntegral.o: src/evalIntegral.cu.o
 .PHONY : src/evalIntegral.o
 
@@ -535,12 +487,6 @@ help:
 	@echo "... examples/test-legendre.o"
 	@echo "... examples/test-legendre.i"
 	@echo "... examples/test-legendre.s"
-	@echo "... src/evalInnerIntegral.o"
-	@echo "... src/evalInnerIntegral.i"
-	@echo "... src/evalInnerIntegral.s"
-	@echo "... src/evalInnerIntegralStreams.o"
-	@echo "... src/evalInnerIntegralStreams.i"
-	@echo "... src/evalInnerIntegralStreams.s"
 	@echo "... src/evalIntegral.o"
 	@echo "... src/evalIntegral.i"
 	@echo "... src/evalIntegral.s"

@@ -1,0 +1,62 @@
+{
+	"kind" : "toolchains",
+	"toolchains" : 
+	[
+		{
+			"compiler" : 
+			{
+				"id" : "NVIDIA",
+				"implicit" : 
+				{
+					"includeDirectories" : 
+					[
+						"/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/intel-mkl-2020.4.304-got6o5exzqzqlteqiai6ykwg6vmadyhc/compilers_and_libraries_2020.4.304/linux/mkl/include",
+						"/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/include/c++/9.4.0",
+						"/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/include/c++/9.4.0/x86_64-pc-linux-gnu",
+						"/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/include/c++/9.4.0/backward",
+						"/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/include",
+						"/usr/local/include",
+						"/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/include",
+						"/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/include-fixed",
+						"/usr/include"
+					],
+					"linkDirectories" : 
+					[
+						"/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/lib/stubs",
+						"/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/lib",
+						"/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0",
+						"/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib64",
+						"/lib64",
+						"/usr/lib64",
+						"/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/intel-mkl-2020.4.304-got6o5exzqzqlteqiai6ykwg6vmadyhc/compilers_and_libraries_2020.4.304/linux/compiler/lib/intel64_lin",
+						"/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/intel-mkl-2020.4.304-got6o5exzqzqlteqiai6ykwg6vmadyhc/compilers_and_libraries_2020.4.304/linux/mkl/lib/intel64_lin",
+						"/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib"
+					],
+					"linkFrameworkDirectories" : [],
+					"linkLibraries" : 
+					[
+						"stdc++",
+						"m",
+						"gcc_s",
+						"gcc",
+						"c",
+						"gcc_s",
+						"gcc"
+					]
+				},
+				"path" : "/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/nvcc",
+				"version" : "11.3.109"
+			},
+			"language" : "CUDA",
+			"sourceFileExtensions" : 
+			[
+				"cu"
+			]
+		}
+	],
+	"version" : 
+	{
+		"major" : 1,
+		"minor" : 0
+	}
+}
