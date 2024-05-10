@@ -161,12 +161,18 @@ namespace cuslater{
 			float delta = 1;
 			//float ax = std::min(c[0], c[3]) - (10.0 / (std::abs(c[0] - c[3])+delta));
 			//float bx = std::max(c[0], c[3]) + (10.0 / (std::abs(c[0] - c[3])+delta));
-			float ax = std::min(c[0], c[3]) - 10;
-			float bx = std::max(c[0], c[3]) + 10;
-			float ay = std::min(c[1], c[4]) - (10.0 / (std::abs(c[1] - c[4])+delta));
-			float by = std::max(c[1], c[4]) + (10.0 / (std::abs(c[1] - c[4])+delta));
-			float az = std::min(c[2], c[5]) - (10.0 / (std::abs(c[2] - c[5])+delta));
-			float bz = std::max(c[2], c[5]) + (10.0 / (std::abs(c[2] - c[5])+delta));
+			// float ax = std::min(c[0], c[3]) - 10;
+			// float bx = std::max(c[0], c[3]) + 10;
+			// float ay = std::min(c[1], c[4]) - (10.0 / (std::abs(c[1] - c[4])+delta));
+			// float by = std::max(c[1], c[4]) + (10.0 / (std::abs(c[1] - c[4])+delta));
+			// float az = std::min(c[2], c[5]) - (10.0 / (std::abs(c[2] - c[5])+delta));
+			// float bz = std::max(c[2], c[5]) + (10.0 / (std::abs(c[2] - c[5])+delta));
+			float ax = -10;
+			float bx = 11;
+			float ay = -10;
+			float by = 11;
+			float az= -10;
+			float bz=11;
             
 	    generate_x1_from_std(ax,bx, x1_standard_nodes, x1_standard_weights, x1_nodes, x1_weights); 
 	    generate_x1_from_std(ay,by, x1_standard_nodes, x1_standard_weights, y1_nodes, y1_weights); 
