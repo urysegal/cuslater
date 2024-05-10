@@ -9,10 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/project/st-greif-1/mewert/cuslater/src/evalIntegral.cu" "CMakeFiles/cuSlater.dir/src/evalIntegral.cu.o" "gcc" "CMakeFiles/cuSlater.dir/src/evalIntegral.cu.o.d"
-  "/project/st-greif-1/mewert/cuslater/src/gputensors.cu" "CMakeFiles/cuSlater.dir/src/gputensors.cu.o" "gcc" "CMakeFiles/cuSlater.dir/src/gputensors.cu.o.d"
   "/project/st-greif-1/mewert/cuslater/src/grids.cu" "CMakeFiles/cuSlater.dir/src/grids.cu.o" "gcc" "CMakeFiles/cuSlater.dir/src/grids.cu.o.d"
-  "/project/st-greif-1/mewert/cuslater/src/stovalues.cu" "CMakeFiles/cuSlater.dir/src/stovalues.cu.o" "gcc" "CMakeFiles/cuSlater.dir/src/stovalues.cu.o.d"
-  "/project/st-greif-1/mewert/cuslater/src/svalues.cu" "CMakeFiles/cuSlater.dir/src/svalues.cu.o" "gcc" "CMakeFiles/cuSlater.dir/src/svalues.cu.o.d"
   "/project/st-greif-1/mewert/cuslater/src/utilities.cu" "CMakeFiles/cuSlater.dir/src/utilities.cu.o" "gcc" "CMakeFiles/cuSlater.dir/src/utilities.cu.o.d"
   )
 

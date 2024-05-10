@@ -338,30 +338,6 @@ src/evalIntegral.cu.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/cuSlater.dir/build.make CMakeFiles/cuSlater.dir/src/evalIntegral.cu.s
 .PHONY : src/evalIntegral.cu.s
 
-src/gputensors.o: src/gputensors.cu.o
-.PHONY : src/gputensors.o
-
-# target to build an object file
-src/gputensors.cu.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cuSlater.dir/build.make CMakeFiles/cuSlater.dir/src/gputensors.cu.o
-.PHONY : src/gputensors.cu.o
-
-src/gputensors.i: src/gputensors.cu.i
-.PHONY : src/gputensors.i
-
-# target to preprocess a source file
-src/gputensors.cu.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cuSlater.dir/build.make CMakeFiles/cuSlater.dir/src/gputensors.cu.i
-.PHONY : src/gputensors.cu.i
-
-src/gputensors.s: src/gputensors.cu.s
-.PHONY : src/gputensors.s
-
-# target to generate assembly for a file
-src/gputensors.cu.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cuSlater.dir/build.make CMakeFiles/cuSlater.dir/src/gputensors.cu.s
-.PHONY : src/gputensors.cu.s
-
 src/grids.o: src/grids.cu.o
 .PHONY : src/grids.o
 
@@ -385,54 +361,6 @@ src/grids.s: src/grids.cu.s
 src/grids.cu.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/cuSlater.dir/build.make CMakeFiles/cuSlater.dir/src/grids.cu.s
 .PHONY : src/grids.cu.s
-
-src/stovalues.o: src/stovalues.cu.o
-.PHONY : src/stovalues.o
-
-# target to build an object file
-src/stovalues.cu.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cuSlater.dir/build.make CMakeFiles/cuSlater.dir/src/stovalues.cu.o
-.PHONY : src/stovalues.cu.o
-
-src/stovalues.i: src/stovalues.cu.i
-.PHONY : src/stovalues.i
-
-# target to preprocess a source file
-src/stovalues.cu.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cuSlater.dir/build.make CMakeFiles/cuSlater.dir/src/stovalues.cu.i
-.PHONY : src/stovalues.cu.i
-
-src/stovalues.s: src/stovalues.cu.s
-.PHONY : src/stovalues.s
-
-# target to generate assembly for a file
-src/stovalues.cu.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cuSlater.dir/build.make CMakeFiles/cuSlater.dir/src/stovalues.cu.s
-.PHONY : src/stovalues.cu.s
-
-src/svalues.o: src/svalues.cu.o
-.PHONY : src/svalues.o
-
-# target to build an object file
-src/svalues.cu.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cuSlater.dir/build.make CMakeFiles/cuSlater.dir/src/svalues.cu.o
-.PHONY : src/svalues.cu.o
-
-src/svalues.i: src/svalues.cu.i
-.PHONY : src/svalues.i
-
-# target to preprocess a source file
-src/svalues.cu.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cuSlater.dir/build.make CMakeFiles/cuSlater.dir/src/svalues.cu.i
-.PHONY : src/svalues.cu.i
-
-src/svalues.s: src/svalues.cu.s
-.PHONY : src/svalues.s
-
-# target to generate assembly for a file
-src/svalues.cu.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cuSlater.dir/build.make CMakeFiles/cuSlater.dir/src/svalues.cu.s
-.PHONY : src/svalues.cu.s
 
 src/utilities.o: src/utilities.cu.o
 .PHONY : src/utilities.o
@@ -490,18 +418,9 @@ help:
 	@echo "... src/evalIntegral.o"
 	@echo "... src/evalIntegral.i"
 	@echo "... src/evalIntegral.s"
-	@echo "... src/gputensors.o"
-	@echo "... src/gputensors.i"
-	@echo "... src/gputensors.s"
 	@echo "... src/grids.o"
 	@echo "... src/grids.i"
 	@echo "... src/grids.s"
-	@echo "... src/stovalues.o"
-	@echo "... src/stovalues.i"
-	@echo "... src/stovalues.s"
-	@echo "... src/svalues.o"
-	@echo "... src/svalues.i"
-	@echo "... src/svalues.s"
 	@echo "... src/utilities.o"
 	@echo "... src/utilities.i"
 	@echo "... src/utilities.s"

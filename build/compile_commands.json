@@ -1,24 +1,6 @@
 [
 {
   "directory": "/project/st-greif-1/mewert/cuslater/build",
-  "command": "/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/nvcc -forward-unknown-to-host-compiler -DcuSlater_EXPORTS --options-file CMakeFiles/cuSlater.dir/includes_CUDA.rsp -g -std=c++14 --generate-code=arch=compute_70,code=[compute_70,sm_70] -Xcompiler=-fPIC -g -O4 -Wall -Xcompiler -Werror -gencode arch=compute_70,code=sm_70 -x cu -rdc=true -c /project/st-greif-1/mewert/cuslater/src/gputensors.cu -o CMakeFiles/cuSlater.dir/src/gputensors.cu.o",
-  "file": "/project/st-greif-1/mewert/cuslater/src/gputensors.cu",
-  "output": "CMakeFiles/cuSlater.dir/src/gputensors.cu.o"
-},
-{
-  "directory": "/project/st-greif-1/mewert/cuslater/build",
-  "command": "/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/nvcc -forward-unknown-to-host-compiler -DcuSlater_EXPORTS --options-file CMakeFiles/cuSlater.dir/includes_CUDA.rsp -g -std=c++14 --generate-code=arch=compute_70,code=[compute_70,sm_70] -Xcompiler=-fPIC -g -O4 -Wall -Xcompiler -Werror -gencode arch=compute_70,code=sm_70 -x cu -rdc=true -c /project/st-greif-1/mewert/cuslater/src/svalues.cu -o CMakeFiles/cuSlater.dir/src/svalues.cu.o",
-  "file": "/project/st-greif-1/mewert/cuslater/src/svalues.cu",
-  "output": "CMakeFiles/cuSlater.dir/src/svalues.cu.o"
-},
-{
-  "directory": "/project/st-greif-1/mewert/cuslater/build",
-  "command": "/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/nvcc -forward-unknown-to-host-compiler -DcuSlater_EXPORTS --options-file CMakeFiles/cuSlater.dir/includes_CUDA.rsp -g -std=c++14 --generate-code=arch=compute_70,code=[compute_70,sm_70] -Xcompiler=-fPIC -g -O4 -Wall -Xcompiler -Werror -gencode arch=compute_70,code=sm_70 -x cu -rdc=true -c /project/st-greif-1/mewert/cuslater/src/stovalues.cu -o CMakeFiles/cuSlater.dir/src/stovalues.cu.o",
-  "file": "/project/st-greif-1/mewert/cuslater/src/stovalues.cu",
-  "output": "CMakeFiles/cuSlater.dir/src/stovalues.cu.o"
-},
-{
-  "directory": "/project/st-greif-1/mewert/cuslater/build",
   "command": "/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/nvcc -forward-unknown-to-host-compiler -DcuSlater_EXPORTS --options-file CMakeFiles/cuSlater.dir/includes_CUDA.rsp -g -std=c++14 --generate-code=arch=compute_70,code=[compute_70,sm_70] -Xcompiler=-fPIC -g -O4 -Wall -Xcompiler -Werror -gencode arch=compute_70,code=sm_70 -x cu -rdc=true -c /project/st-greif-1/mewert/cuslater/src/utilities.cu -o CMakeFiles/cuSlater.dir/src/utilities.cu.o",
   "file": "/project/st-greif-1/mewert/cuslater/src/utilities.cu",
   "output": "CMakeFiles/cuSlater.dir/src/utilities.cu.o"

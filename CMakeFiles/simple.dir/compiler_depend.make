@@ -260,10 +260,6 @@ CMakeFiles/simple.dir/examples/simple.cu.o: examples/simple.cu \
   /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/cooperative_groups/details/coalesced_reduce.h \
   /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/cooperative_groups/details/functional.h \
   include/grids.h \
-  include/evalInnerIntegral.h \
-  include/utilities.h \
-  /project/st-greif-1/sfw/libcutensor-linux-x86_64-1.6.2.3-archive/include/cutensor.h \
-  /project/st-greif-1/sfw/libcutensor-linux-x86_64-1.6.2.3-archive/include/cutensor/types.h \
   /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/device_vector.h \
   /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/detail/config.h \
   /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/version.h \
@@ -848,7 +844,6 @@ CMakeFiles/simple.dir/examples/simple.cu.o: examples/simple.cu \
   /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/detail/device_vector.inl \
   /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/host_vector.h \
   /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/detail/host_vector.inl \
-  include/grids.h \
   /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/include/c++/9.4.0/iomanip \
   /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/include/c++/9.4.0/locale \
   /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/include/c++/9.4.0/bits/locale_facets_nonio.h \
@@ -892,9 +887,17 @@ CMakeFiles/simple.dir/examples/simple.cu.o: examples/simple.cu \
 
 /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/mr/allocator.h:
 
-/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/detail/device_ptr.inl:
+/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/system/cuda/detail/managed_memory_pointer.h:
+
+/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/system/detail/generic/scan_by_key.inl:
+
+/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/cub/util_macro.cuh:
 
 /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/cub/util_arch.cuh:
+
+/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/iterator/detail/iterator_traits.inl:
+
+/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/system/cpp/detail/for_each.h:
 
 /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/system/cuda/detail/util.h:
 
@@ -941,10 +944,6 @@ CMakeFiles/simple.dir/examples/simple.cu.o: examples/simple.cu \
 /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/include/c++/9.4.0/functional:
 
 /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/system/detail/generic/unique_by_key.h:
-
-/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/device_reference.h:
-
-/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/detail/allocator/fill_construct_range.inl:
 
 /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/iterator/detail/minimum_system.h:
 
@@ -1017,14 +1016,6 @@ CMakeFiles/simple.dir/examples/simple.cu.o: examples/simple.cu \
 /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/sm_61_intrinsics.h:
 
 /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/system/cuda/detail/reduce_by_key.h:
-
-/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/system/cpp/detail/for_each.h:
-
-/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/iterator/detail/iterator_traits.inl:
-
-/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/system/cuda/detail/managed_memory_pointer.h:
-
-/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/system/detail/generic/scan_by_key.inl:
 
 /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/type_traits/void_t.h:
 
@@ -1110,8 +1101,6 @@ CMakeFiles/simple.dir/examples/simple.cu.o: examples/simple.cu \
 
 /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/include/c++/9.4.0/x86_64-pc-linux-gnu/bits/error_constants.h:
 
-include/evalInnerIntegral.h:
-
 /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/cooperative_groups/details/reduce.h:
 
 /usr/include/bits/sched.h:
@@ -1190,8 +1179,6 @@ include/grids.h:
 
 /usr/include/asm-generic/errno.h:
 
-/project/st-greif-1/sfw/libcutensor-linux-x86_64-1.6.2.3-archive/include/cutensor.h:
-
 /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/include/c++/9.4.0/bits/stl_algobase.h:
 
 /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/system/cuda/detail/internal/copy_device_to_device.h:
@@ -1259,8 +1246,6 @@ include/grids.h:
 /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/iterator/iterator_adaptor.h:
 
 /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/system/cuda/detail/guarded_driver_types.h:
-
-/project/st-greif-1/sfw/libcutensor-linux-x86_64-1.6.2.3-archive/include/cutensor/types.h:
 
 /usr/include/bits/byteswap-16.h:
 
@@ -1904,7 +1889,9 @@ include/cuslater.cuh:
 
 /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/include/c++/9.4.0/bits/basic_string.h:
 
-/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/cub/util_macro.cuh:
+/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/detail/allocator/fill_construct_range.inl:
+
+/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/device_reference.h:
 
 /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/system/error_code.h:
 
@@ -2374,9 +2361,9 @@ include/cuslater.cuh:
 
 /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/extrema.h:
 
-/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/system/cuda/detail/fill.h:
-
 include/evalIntegral.h:
+
+/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/system/cuda/detail/fill.h:
 
 /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/detail/extrema.inl:
 
@@ -2567,3 +2554,5 @@ include/evalIntegral.h:
 /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/system/detail/adl/set_operations.h:
 
 /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/system/detail/adl/reduce_by_key.h:
+
+/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/thrust/detail/device_ptr.inl:

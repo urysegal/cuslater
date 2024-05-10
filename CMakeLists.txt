@@ -24,8 +24,6 @@ find_library(CUTENSOR_LIBRARY
 include_directories(${cuSlater_SOURCE_DIR} ${cuSlater_SOURCE_DIR}/include ${CUTENSOR_LIB_DIR}/include 
 )
 add_library(cuSlater SHARED
-		src/gputensors.cu include/gputensors.h
-		src/svalues.cu src/stovalues.cu
 		include/utilities.h src/utilities.cu
 		include/grids.h		src/grids.cu
 		include/evalIntegral.h src/evalIntegral.cu

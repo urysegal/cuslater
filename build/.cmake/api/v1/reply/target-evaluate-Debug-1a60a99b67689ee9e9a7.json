@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "hadamard"
+			"path" : "evaluate"
 		}
 	],
 	"backtrace" : 1,
@@ -27,25 +27,25 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 44,
+				"line" : 43,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 56,
+				"line" : 55,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 36,
+				"line" : 34,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 50,
+				"line" : 49,
 				"parent" : 0
 			},
 			{
@@ -130,7 +130,7 @@
 			"id" : "cuSlater::@6890427a1f51a3e7e1df"
 		}
 	],
-	"id" : "hadamard::@6890427a1f51a3e7e1df",
+	"id" : "evaluate::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
@@ -190,8 +190,8 @@
 		],
 		"language" : "CUDA"
 	},
-	"name" : "hadamard",
-	"nameOnDisk" : "hadamard",
+	"name" : "evaluate",
+	"nameOnDisk" : "evaluate",
 	"paths" : 
 	{
 		"build" : ".",
@@ -212,7 +212,7 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "examples/test-hadamard.cu",
+			"path" : "examples/test-evalInner.cu",
 			"sourceGroupIndex" : 0
 		}
 	],
