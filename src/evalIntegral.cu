@@ -159,8 +159,10 @@ namespace cuslater{
 	    // Avleen : You can change these to the min max functions with the centers
 	    // the centers are stored in vector c as [c1x,c1y,c1z, and so on till c4z] 
 			float delta = 1;
-			float ax = std::min(c[0], c[3]) - (10.0 / (std::abs(c[0] - c[3])+delta));
-			float bx = std::max(c[0], c[3]) + (10.0 / (std::abs(c[0] - c[3])+delta));
+			//float ax = std::min(c[0], c[3]) - (10.0 / (std::abs(c[0] - c[3])+delta));
+			//float bx = std::max(c[0], c[3]) + (10.0 / (std::abs(c[0] - c[3])+delta));
+			float ax = std::min(c[0], c[3]) - 10;
+			float bx = std::max(c[0], c[3]) + 10;
 			float ay = std::min(c[1], c[4]) - (10.0 / (std::abs(c[1] - c[4])+delta));
 			float by = std::max(c[1], c[4]) + (10.0 / (std::abs(c[1] - c[4])+delta));
 			float az = std::min(c[2], c[5]) - (10.0 / (std::abs(c[2] - c[5])+delta));
