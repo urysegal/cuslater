@@ -128,8 +128,40 @@ CMakeFiles/simple.dir/examples/simple.cu.o : /project/st-greif-1/mewert/cuslater
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/texture_indirect_functions.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/surface_indirect_functions.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/device_launch_parameters.h \
-    /project/st-greif-1/mewert/cuslater/examples/../include/evalIntegral.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/vector \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/chrono \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/ratio \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/cstdint \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/include/stdint.h \
+    /usr/include/stdint.h \
+    /usr/include/bits/wchar.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/limits \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/ctime \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/parse_numbers.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/iomanip \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/iosfwd \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/stringfwd.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/memoryfwd.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/postypes.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/cwchar \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/ios_base.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/ext/atomicity.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/x86_64-pc-linux-gnu/bits/gthr.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/x86_64-pc-linux-gnu/bits/gthr-default.h \
+    /usr/include/pthread.h \
+    /usr/include/sched.h \
+    /usr/include/bits/sched.h \
+    /usr/include/bits/setjmp.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/x86_64-pc-linux-gnu/bits/atomic_word.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/localefwd.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/x86_64-pc-linux-gnu/bits/c++locale.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/clocale \
+    /usr/include/locale.h \
+    /usr/include/bits/locale.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/cctype \
+    /usr/include/ctype.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/locale_classes.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/string \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/char_traits.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/stl_algobase.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/functexcept.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/ext/numeric_traits.h \
@@ -144,55 +176,15 @@ CMakeFiles/simple.dir/examples/simple.cu.o : /project/st-greif-1/mewert/cuslater
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/allocator.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/x86_64-pc-linux-gnu/bits/c++allocator.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/ext/new_allocator.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/memoryfwd.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/stl_construct.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/ext/alloc_traits.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/alloc_traits.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/stl_uninitialized.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/stl_vector.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/initializer_list \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/stl_bvector.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/functional_hash.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/range_access.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/vector.tcc \
-    /project/st-greif-1/mewert/cuslater/examples/../include/cuslater.cuh \
-    /project/st-greif-1/mewert/cuslater/examples/../include/utilities.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/cassert \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/iostream \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/ostream \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/ios \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/iosfwd \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/stringfwd.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/postypes.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/cwchar \
-    /usr/include/bits/wchar.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/char_traits.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/cstdint \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/include/stdint.h \
-    /usr/include/stdint.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/localefwd.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/x86_64-pc-linux-gnu/bits/c++locale.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/clocale \
-    /usr/include/locale.h \
-    /usr/include/bits/locale.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/cctype \
-    /usr/include/ctype.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/ios_base.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/ext/atomicity.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/x86_64-pc-linux-gnu/bits/gthr.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/x86_64-pc-linux-gnu/bits/gthr-default.h \
-    /usr/include/pthread.h \
-    /usr/include/sched.h \
-    /usr/include/bits/sched.h \
-    /usr/include/bits/setjmp.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/x86_64-pc-linux-gnu/bits/atomic_word.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/locale_classes.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/string \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/ostream_insert.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/cxxabi_forced.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/stl_function.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/backward/binders.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/range_access.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/initializer_list \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/basic_string.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/ext/alloc_traits.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/alloc_traits.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/ext/string_conversions.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/cstdio \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/cerrno \
@@ -202,61 +194,48 @@ CMakeFiles/simple.dir/examples/simple.cu.o : /project/st-greif-1/mewert/cuslater
     /usr/include/asm/errno.h \
     /usr/include/asm-generic/errno.h \
     /usr/include/asm-generic/errno-base.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/functional_hash.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/basic_string.tcc \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/locale_classes.tcc \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/system_error \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/x86_64-pc-linux-gnu/bits/error_constants.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/stdexcept \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/streambuf \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/streambuf.tcc \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/basic_ios.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/locale \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/locale_facets.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/cwctype \
     /usr/include/wctype.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/x86_64-pc-linux-gnu/bits/ctype_base.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/streambuf \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/streambuf.tcc \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/streambuf_iterator.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/x86_64-pc-linux-gnu/bits/ctype_inline.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/locale_facets.tcc \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/basic_ios.tcc \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/ostream.tcc \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/istream \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/istream.tcc \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/fstream \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/locale_facets_nonio.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/x86_64-pc-linux-gnu/bits/time_members.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/x86_64-pc-linux-gnu/bits/messages_members.h \
+    /usr/include/libintl.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/codecvt.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/x86_64-pc-linux-gnu/bits/basic_file.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/x86_64-pc-linux-gnu/bits/c++io.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/fstream.tcc \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/sstream \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/sstream.tcc \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/array \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/locale_facets_nonio.tcc \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/locale_conv.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/unique_ptr.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/utility \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/stl_relops.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/chrono \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/ratio \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/limits \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/ctime \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/parse_numbers.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/unordered_map \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/ext/aligned_buffer.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/hashtable.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/hashtable_policy.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/tuple \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/array \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/uses_allocator.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/invoke.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/unordered_map.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/erase_if.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cooperative_groups.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cooperative_groups/details/info.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cooperative_groups/details/driver_abi.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cooperative_groups/details/helpers.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cooperative_groups/details/sync.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cooperative_groups/details/partitioning.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cooperative_groups/reduce.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cooperative_groups/../cooperative_groups.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cooperative_groups/details/reduce.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cooperative_groups/details/coalesced_reduce.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cooperative_groups/details/functional.h \
-    /project/st-greif-1/mewert/cuslater/examples/../include/grids.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/quoted_string.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/sstream \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/istream \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/ios \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/basic_ios.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/basic_ios.tcc \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/ostream \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/ostream.tcc \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/istream.tcc \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/sstream.tcc \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/iostream \
+    /project/st-greif-1/mewert/cuslater/examples/../include/evalIntegral.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/thrust/device_vector.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/thrust/detail/config.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/thrust/version.h \
@@ -330,14 +309,16 @@ CMakeFiles/simple.dir/examples/simple.cu.o : /project/st-greif-1/mewert/cuslater
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/thrust/detail/integer_traits.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/thrust/detail/memory_wrapper.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/memory \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/stl_construct.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/stl_uninitialized.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/stl_tempbuf.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/stl_raw_storage_iter.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/ext/concurrence.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/unique_ptr.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/shared_ptr.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/shared_ptr_base.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/allocated_ptr.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/refwrap.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/ext/aligned_buffer.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/shared_ptr_atomic.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/atomic_base.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/atomic_lockfree_defines.h \
@@ -427,6 +408,7 @@ CMakeFiles/simple.dir/examples/simple.cu.o : /project/st-greif-1/mewert/cuslater
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/core/agent_launcher.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/core/triple_chevron_launch.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/core/alignment.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/cassert \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/thrust/system/cuda/detail/core/util.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cuda_occupancy.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cub/block/block_load.cuh \
@@ -563,6 +545,10 @@ CMakeFiles/simple.dir/examples/simple.cu.o : /project/st-greif-1/mewert/cuslater
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/thrust/detail/allocator/destroy_range.inl \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/thrust/detail/allocator/fill_construct_range.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/thrust/detail/allocator/fill_construct_range.inl \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/vector \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/stl_vector.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/stl_bvector.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/vector.tcc \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/thrust/detail/vector_base.inl \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/thrust/detail/overlapped_copy.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/thrust/equal.h \
@@ -841,12 +827,26 @@ CMakeFiles/simple.dir/examples/simple.cu.o : /project/st-greif-1/mewert/cuslater
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/thrust/detail/device_vector.inl \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/thrust/host_vector.h \
     /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/thrust/detail/host_vector.inl \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/iomanip \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/locale \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/locale_facets_nonio.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/x86_64-pc-linux-gnu/bits/time_members.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/x86_64-pc-linux-gnu/bits/messages_members.h \
-    /usr/include/libintl.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/locale_facets_nonio.tcc \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/locale_conv.h \
-    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/quoted_string.h
+    /project/st-greif-1/mewert/cuslater/examples/../include/cuslater.cuh \
+    /project/st-greif-1/mewert/cuslater/examples/../include/grids.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/fstream \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/x86_64-pc-linux-gnu/bits/basic_file.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/x86_64-pc-linux-gnu/bits/c++io.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/fstream.tcc \
+    /project/st-greif-1/mewert/cuslater/examples/../include/utilities.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/unordered_map \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/hashtable.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/hashtable_policy.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/unordered_map.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../include/c++/9.4.0/bits/erase_if.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cooperative_groups.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cooperative_groups/details/info.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cooperative_groups/details/driver_abi.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cooperative_groups/details/helpers.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cooperative_groups/details/sync.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cooperative_groups/details/partitioning.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cooperative_groups/reduce.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cooperative_groups/../cooperative_groups.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cooperative_groups/details/reduce.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cooperative_groups/details/coalesced_reduce.h \
+    /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/../targets/x86_64-linux/include/cooperative_groups/details/functional.h
