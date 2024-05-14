@@ -23,12 +23,13 @@ int main(int argc, const char *argv[]) {
         tol = std::stod(argv[2]);
     }
     float c[] = {0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0};
+    float alphas[] = {1, 1, 1, 1};
 
     const std::string x1_type = "legendre";  // legendre or simpson
 
     auto start = std::chrono::high_resolution_clock::now();
     auto sum =
-        cuslater::evaluateFourCenterIntegral(c, nr, nl, nx, x1_type, tol);
+        cuslater::evaluateFourCenterIntegral(c, alphas, nr, nl, nx, x1_type, tol);
     // auto sum = cuslater::evaluateFourCenterIntegral(c,nr,nl,nx,x1_type,4);
     auto end = std::chrono::high_resolution_clock::now();
     auto duration =

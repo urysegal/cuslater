@@ -8,6 +8,7 @@ const double pi = 3.14159265358979323846;
 #include <thread>
 #define THREADS_PER_BLOCK 128
 __constant__ float d_c[12];
+__constant__ float d_alphas[4];
 __constant__ float d_x_grid[600];
 __constant__ float d_x_weights[600];
 namespace cuslater {
@@ -56,10 +57,10 @@ __global__ void evaluateIntegrandReduceZ(int x_dim, float r, float l_x,
             float zdiffc_2 = zvalue - d_c[5];
             float zdiffc_3 = zvalue - d_c[8] + r * l_z;
             float zdiffc_4 = zvalue - d_c[11] + r * l_z;
-            float term1 = sqrt(xysq1 + zdiffc_1 * zdiffc_1);
-            float term2 = sqrt(xysq2 + zdiffc_2 * zdiffc_2);
-            float term3 = sqrt(xysq3 + zdiffc_3 * zdiffc_3);
-            float term4 = sqrt(xysq4 + zdiffc_4 * zdiffc_4);
+            float term1 = d_alphas[0] * sqrt(xysq1 + zdiffc_1 * zdiffc_1);
+            float term2 = d_alphas[1] * sqrt(xysq2 + zdiffc_2 * zdiffc_2);
+            float term3 = d_alphas[2] * sqrt(xysq3 + zdiffc_3 * zdiffc_3);
+            float term4 = d_alphas[3] * sqrt(xysq4 + zdiffc_4 * zdiffc_4);
             float exponent = -term1 - term2 - term3 - term4 + r;
             v += exp(exponent) * dxy * dz;
         }
@@ -86,8 +87,9 @@ double evaluateInnerSumX1_rl_preAllocated(
     return delta_sum;
 }  // evaluateInner
 
-double evaluateFourCenterIntegral(float* c, int nr, int nl, int nx,
-                                  const std::string x1_type, double tol) {
+double evaluateFourCenterIntegral(float* c, float* alphas, int nr, int nl,
+                                  int nx, const std::string x1_type,
+                                  double tol) {
     // read r grid
     std::cout << "Reading r Grid Files" << std::endl;
     const std::string r_filepath =
@@ -126,6 +128,7 @@ double evaluateFourCenterIntegral(float* c, int nr, int nl, int nx,
     std::cout << "Total Grid Points: " << nx * nx * nx << std::endl;
 
     cudaMemcpyToSymbol(d_c, c, 12 * sizeof(float));
+    cudaMemcpyToSymbol(d_alphas, alphas, 4 * sizeof(float));
     cudaMemcpyToSymbol(d_x_grid, x1_nodes.data(), PX * sizeof(float));
     cudaMemcpyToSymbol(d_x_weights, x1_weights.data(), PX * sizeof(float));
     double* d_sum;
@@ -156,7 +159,8 @@ double evaluateFourCenterIntegral(float* c, int nr, int nl, int nx,
     }
     HANDLE_CUDA_ERROR(
         cudaMemcpy(&sum, d_sum, sizeof(double), cudaMemcpyDeviceToHost));
-    sum *= (4.0 / pi);
+    sum = sum * (4.0 / pi) *
+          std::pow(alphas[0] * alphas[1] * alphas[2] * alphas[3], 1.5);
 
     // sum up result, multiply with constant and return
     std::cout << "Tolerance: " << tol << std::endl;

@@ -23,9 +23,12 @@ double evaluateInnerSumX1_rl_preAllocated(
     thrust::device_vector<double>& __restrict__ d_result,
     double* __restrict__ d_sum, int blocks, int threads, int gpu_num);
 
-double evaluateFourCenterIntegral(float* c, int nr, int nl, int nx,
-                                  const std::string x1_type, double tol);
-double evaluateFourCenterIntegral(float* c, int nr, int nl, int nx,
-                                  const std::string x1_type, int num_gpus);
+double evaluateFourCenterIntegral(float* c, float* alphas, int nr, int nl,
+                                  int nx, const std::string x1_type,
+                                  double tol);
+
+double evaluateFourCenterIntegral(float* c, float* alphas, int nr, int nl,
+                                  int nx, const std::string x1_type,
+                                  int num_gpus);
 
 }  // namespace cuslater
