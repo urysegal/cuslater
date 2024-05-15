@@ -251,6 +251,30 @@ src/grids.cu.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/cuSlater.dir/build.make CMakeFiles/cuSlater.dir/src/grids.cu.s
 .PHONY : src/grids.cu.s
 
+src/hadamard.o: src/hadamard.cu.o
+.PHONY : src/hadamard.o
+
+# target to build an object file
+src/hadamard.cu.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cuSlater.dir/build.make CMakeFiles/cuSlater.dir/src/hadamard.cu.o
+.PHONY : src/hadamard.cu.o
+
+src/hadamard.i: src/hadamard.cu.i
+.PHONY : src/hadamard.i
+
+# target to preprocess a source file
+src/hadamard.cu.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cuSlater.dir/build.make CMakeFiles/cuSlater.dir/src/hadamard.cu.i
+.PHONY : src/hadamard.cu.i
+
+src/hadamard.s: src/hadamard.cu.s
+.PHONY : src/hadamard.s
+
+# target to generate assembly for a file
+src/hadamard.cu.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cuSlater.dir/build.make CMakeFiles/cuSlater.dir/src/hadamard.cu.s
+.PHONY : src/hadamard.cu.s
+
 src/utilities.o: src/utilities.cu.o
 .PHONY : src/utilities.o
 
@@ -298,6 +322,9 @@ help:
 	@echo "... src/grids.o"
 	@echo "... src/grids.i"
 	@echo "... src/grids.s"
+	@echo "... src/hadamard.o"
+	@echo "... src/hadamard.i"
+	@echo "... src/hadamard.s"
 	@echo "... src/utilities.o"
 	@echo "... src/utilities.i"
 	@echo "... src/utilities.s"

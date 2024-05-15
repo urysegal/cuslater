@@ -4,6 +4,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/cuSlater.dir/src/evalIntegral.cu.o.d"
   "CMakeFiles/cuSlater.dir/src/grids.cu.o"
   "CMakeFiles/cuSlater.dir/src/grids.cu.o.d"
+  "CMakeFiles/cuSlater.dir/src/hadamard.cu.o"
+  "CMakeFiles/cuSlater.dir/src/hadamard.cu.o.d"
   "CMakeFiles/cuSlater.dir/src/utilities.cu.o"
   "CMakeFiles/cuSlater.dir/src/utilities.cu.o.d"
   "libcuSlater.pdb"
