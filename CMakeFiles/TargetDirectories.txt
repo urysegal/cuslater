@@ -1,0 +1,5 @@
+/project/st-greif-1/mewert/cuslater/CMakeFiles/cuSlater.dir
+/project/st-greif-1/mewert/cuslater/CMakeFiles/hadamard.dir
+/project/st-greif-1/mewert/cuslater/CMakeFiles/simple.dir
+/project/st-greif-1/mewert/cuslater/CMakeFiles/edit_cache.dir
+/project/st-greif-1/mewert/cuslater/CMakeFiles/rebuild_cache.dir

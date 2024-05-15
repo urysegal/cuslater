@@ -1,0 +1,38 @@
+[
+{
+  "directory": "/project/st-greif-1/mewert/cuslater/build",
+  "command": "/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/nvcc -forward-unknown-to-host-compiler -DcuSlater_EXPORTS --options-file CMakeFiles/cuSlater.dir/includes_CUDA.rsp -g -std=c++14 --generate-code=arch=compute_70,code=[compute_70,sm_70] -Xcompiler=-fPIC -g -O4 -Wall -Xcompiler -Werror -gencode arch=compute_70,code=sm_70 -x cu -rdc=true -c /project/st-greif-1/mewert/cuslater/src/utilities.cu -o CMakeFiles/cuSlater.dir/src/utilities.cu.o",
+  "file": "/project/st-greif-1/mewert/cuslater/src/utilities.cu",
+  "output": "CMakeFiles/cuSlater.dir/src/utilities.cu.o"
+},
+{
+  "directory": "/project/st-greif-1/mewert/cuslater/build",
+  "command": "/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/nvcc -forward-unknown-to-host-compiler -DcuSlater_EXPORTS --options-file CMakeFiles/cuSlater.dir/includes_CUDA.rsp -g -std=c++14 --generate-code=arch=compute_70,code=[compute_70,sm_70] -Xcompiler=-fPIC -g -O4 -Wall -Xcompiler -Werror -gencode arch=compute_70,code=sm_70 -x cu -rdc=true -c /project/st-greif-1/mewert/cuslater/src/grids.cu -o CMakeFiles/cuSlater.dir/src/grids.cu.o",
+  "file": "/project/st-greif-1/mewert/cuslater/src/grids.cu",
+  "output": "CMakeFiles/cuSlater.dir/src/grids.cu.o"
+},
+{
+  "directory": "/project/st-greif-1/mewert/cuslater/build",
+  "command": "/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/nvcc -forward-unknown-to-host-compiler -DcuSlater_EXPORTS --options-file CMakeFiles/cuSlater.dir/includes_CUDA.rsp -g -std=c++14 --generate-code=arch=compute_70,code=[compute_70,sm_70] -Xcompiler=-fPIC -g -O4 -Wall -Xcompiler -Werror -gencode arch=compute_70,code=sm_70 -x cu -rdc=true -c /project/st-greif-1/mewert/cuslater/src/evalIntegral.cu -o CMakeFiles/cuSlater.dir/src/evalIntegral.cu.o",
+  "file": "/project/st-greif-1/mewert/cuslater/src/evalIntegral.cu",
+  "output": "CMakeFiles/cuSlater.dir/src/evalIntegral.cu.o"
+},
+{
+  "directory": "/project/st-greif-1/mewert/cuslater/build",
+  "command": "/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/nvcc -forward-unknown-to-host-compiler -DcuSlater_EXPORTS --options-file CMakeFiles/cuSlater.dir/includes_CUDA.rsp -g -std=c++14 --generate-code=arch=compute_70,code=[compute_70,sm_70] -Xcompiler=-fPIC -g -O4 -Wall -Xcompiler -Werror -gencode arch=compute_70,code=sm_70 -x cu -rdc=true -c /project/st-greif-1/mewert/cuslater/src/hadamard.cu -o CMakeFiles/cuSlater.dir/src/hadamard.cu.o",
+  "file": "/project/st-greif-1/mewert/cuslater/src/hadamard.cu",
+  "output": "CMakeFiles/cuSlater.dir/src/hadamard.cu.o"
+},
+{
+  "directory": "/project/st-greif-1/mewert/cuslater/build",
+  "command": "/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/nvcc -forward-unknown-to-host-compiler  --options-file CMakeFiles/hadamard.dir/includes_CUDA.rsp -g -std=c++14 --generate-code=arch=compute_52,code=[compute_52,sm_52] -g -O4 -Wall -Xcompiler -Werror -gencode arch=compute_70,code=sm_70 -x cu -c /project/st-greif-1/mewert/cuslater/examples/test-hadamard.cu -o CMakeFiles/hadamard.dir/examples/test-hadamard.cu.o",
+  "file": "/project/st-greif-1/mewert/cuslater/examples/test-hadamard.cu",
+  "output": "CMakeFiles/hadamard.dir/examples/test-hadamard.cu.o"
+},
+{
+  "directory": "/project/st-greif-1/mewert/cuslater/build",
+  "command": "/arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/bin/nvcc -forward-unknown-to-host-compiler  --options-file CMakeFiles/simple.dir/includes_CUDA.rsp -g -std=c++14 --generate-code=arch=compute_52,code=[compute_52,sm_52] -g -O4 -Wall -Xcompiler -Werror -gencode arch=compute_70,code=sm_70 -x cu -c /project/st-greif-1/mewert/cuslater/examples/simple.cu -o CMakeFiles/simple.dir/examples/simple.cu.o",
+  "file": "/project/st-greif-1/mewert/cuslater/examples/simple.cu",
+  "output": "CMakeFiles/simple.dir/examples/simple.cu.o"
+}
+]
