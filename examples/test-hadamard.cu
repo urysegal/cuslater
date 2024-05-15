@@ -1,4 +1,4 @@
-#include "../include/gputensors.h"
+#include "../include/utilities.h"
 
 using namespace std;
 
@@ -30,7 +30,7 @@ main(int argc, const char *argv[])
         }
     }
 
-    cuslater::hadamard(modes, extent, (const double *) A, (const double *) C, (double *) D);
+    //cuslater::hadamard(modes, extent, (const double *) A, (const double *) C, (double *) D);
 
     delete A;
     delete C;

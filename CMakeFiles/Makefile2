@@ -65,9 +65,6 @@ CMAKE_BINARY_DIR = /project/st-greif-1/mewert/cuslater
 # The main recursive "all" target.
 all: CMakeFiles/cuSlater.dir/all
 all: CMakeFiles/hadamard.dir/all
-all: CMakeFiles/evaluate.dir/all
-all: CMakeFiles/legendre.dir/all
-all: CMakeFiles/testgrids.dir/all
 all: CMakeFiles/simple.dir/all
 .PHONY : all
 
@@ -78,9 +75,6 @@ preinstall:
 # The main recursive "clean" target.
 clean: CMakeFiles/cuSlater.dir/clean
 clean: CMakeFiles/hadamard.dir/clean
-clean: CMakeFiles/evaluate.dir/clean
-clean: CMakeFiles/legendre.dir/clean
-clean: CMakeFiles/testgrids.dir/clean
 clean: CMakeFiles/simple.dir/clean
 .PHONY : clean
 
@@ -117,7 +111,7 @@ CMakeFiles/cuSlater.dir/clean:
 CMakeFiles/hadamard.dir/all: CMakeFiles/cuSlater.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/hadamard.dir/build.make CMakeFiles/hadamard.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/hadamard.dir/build.make CMakeFiles/hadamard.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/project/st-greif-1/mewert/cuslater/CMakeFiles --progress-num=8,9 "Built target hadamard"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/project/st-greif-1/mewert/cuslater/CMakeFiles --progress-num=6,7 "Built target hadamard"
 .PHONY : CMakeFiles/hadamard.dir/all
 
 # Build rule for subdir invocation for target.
@@ -137,91 +131,13 @@ CMakeFiles/hadamard.dir/clean:
 .PHONY : CMakeFiles/hadamard.dir/clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/evaluate.dir
-
-# All Build rule for target.
-CMakeFiles/evaluate.dir/all: CMakeFiles/cuSlater.dir/all
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/evaluate.dir/build.make CMakeFiles/evaluate.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/evaluate.dir/build.make CMakeFiles/evaluate.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/project/st-greif-1/mewert/cuslater/CMakeFiles --progress-num=6,7 "Built target evaluate"
-.PHONY : CMakeFiles/evaluate.dir/all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/evaluate.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /project/st-greif-1/mewert/cuslater/CMakeFiles 7
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/evaluate.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /project/st-greif-1/mewert/cuslater/CMakeFiles 0
-.PHONY : CMakeFiles/evaluate.dir/rule
-
-# Convenience name for target.
-evaluate: CMakeFiles/evaluate.dir/rule
-.PHONY : evaluate
-
-# clean rule for target.
-CMakeFiles/evaluate.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/evaluate.dir/build.make CMakeFiles/evaluate.dir/clean
-.PHONY : CMakeFiles/evaluate.dir/clean
-
-#=============================================================================
-# Target rules for target CMakeFiles/legendre.dir
-
-# All Build rule for target.
-CMakeFiles/legendre.dir/all: CMakeFiles/cuSlater.dir/all
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/legendre.dir/build.make CMakeFiles/legendre.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/legendre.dir/build.make CMakeFiles/legendre.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/project/st-greif-1/mewert/cuslater/CMakeFiles --progress-num=10,11 "Built target legendre"
-.PHONY : CMakeFiles/legendre.dir/all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/legendre.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /project/st-greif-1/mewert/cuslater/CMakeFiles 7
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/legendre.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /project/st-greif-1/mewert/cuslater/CMakeFiles 0
-.PHONY : CMakeFiles/legendre.dir/rule
-
-# Convenience name for target.
-legendre: CMakeFiles/legendre.dir/rule
-.PHONY : legendre
-
-# clean rule for target.
-CMakeFiles/legendre.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/legendre.dir/build.make CMakeFiles/legendre.dir/clean
-.PHONY : CMakeFiles/legendre.dir/clean
-
-#=============================================================================
-# Target rules for target CMakeFiles/testgrids.dir
-
-# All Build rule for target.
-CMakeFiles/testgrids.dir/all: CMakeFiles/cuSlater.dir/all
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/testgrids.dir/build.make CMakeFiles/testgrids.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/testgrids.dir/build.make CMakeFiles/testgrids.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/project/st-greif-1/mewert/cuslater/CMakeFiles --progress-num=14,15 "Built target testgrids"
-.PHONY : CMakeFiles/testgrids.dir/all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/testgrids.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /project/st-greif-1/mewert/cuslater/CMakeFiles 7
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/testgrids.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /project/st-greif-1/mewert/cuslater/CMakeFiles 0
-.PHONY : CMakeFiles/testgrids.dir/rule
-
-# Convenience name for target.
-testgrids: CMakeFiles/testgrids.dir/rule
-.PHONY : testgrids
-
-# clean rule for target.
-CMakeFiles/testgrids.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/testgrids.dir/build.make CMakeFiles/testgrids.dir/clean
-.PHONY : CMakeFiles/testgrids.dir/clean
-
-#=============================================================================
 # Target rules for target CMakeFiles/simple.dir
 
 # All Build rule for target.
 CMakeFiles/simple.dir/all: CMakeFiles/cuSlater.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/simple.dir/build.make CMakeFiles/simple.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/simple.dir/build.make CMakeFiles/simple.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/project/st-greif-1/mewert/cuslater/CMakeFiles --progress-num=12,13 "Built target simple"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/project/st-greif-1/mewert/cuslater/CMakeFiles --progress-num=8,9 "Built target simple"
 .PHONY : CMakeFiles/simple.dir/all
 
 # Build rule for subdir invocation for target.

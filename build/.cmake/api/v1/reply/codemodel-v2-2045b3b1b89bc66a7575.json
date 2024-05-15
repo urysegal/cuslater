@@ -17,10 +17,7 @@
 					[
 						0,
 						1,
-						2,
-						3,
-						4,
-						5
+						2
 					]
 				}
 			],
@@ -37,10 +34,7 @@
 					[
 						0,
 						1,
-						2,
-						3,
-						4,
-						5
+						2
 					]
 				}
 			],
@@ -55,37 +49,16 @@
 				},
 				{
 					"directoryIndex" : 0,
-					"id" : "evaluate::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-evaluate-Debug-1a60a99b67689ee9e9a7.json",
-					"name" : "evaluate",
-					"projectIndex" : 0
-				},
-				{
-					"directoryIndex" : 0,
 					"id" : "hadamard::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-hadamard-Debug-2df54ee3864442464a93.json",
+					"jsonFile" : "target-hadamard-Debug-c6aebe1e549772ea84ef.json",
 					"name" : "hadamard",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
-					"id" : "legendre::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-legendre-Debug-1e8f1d5959a87c4016a6.json",
-					"name" : "legendre",
-					"projectIndex" : 0
-				},
-				{
-					"directoryIndex" : 0,
 					"id" : "simple::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-simple-Debug-c155b8b4a6cc93a51d1f.json",
+					"jsonFile" : "target-simple-Debug-15f2bbdadcc1c105e87b.json",
 					"name" : "simple",
-					"projectIndex" : 0
-				},
-				{
-					"directoryIndex" : 0,
-					"id" : "testgrids::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-testgrids-Debug-24038f9ee059e363248b.json",
-					"name" : "testgrids",
 					"projectIndex" : 0
 				}
 			]

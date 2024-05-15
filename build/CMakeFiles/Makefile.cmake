@@ -37,8 +37,5 @@ set(CMAKE_MAKEFILE_PRODUCTS
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/cuSlater.dir/DependInfo.cmake"
   "CMakeFiles/hadamard.dir/DependInfo.cmake"
-  "CMakeFiles/evaluate.dir/DependInfo.cmake"
-  "CMakeFiles/legendre.dir/DependInfo.cmake"
-  "CMakeFiles/testgrids.dir/DependInfo.cmake"
   "CMakeFiles/simple.dir/DependInfo.cmake"
   )

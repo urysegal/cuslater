@@ -143,45 +143,6 @@ hadamard/fast:
 .PHONY : hadamard/fast
 
 #=============================================================================
-# Target rules for targets named evaluate
-
-# Build rule for target.
-evaluate: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 evaluate
-.PHONY : evaluate
-
-# fast build rule for target.
-evaluate/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/evaluate.dir/build.make CMakeFiles/evaluate.dir/build
-.PHONY : evaluate/fast
-
-#=============================================================================
-# Target rules for targets named legendre
-
-# Build rule for target.
-legendre: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 legendre
-.PHONY : legendre
-
-# fast build rule for target.
-legendre/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/legendre.dir/build.make CMakeFiles/legendre.dir/build
-.PHONY : legendre/fast
-
-#=============================================================================
-# Target rules for targets named testgrids
-
-# Build rule for target.
-testgrids: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 testgrids
-.PHONY : testgrids
-
-# fast build rule for target.
-testgrids/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/testgrids.dir/build.make CMakeFiles/testgrids.dir/build
-.PHONY : testgrids/fast
-
-#=============================================================================
 # Target rules for targets named simple
 
 # Build rule for target.
@@ -218,54 +179,6 @@ examples/simple.cu.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/simple.dir/build.make CMakeFiles/simple.dir/examples/simple.cu.s
 .PHONY : examples/simple.cu.s
 
-examples/test-evalInner.o: examples/test-evalInner.cu.o
-.PHONY : examples/test-evalInner.o
-
-# target to build an object file
-examples/test-evalInner.cu.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/evaluate.dir/build.make CMakeFiles/evaluate.dir/examples/test-evalInner.cu.o
-.PHONY : examples/test-evalInner.cu.o
-
-examples/test-evalInner.i: examples/test-evalInner.cu.i
-.PHONY : examples/test-evalInner.i
-
-# target to preprocess a source file
-examples/test-evalInner.cu.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/evaluate.dir/build.make CMakeFiles/evaluate.dir/examples/test-evalInner.cu.i
-.PHONY : examples/test-evalInner.cu.i
-
-examples/test-evalInner.s: examples/test-evalInner.cu.s
-.PHONY : examples/test-evalInner.s
-
-# target to generate assembly for a file
-examples/test-evalInner.cu.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/evaluate.dir/build.make CMakeFiles/evaluate.dir/examples/test-evalInner.cu.s
-.PHONY : examples/test-evalInner.cu.s
-
-examples/test-grids.o: examples/test-grids.cu.o
-.PHONY : examples/test-grids.o
-
-# target to build an object file
-examples/test-grids.cu.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/testgrids.dir/build.make CMakeFiles/testgrids.dir/examples/test-grids.cu.o
-.PHONY : examples/test-grids.cu.o
-
-examples/test-grids.i: examples/test-grids.cu.i
-.PHONY : examples/test-grids.i
-
-# target to preprocess a source file
-examples/test-grids.cu.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/testgrids.dir/build.make CMakeFiles/testgrids.dir/examples/test-grids.cu.i
-.PHONY : examples/test-grids.cu.i
-
-examples/test-grids.s: examples/test-grids.cu.s
-.PHONY : examples/test-grids.s
-
-# target to generate assembly for a file
-examples/test-grids.cu.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/testgrids.dir/build.make CMakeFiles/testgrids.dir/examples/test-grids.cu.s
-.PHONY : examples/test-grids.cu.s
-
 examples/test-hadamard.o: examples/test-hadamard.cu.o
 .PHONY : examples/test-hadamard.o
 
@@ -289,30 +202,6 @@ examples/test-hadamard.s: examples/test-hadamard.cu.s
 examples/test-hadamard.cu.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/hadamard.dir/build.make CMakeFiles/hadamard.dir/examples/test-hadamard.cu.s
 .PHONY : examples/test-hadamard.cu.s
-
-examples/test-legendre.o: examples/test-legendre.cu.o
-.PHONY : examples/test-legendre.o
-
-# target to build an object file
-examples/test-legendre.cu.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/legendre.dir/build.make CMakeFiles/legendre.dir/examples/test-legendre.cu.o
-.PHONY : examples/test-legendre.cu.o
-
-examples/test-legendre.i: examples/test-legendre.cu.i
-.PHONY : examples/test-legendre.i
-
-# target to preprocess a source file
-examples/test-legendre.cu.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/legendre.dir/build.make CMakeFiles/legendre.dir/examples/test-legendre.cu.i
-.PHONY : examples/test-legendre.cu.i
-
-examples/test-legendre.s: examples/test-legendre.cu.s
-.PHONY : examples/test-legendre.s
-
-# target to generate assembly for a file
-examples/test-legendre.cu.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/legendre.dir/build.make CMakeFiles/legendre.dir/examples/test-legendre.cu.s
-.PHONY : examples/test-legendre.cu.s
 
 src/evalIntegral.o: src/evalIntegral.cu.o
 .PHONY : src/evalIntegral.o
@@ -395,26 +284,14 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... cuSlater"
-	@echo "... evaluate"
 	@echo "... hadamard"
-	@echo "... legendre"
 	@echo "... simple"
-	@echo "... testgrids"
 	@echo "... examples/simple.o"
 	@echo "... examples/simple.i"
 	@echo "... examples/simple.s"
-	@echo "... examples/test-evalInner.o"
-	@echo "... examples/test-evalInner.i"
-	@echo "... examples/test-evalInner.s"
-	@echo "... examples/test-grids.o"
-	@echo "... examples/test-grids.i"
-	@echo "... examples/test-grids.s"
 	@echo "... examples/test-hadamard.o"
 	@echo "... examples/test-hadamard.i"
 	@echo "... examples/test-hadamard.s"
-	@echo "... examples/test-legendre.o"
-	@echo "... examples/test-legendre.i"
-	@echo "... examples/test-legendre.s"
 	@echo "... src/evalIntegral.o"
 	@echo "... src/evalIntegral.i"
 	@echo "... src/evalIntegral.s"

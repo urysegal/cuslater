@@ -40,20 +40,11 @@ set_target_properties(cuSlater PROPERTIES
 set_target_properties(cuSlater PROPERTIES CUDA_ARCHITECTURE 70-real)
 
 add_executable(hadamard examples/test-hadamard.cu)
-add_executable(evaluate examples/test-evalInner.cu)
-add_executable(legendre examples/test-legendre.cu)
-add_executable(testgrids examples/test-grids.cu)
 add_executable(simple examples/simple.cu)
 
 add_dependencies(hadamard cuSlater)
-add_dependencies(evaluate cuSlater)
-add_dependencies(legendre cuSlater)
-add_dependencies(testgrids cuSlater)
 add_dependencies(simple cuSlater)
 
 target_link_libraries(hadamard cuSlater)
-target_link_libraries(evaluate cuSlater)
-target_link_libraries(legendre cuSlater)
-target_link_libraries(testgrids cuSlater)
 target_link_libraries(simple cuSlater)
 
