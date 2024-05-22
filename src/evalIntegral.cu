@@ -6,6 +6,7 @@
 #include <thrust/device_vector.h>
 
 #include "../include/evalIntegral.h"
+
 const double pi = 3.14159265358979323846;
 #include <thread>
 #define THREADS_PER_BLOCK 128
@@ -13,6 +14,7 @@ __constant__ float d_c[12];
 __constant__ float d_alphas[4];
 __constant__ float d_x_grid[600];
 __constant__ float d_x_weights[600];
+
 namespace cuslater {
 __global__ void accumulateSum(double result, float r_weight, float l_weight,
                               double* __restrict__ d_sum) {
@@ -21,9 +23,9 @@ __global__ void accumulateSum(double result, float r_weight, float l_weight,
     *d_sum = sum;
 }
 
-__global__ void evaluateIntegrandReduceZ(int x_dim, float r, float l_x,
-                                         float l_y, float l_z,
-                                         double* __restrict__ res) {
+__global__ void evaluateIntegrandReduceZ(int x_dim, int y_dim, int z_dim,
+                                         float r, float l_x, float l_y,
+                                         float l_z, double* __restrict__ res) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
     if (idx < x_dim * x_dim) {
         int y_idx = idx / x_dim;
@@ -71,14 +73,16 @@ __global__ void evaluateIntegrandReduceZ(int x_dim, float r, float l_x,
 }  // evaluateReduceInnerIntegrandz
 
 double evaluateInnerSumX1_rl_preAllocated(
-    unsigned int x_axis_points, float r, float l_x, float l_y, float l_z,
+    unsigned int x_axis_points, unsigned int y_axis_points,
+    unsigned int z_axis_points, float r, float l_x, float l_y, float l_z,
     float r_weight, float l_weight,
     thrust::device_vector<double>& __restrict__ d_result,
     double* __restrict__ d_sum, int blocks, int threads, int gpu_num) {
     HANDLE_CUDA_ERROR(cudaSetDevice(gpu_num));
 
     evaluateIntegrandReduceZ<<<blocks, threads>>>(
-        x_axis_points, r, l_x, l_y, l_z, raw_pointer_cast(d_result.data()));
+        x_axis_points, y_axis_points, z_axis_points, r, l_x, l_y, l_z,
+        raw_pointer_cast(d_result.data()));
     // for(long unsigned int i = 0; i < d_result.size(); i++)
     // std::cout << "d_result[" << i << "] = " << d_result[i] << std::endl;
     // Reduce vector on GPU within each block
@@ -90,8 +94,8 @@ double evaluateInnerSumX1_rl_preAllocated(
 }  // evaluateInner
 
 double evaluateFourCenterIntegral(float* c, float* alphas, int nr, int nl,
-                                  int nx, const std::string x1_type,
-                                  double tol) {
+                                  int nx, int ny, int nz,
+                                  const std::string x1_type, double tol) {
     // read r grid
     std::cout << "Reading r Grid Files" << std::endl;
     const std::string r_filepath =
@@ -127,7 +131,7 @@ double evaluateFourCenterIntegral(float* c, float* alphas, int nr, int nl,
     int blocks = (PX * PX + threads - 1) /
                  threads;  // Max blocks, better if multiple of SM = 80
     std::cout << "Total Threads: " << blocks * threads << std::endl;
-    std::cout << "Total Grid Points: " << nx * nx * nx << std::endl;
+    std::cout << "Total Grid Points: " << nx * ny * nz << std::endl;
 
     cudaMemcpyToSymbol(d_c, c, 12 * sizeof(float));
     cudaMemcpyToSymbol(d_alphas, alphas, 4 * sizeof(float));
@@ -147,9 +151,9 @@ double evaluateFourCenterIntegral(float* c, float* alphas, int nr, int nl,
     for (int j = 0; j < nl; ++j) {
         for (int i = 0; i < nr; ++i) {
             delta_sum = evaluateInnerSumX1_rl_preAllocated(
-                nx, r_nodes[i], l_nodes_x[j], l_nodes_y[j], l_nodes_z[j],
-                r_weights[i], l_weights[j], d_result, d_sum, blocks, threads,
-                0);
+                nx, ny, nz, r_nodes[i], l_nodes_x[j], l_nodes_y[j],
+                l_nodes_z[j], r_weights[i], l_weights[j], d_result, d_sum,
+                blocks, threads, 0);
             if (delta_sum < tol) {
                 r_skipped += nr - i;
                 break;

@@ -258,10 +258,8 @@ CMakeFiles/hadamard.dir/examples/test-hadamard.cu.o: examples/test-hadamard.cu \
   /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/cooperative_groups/details/reduce.h \
   /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/cooperative_groups/details/coalesced_reduce.h \
   /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/cooperative_groups/details/functional.h \
-  include/hadamard.cuh
+  include/hadamard.h
 
-
-include/hadamard.cuh:
 
 /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.4.0/cuda-11.3.1-kupglxsfujxxyigzlszl6tdpmy7igxop/targets/x86_64-linux/include/cooperative_groups/details/functional.h:
 
@@ -324,6 +322,8 @@ include/hadamard.cuh:
 /usr/include/asm-generic/errno.h:
 
 /usr/include/linux/errno.h:
+
+include/hadamard.h:
 
 /arc/software/spack-2023/opt/spack/linux-centos7-skylake_avx512/gcc-9.2.0/gcc-9.4.0-7ymwiib6wuklec5ju7m3ktapgtbzhxjl/include/c++/9.4.0/cstdio:
 
