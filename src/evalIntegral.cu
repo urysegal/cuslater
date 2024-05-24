@@ -11,7 +11,7 @@ const double pi = 3.14159265358979323846;
 #include <thread>
 #define THREADS_PER_BLOCK 128
 __constant__ float d_c[12];
-__constant__ float d_alphas[4];
+__constant__ float d_alpha[4];
 __constant__ float d_x_grid[600];
 __constant__ float d_x_weights[600];
 
@@ -23,13 +23,14 @@ __global__ void accumulateSum(double result, float r_weight, float l_weight,
     *d_sum = sum;
 }
 
-__global__ void evaluateIntegrandReduceZ(int x_dim, int y_dim, int z_dim,
-                                         float r, float l_x, float l_y,
-                                         float l_z, double* __restrict__ res) {
-    int idx = blockIdx.x * blockDim.x + threadIdx.x;
-    if (idx < x_dim * x_dim) {
-        int y_idx = idx / x_dim;
-        int x_idx = idx % x_dim;
+__global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r,
+                                         float l_x, float l_y, float l_z,
+                                         double* __restrict__ res) {
+    // gets index for current thread and blcok
+    int idx = threadIdx.x + blockIdx.x * blockDim.x;
+    if (idx < nx * ny) {
+        int y_idx = idx / nx;
+        int x_idx = idx % nx;
         float xvalue = d_x_grid[x_idx];
         float yvalue = d_x_grid[y_idx];
 
@@ -50,21 +51,22 @@ __global__ void evaluateIntegrandReduceZ(int x_dim, int y_dim, int z_dim,
         float xysq4 = xdiffc_4 * xdiffc_4 + ydiffc_4 * ydiffc_4;
         double dxy = dx * dy;
         double v = 0.0;
-        for (int z_idx = 0; z_idx < x_dim; ++z_idx) {
+        for (int z_idx = 0; z_idx < nx; ++z_idx) {
             float zvalue = d_x_grid[z_idx];
             float dz = d_x_weights[z_idx];
             // compute function value
             // exp(-|x1-c1| - |x1-c2| -|x1+r*w_hat - c3| - |x1 + rw_hat -c4|
+            // note |a-b| = sqrt( (a.x-b.x)^2 + (a.y-b.y)^2 + (a.z-b.z)^2 )
             // constants needed: r, c1,c2,c3,c4
             // First six are precomputed
             float zdiffc_1 = zvalue - d_c[2];
             float zdiffc_2 = zvalue - d_c[5];
             float zdiffc_3 = zvalue - d_c[8] + r * l_z;
             float zdiffc_4 = zvalue - d_c[11] + r * l_z;
-            float term1 = d_alphas[0] * sqrt(xysq1 + zdiffc_1 * zdiffc_1);
-            float term2 = d_alphas[1] * sqrt(xysq2 + zdiffc_2 * zdiffc_2);
-            float term3 = d_alphas[2] * sqrt(xysq3 + zdiffc_3 * zdiffc_3);
-            float term4 = d_alphas[3] * sqrt(xysq4 + zdiffc_4 * zdiffc_4);
+            float term1 = d_alpha[0] * sqrt(xysq1 + zdiffc_1 * zdiffc_1);
+            float term2 = d_alpha[1] * sqrt(xysq2 + zdiffc_2 * zdiffc_2);
+            float term3 = d_alpha[2] * sqrt(xysq3 + zdiffc_3 * zdiffc_3);
+            float term4 = d_alpha[3] * sqrt(xysq4 + zdiffc_4 * zdiffc_4);
             float exponent = -term1 - term2 - term3 - term4 + r;
             v += exp(exponent) * dxy * dz;
         }
@@ -73,16 +75,14 @@ __global__ void evaluateIntegrandReduceZ(int x_dim, int y_dim, int z_dim,
 }  // evaluateReduceInnerIntegrandz
 
 double evaluateInnerSumX1_rl_preAllocated(
-    unsigned int x_axis_points, unsigned int y_axis_points,
-    unsigned int z_axis_points, float r, float l_x, float l_y, float l_z,
-    float r_weight, float l_weight,
+    unsigned int nx, unsigned int ny, unsigned int nz, float r, float l_x,
+    float l_y, float l_z, float r_weight, float l_weight,
     thrust::device_vector<double>& __restrict__ d_result,
     double* __restrict__ d_sum, int blocks, int threads, int gpu_num) {
     HANDLE_CUDA_ERROR(cudaSetDevice(gpu_num));
 
     evaluateIntegrandReduceZ<<<blocks, threads>>>(
-        x_axis_points, y_axis_points, z_axis_points, r, l_x, l_y, l_z,
-        raw_pointer_cast(d_result.data()));
+        nx, ny, nz, r, l_x, l_y, l_z, raw_pointer_cast(d_result.data()));
     // for(long unsigned int i = 0; i < d_result.size(); i++)
     // std::cout << "d_result[" << i << "] = " << d_result[i] << std::endl;
     // Reduce vector on GPU within each block
@@ -93,7 +93,7 @@ double evaluateInnerSumX1_rl_preAllocated(
     return delta_sum;
 }  // evaluateInner
 
-double evaluateFourCenterIntegral(float* c, float* alphas, int nr, int nl,
+double evaluateFourCenterIntegral(float* c, float* alpha, int nr, int nl,
                                   int nx, int ny, int nz,
                                   const std::string x1_type, double tol) {
     // read r grid
@@ -134,7 +134,7 @@ double evaluateFourCenterIntegral(float* c, float* alphas, int nr, int nl,
     std::cout << "Total Grid Points: " << nx * ny * nz << std::endl;
 
     cudaMemcpyToSymbol(d_c, c, 12 * sizeof(float));
-    cudaMemcpyToSymbol(d_alphas, alphas, 4 * sizeof(float));
+    cudaMemcpyToSymbol(d_alpha, alpha, 4 * sizeof(float));
     cudaMemcpyToSymbol(d_x_grid, x1_nodes.data(), PX * sizeof(float));
     cudaMemcpyToSymbol(d_x_weights, x1_weights.data(), PX * sizeof(float));
     double* d_sum;
@@ -166,7 +166,7 @@ double evaluateFourCenterIntegral(float* c, float* alphas, int nr, int nl,
     HANDLE_CUDA_ERROR(
         cudaMemcpy(&sum, d_sum, sizeof(double), cudaMemcpyDeviceToHost));
     sum = sum * (4.0 / pi) *
-          std::pow(alphas[0] * alphas[1] * alphas[2] * alphas[3], 1.5);
+          std::pow(alpha[0] * alpha[1] * alpha[2] * alpha[3], 1.5);
 
     // sum up result, multiply with constant and return
     std::cout << "Tolerance: " << tol << std::endl;
