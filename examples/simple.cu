@@ -1,4 +1,3 @@
-//
 // Created by gkluhana on 26/03/24.
 //
 // editted by MarkEwert03 on 13/05/24
@@ -11,11 +10,12 @@
 using namespace std;
 
 int main(int argc, const char *argv[]) {
-    int nr = 89;
-    int nl = 590;
+    // represents number of points to calculate in the x,y,z direction
     int nx = 375;
     int ny = 375;
     int nz = 375;
+    int nr = 89;
+    int nl = 590;
     double tol = 1e-10;
     if (argc == 2 and argv[1][0] == 'd') {
         nr = 2;
@@ -48,11 +48,11 @@ int main(int argc, const char *argv[]) {
         std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 
     std::stringstream message;
-    message << "nr: " << nr;
-    message << " nl: " << nl;
-    message << " nx: " << nx;
-    message << " ny: " << ny;
-    message << " nz: " << nz << "\n";
+    message << "nr=" << nr;
+    message << " nl=" << nl;
+    message << " nx=" << nx;
+    message << " ny=" << ny;
+    message << " nz=" << nz << "\n";
     message << "result: ";
     message << std::fixed
             << std::setprecision(std::numeric_limits<double>::max_digits10);
