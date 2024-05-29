@@ -70,7 +70,9 @@ double evaluateFourCenterIntegral(float* c, float* alpha, int nr, int nl,
     double sum = 0.0;
     double delta_sum = 0.0;
     int r_skipped = 0;
-    std::cout << "Evaluating Integral for all values of r and l" << std::endl;
+    std::cout << "Evaluating Integral for all values of r and l with a1="
+              << alpha[0] << ", a2=" << alpha[1] << ", a3=" << alpha[2]
+              << ", a4=" << alpha[3] << std::endl;
     for (int j = 0; j < nl; ++j) {
         for (int i = 0; i < nr; ++i) {
             delta_sum = evaluateInnerSum(nx, ny, nz, r_nodes[i], l_nodes_x[j],

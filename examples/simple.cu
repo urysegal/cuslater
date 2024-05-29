@@ -17,23 +17,29 @@ int main(int argc, const char *argv[]) {
     int nr = 89;
     int nl = 590;
     double tol = 1e-10;
-    if (argc == 2 and argv[1][0] == 'd') {
-        nr = 2;
-        nl = 6;
-        nx = 21;
-        ny = 21;
-        nz = 21;
+
+    // α1 = alpha[0], α2 = alpha[1], α3 = alpha[2], α4 = alpha[3]
+    float alpha[] = {1, 1, 1, 1};
+
+    if (argc == 3 && std::string(argv[1]) == "-a" ) {
+        alpha[0] = std::atoi(argv[2]);
     }
-    if (argc == 3 and argv[1][0] == 't') {
-        tol = std::stod(argv[2]);
-    }
+    // if (argc == 2 and argv[1][0] == 'd') {
+    //     nr = 2;
+    //     nl = 6;
+    //     nx = 21;
+    //     ny = 21;
+    //     nz = 21;
+    // }
+    // if (argc == 3 and argv[1][0] == 't') {
+    //     tol = std::stod(argv[2]);
+    // }
+
     // c1 = (c1.x, c1.y, c1.z) = (c[0], c[1], c[2])
     // c2 = (c2.x, c2.y, c2.z) = (c[3], c[4], c[5])
     // c3 = (c3.x, c3.y, c3.z) = (c[6], c[7], c[8])
     // c4 = (c4.x, c4.y, c4.z) = (c[9], c[10], c[11])
     float c[] = {0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0};
-    // α1 = alpha[0], α2 = alpha[1], α3 = alpha[2], α4 = alpha[3]
-    float alpha[] = {1, 1, 1, 1};
 
     const std::string x1_type = "legendre";  // legendre or simpson
 
