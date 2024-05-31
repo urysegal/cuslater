@@ -22,7 +22,11 @@ int main(int argc, const char *argv[]) {
     float alpha[] = {1, 1, 1, 1};
 
     if (argc == 3 && std::string(argv[1]) == "-a" ) {
-        alpha[0] = std::atoi(argv[2]);
+        float val = std::atoi(argv[2]);
+        alpha[0] = val;
+        alpha[1] = val;
+        alpha[2] = val;
+        alpha[3] = val;
     }
     // if (argc == 2 and argv[1][0] == 'd') {
     //     nr = 2;
