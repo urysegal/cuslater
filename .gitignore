@@ -9,3 +9,6 @@ cmake_install.cmake
 hadamard
 simple
 libcuSlater.so
+
+# format
+.prettierignore

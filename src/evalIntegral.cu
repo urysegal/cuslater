@@ -108,7 +108,7 @@ double evaluateInnerSum(unsigned int nx, unsigned int ny, unsigned int nz,
                         int gpu_num) {
     HANDLE_CUDA_ERROR(cudaSetDevice(gpu_num));
 
-    evaluateIntegrandReduceZ<<<blocks, threads>>>(
+    evaluateIntegrandReduceXY<<<blocks, threads>>>(
         nx, ny, nz, r, l_x, l_y, l_z, raw_pointer_cast(d_result.data()));
     // for(long unsigned int i = 0; i < d_result.size(); i++)
     // std::cout << "d_result[" << i << "] = " << d_result[i] << std::endl;
@@ -123,16 +123,16 @@ double evaluateInnerSum(unsigned int nx, unsigned int ny, unsigned int nz,
 __global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r,
                                          float l_x, float l_y, float l_z,
                                          double* __restrict__ res) {
-    // gets index for current thread and blcok
+    // gets index for current thread and block
+    //printf("threadIdx = %d, blockIdx = %d, blockDim = %d\n", threadIdx.x, blockIdx.x, blockDim.x);
     int idx = threadIdx.x + blockIdx.x * blockDim.x;
     if (idx < nx * ny) {
         int y_idx = idx / nx;
         int x_idx = idx % nx;
         float xvalue = d_x_grid[x_idx];
         float yvalue = d_x_grid[y_idx];
-
-        float dx = d_x_weights[x_idx];
-        float dy = d_x_weights[y_idx];
+        float wx = d_x_weights[x_idx];
+        float wy = d_x_weights[y_idx];
         // compute function value
         // exp(-α1|x1-c1| - α2|x1-c2| - α3|x1-c3+r*l| - α4|x1-c4+r*l|)
         // note |a-b| = sqrt( (a.x-b.x)^2 + (a.y-b.y)^2 + (a.z-b.z)^2 )
@@ -155,11 +155,11 @@ __global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r,
         // (x1.x - c4.x + lx)^2 + (x1.y - c4.y + ly)^2
         float xysq4 = xdiffc_4 * xdiffc_4 + ydiffc_4 * ydiffc_4;
 
-        double dxy = dx * dy;
+        double wxy = wx * wy;
         double v = 0.0;
         for (int z_idx = 0; z_idx < nz; ++z_idx) {
             float zvalue = d_x_grid[z_idx];
-            float dz = d_x_weights[z_idx];
+            float wz = d_x_weights[z_idx];
             float zdiffc_1 = zvalue - d_c[2];             // x1.z - c1.z
             float zdiffc_2 = zvalue - d_c[5];             // x1.z - c2.z
             float zdiffc_3 = zvalue - d_c[8] + r * l_z;   // x1.z - c3.z + lz
@@ -173,11 +173,78 @@ __global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r,
             // α4 * ✓|x - c4 + r*l|
             float term4 = d_alpha[3] * sqrt(xysq4 + zdiffc_4 * zdiffc_4);
             float exponent = -term1 - term2 - term3 - term4 + r;
-            v += exp(exponent) * dxy * dz;
+            v += exp(exponent) * wxy * wz;
         }
         res[idx] = v;
     }
-}  // evaluateReduceInnerIntegrandz
+}
+
+__global__ void evaluateIntegrandReduceXY(int nx, int ny, int nz, float r,
+                                        float l_x, float l_y, float l_z,
+                                        double* __restrict__ res) {
+    int idx = threadIdx.x + blockIdx.x * blockDim.x;
+    if (idx < nz) {
+        int z_idx = idx % nz;
+        float zvalue = d_x_grid[z_idx];
+        float wz = d_x_weights[z_idx];
+        // compute function value
+        // exp(-α1|x1-c1| - α2|x1-c2| - α3|x1-c3+r*l| - α4|x1-c4+r*l|)
+        // note |a-b| = sqrt( (a.x-b.x)^2 + (a.y-b.y)^2 + (a.z-b.z)^2 )
+        float zdiffc_1 = zvalue - d_c[2];             // x1.z - c1.z
+        float zdiffc_2 = zvalue - d_c[5];             // x1.z - c2.z
+        float zdiffc_3 = zvalue - d_c[8] + r * l_z;   // x1.z - c3.z + lz
+        float zdiffc_4 = zvalue - d_c[11] + r * l_z;  // x1.z - c4.z + lz
+
+        double v = 0.0;
+        for (int x_idx = 0; x_idx < nx; ++x_idx) {
+            float xvalue = d_x_grid[x_idx];
+            float wx = d_x_weights[x_idx];
+
+            float xdiffc_1 = xvalue - d_c[0];            // x1.x - c1.x
+            float xdiffc_2 = xvalue - d_c[3];            // x1.x - c2.x
+            float xdiffc_3 = xvalue - d_c[6] + r * l_x;  // x1.x - c3.x + lx
+            float xdiffc_4 = xvalue - d_c[9] + r * l_x;  // x1.x - c4.x + lx
+            for (int y_idx = 0; y_idx < ny; ++y_idx) {
+                float yvalue = d_x_grid[y_idx];
+                float wy = d_x_weights[y_idx];
+
+                float ydiffc_1 = yvalue - d_c[1];            // x1.y - c1.y
+                float ydiffc_2 = yvalue - d_c[4];            // x1.y - c2.y
+                float ydiffc_3 = yvalue - d_c[7] + r * l_y;  // x1.y - c3.y + ly
+                float ydiffc_4 =
+                    yvalue - d_c[10] + r * l_y;  // x1.y - c4.y + ly
+
+                // (x1.x - c1.x)^2 + (x1.y - c1.y)^2 + (x1.z - c1.z)^2
+                float xyzsq1 = xdiffc_1 * xdiffc_1 + ydiffc_1 * ydiffc_1 +
+                               zdiffc_1 * zdiffc_1;
+                // (x1.x - c2.x)^2 + (x1.y - c2.y)^2 + (x1.z - c2.z)^2
+                float xyzsq2 = xdiffc_2 * xdiffc_2 + ydiffc_2 * ydiffc_2 +
+                               zdiffc_2 * zdiffc_2;
+                // (x1.x - c3.x + lx)^2 + (x1.y - c3.y + ly)^2 + (x1.z - c3.z +
+                // lz)^2
+                float xyzsq3 = xdiffc_3 * xdiffc_3 + ydiffc_3 * ydiffc_3 +
+                               zdiffc_3 * zdiffc_3;
+                // (x1.x - c4.x + lx)^2 + (x1.y - c4.y + ly)^2 + (x1.z - c4.z +
+                // lz)^2
+                float xyzsq4 = xdiffc_4 * xdiffc_4 + ydiffc_4 * ydiffc_4 +
+                               zdiffc_4 * zdiffc_4;
+
+                // α1 * ✓|x - c1|
+                float term1 = d_alpha[0] * sqrt(xyzsq1);
+                // α2 * ✓|x - c2|
+                float term2 = d_alpha[1] * sqrt(xyzsq2);
+                // α3 * ✓|x - c3 + r*l|
+                float term3 = d_alpha[2] * sqrt(xyzsq3);
+                // α4 * ✓|x - c4 + r*l|
+                float term4 = d_alpha[3] * sqrt(xyzsq4);
+
+                float exponent = -term1 - term2 - term3 - term4 + r;
+                v += exp(exponent) * wx * wy * wz;
+            }
+        }
+        res[idx] = v;
+    }
+}
 
 __global__ void accumulateSum(double result, float r_weight, float l_weight,
                               double* __restrict__ d_sum) {
