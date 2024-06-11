@@ -1,0 +1,34 @@
+Reading r Grid Files
+Reading l Grid Files
+Reading x1 Grid Files
+Initializing Device Variables
+Total Threads: 140672
+Total Grid Points: 52734375
+Evaluating Integral for all values of r and l with a1=1, a2=1, a3=1, a4=1
+computed for l_j:0/590
+computed for l_j:50/590
+computed for l_j:100/590
+computed for l_j:150/590
+computed for l_j:200/590
+computed for l_j:250/590
+computed for l_j:300/590
+computed for l_j:350/590
+computed for l_j:400/590
+computed for l_j:450/590
+computed for l_j:500/590
+computed for l_j:550/590
+Tolerance: 1e-10
+Total values of r skipped for different l's: 8559/52510
+nr=89 nl=590 nx=375 ny=375 nz=375
+result: 0.31118357801168500
+Time Elapsed: 1600.27321400000005269 seconds
+
+---
+Z reduce
+0.31118357764677834
+XY reduce
+0.31118357801168500
+
+conclusion:
+agree up to 8 digits
+slow down by factor of 80
