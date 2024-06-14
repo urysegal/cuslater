@@ -1,0 +1,15 @@
+# CMake and Make files
+CMakeCache.txt
+CMakeFiles/
+Makefile
+build/
+cmake_install.cmake
+
+# binaries
+hadamard
+simple
+libcuSlater.so
+
+# format
+.prettierignore
+.vscode
