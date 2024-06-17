@@ -131,8 +131,7 @@ __global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r,
         float xvalue = d_x_grid[x_idx];
         float yvalue = d_x_grid[y_idx];
 
-        float dx = d_x_weights[x_idx];
-        float dy = d_x_weights[y_idx];
+        float wxy = d_x_weights[x_idx] * d_x_weights[y_idx];
         // compute function value
         // exp(-α1|x1-c1| - α2|x1-c2| - α3|x1-c3+r*l| - α4|x1-c4+r*l|)
         // note |a-b| = sqrt( (a.x-b.x)^2 + (a.y-b.y)^2 + (a.z-b.z)^2 )
@@ -155,11 +154,10 @@ __global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r,
         // (x1.x - c4.x + lx)^2 + (x1.y - c4.y + ly)^2
         float xysq4 = xdiffc_4 * xdiffc_4 + ydiffc_4 * ydiffc_4;
 
-        double dxy = dx * dy;
         double v = 0.0;
         for (int z_idx = 0; z_idx < nz; ++z_idx) {
             float zvalue = d_x_grid[z_idx];
-            float dz = d_x_weights[z_idx];
+            float wz = d_x_weights[z_idx];
             float zdiffc_1 = zvalue - d_c[2];             // x1.z - c1.z
             float zdiffc_2 = zvalue - d_c[5];             // x1.z - c2.z
             float zdiffc_3 = zvalue - d_c[8] + r * l_z;   // x1.z - c3.z + lz
@@ -173,7 +171,7 @@ __global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r,
             // α4 * ✓|x - c4 + r*l|
             float term4 = d_alpha[3] * sqrt(xysq4 + zdiffc_4 * zdiffc_4);
             float exponent = -term1 - term2 - term3 - term4 + r;
-            v += exp(exponent) * dxy * dz;
+            v += exp(exponent) * wxy * wz;
         }
         res[idx] = v;
     }
