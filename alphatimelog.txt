@@ -1,3 +1,4 @@
+tests for c = {0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0}:
 a = 1, Time Elapsed: 20.33224500000000035 seconds
 a = 2, Time Elapsed: 11.16685000000000016 seconds
 a = 3, Time Elapsed: 8.13132099999999980 seconds

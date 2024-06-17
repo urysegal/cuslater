@@ -99,8 +99,6 @@ double evaluateInnerSum(unsigned int nx, unsigned int ny, unsigned int nz, float
 
     evaluateIntegrandReduceZ<<<blocks, threads>>>(nx, ny, nz, r, l_x, l_y, l_z,
                                                   raw_pointer_cast(d_result.data()));
-    // for(long unsigned int i = 0; i < d_result.size(); i++)
-    // std::cout << "d_result[" << i << "] = " << d_result[i] << std::endl;
     // Reduce vector on GPU within each block
     double delta_sum =
         thrust::reduce(d_result.begin(), d_result.end(), (double)0.0, thrust::plus<double>());
@@ -143,6 +141,7 @@ __global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r, float 
         float xysq4 = xdiffc_4 * xdiffc_4 + ydiffc_4 * ydiffc_4;
 
         double v = 0.0;
+
         for (int z_idx = 0; z_idx < nz; ++z_idx) {
             float zvalue = d_x_grid[z_idx];
             float wz = d_x_weights[z_idx];
