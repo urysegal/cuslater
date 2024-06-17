@@ -17,3 +17,4 @@ libcuSlater.so
 # format
 .prettierignore
 .vscode
+.clang-format
