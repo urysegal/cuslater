@@ -8,6 +8,7 @@
 
 #include <vector>
 
+#include "cuda_profiler_api.h"
 #include "cuslater.cuh"
 #include "grids.h"
 #include "utilities.h"

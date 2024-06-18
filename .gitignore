@@ -10,10 +10,6 @@ hadamard
 simple
 libcuSlater.so
 
-# profiling
-*.qdrep
-*.sqlite
-
 # format
 .prettierignore
 .vscode
