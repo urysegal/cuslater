@@ -33,6 +33,7 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
     std::vector<float> l_nodes_z;
     std::vector<float> l_weights;
     read_l_grid_from_file(l_filepath, l_nodes_x, l_nodes_y, l_nodes_z, l_weights);
+
     // Read x1 grid
     std::cout << "Reading x1 Grid Files" << std::endl;
     const std::string x1_filepath =
@@ -43,31 +44,36 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
     float b;
     read_x1_1d_grid_from_file(x1_filepath, a, b, x1_nodes, x1_weights);
 
+    // Initializing Device Variables
     std::cout << "Initializing Device Variables" << std::endl;
-    double *w = new double[3];
     unsigned int PX = x1_nodes.size();
     int threads = THREADS_PER_BLOCK;                // Max threads per block
     int blocks = (PX * PX + threads - 1) / threads; // Max blocks, better if multiple of SM = 80
     std::cout << "Total Threads: " << blocks * threads << std::endl;
     std::cout << "Total Grid Points: " << nx * ny * nz << std::endl;
 
+    // cuda memory initialization
     cudaMemcpyToSymbol(d_c, c, 12 * sizeof(float));
     cudaMemcpyToSymbol(d_alpha, alpha, 4 * sizeof(float));
     cudaMemcpyToSymbol(d_x_grid, x1_nodes.data(), PX * sizeof(float));
     cudaMemcpyToSymbol(d_x_weights, x1_weights.data(), PX * sizeof(float));
-    double *d_sum;
+    
+    // thrust devices
     thrust::device_vector<float> d_r_weights(nr);
     thrust::device_vector<float> d_l_weights(nl);
     thrust::device_vector<double> d_result(PX * PX);
 
+    double *d_sum;
     HANDLE_CUDA_ERROR(cudaMalloc(&d_sum, sizeof(double)));
     HANDLE_CUDA_ERROR(cudaMemset(d_sum, 0, sizeof(double)));
+    
     double sum = 0.0;
     double delta_sum = 0.0;
     int r_skipped = 0;
+
+    // main loop
     std::cout << "Evaluating Integral for all values of r and l with a1=" << alpha[0]
               << ", a2=" << alpha[1] << ", a3=" << alpha[2] << ", a4=" << alpha[3] << std::endl;
-
     for (int j = 0; j < nl; ++j) {
         for (int i = 0; i < nr; ++i) {
             delta_sum =
@@ -163,9 +169,7 @@ __global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r, float 
 
 __global__ void accumulateSum(double result, float r_weight, float l_weight,
                               double *__restrict__ d_sum) {
-    double sum = *d_sum;
-    sum += result * r_weight * l_weight;
-    *d_sum = sum;
+    atomicAdd(d_sum, result * r_weight * l_weight);
 }
 
 } // namespace cuslater
