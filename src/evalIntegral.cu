@@ -57,7 +57,7 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
     cudaMemcpyToSymbol(d_alpha, alpha, 4 * sizeof(float));
     cudaMemcpyToSymbol(d_x_grid, x1_nodes.data(), PX * sizeof(float));
     cudaMemcpyToSymbol(d_x_weights, x1_weights.data(), PX * sizeof(float));
-    
+
     // thrust devices
     thrust::device_vector<float> d_r_weights(nr);
     thrust::device_vector<float> d_l_weights(nl);
@@ -66,14 +66,20 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
     double *d_sum;
     HANDLE_CUDA_ERROR(cudaMalloc(&d_sum, sizeof(double)));
     HANDLE_CUDA_ERROR(cudaMemset(d_sum, 0, sizeof(double)));
-    
+
     double sum = 0.0;
     double delta_sum = 0.0;
     int r_skipped = 0;
 
     // main loop
-    std::cout << "Evaluating Integral for all values of r and l with a1=" << alpha[0]
-              << ", a2=" << alpha[1] << ", a3=" << alpha[2] << ", a4=" << alpha[3] << std::endl;
+    std::cout << "Evaluating Integral for all values of r and l with\n";
+    std::cout << "  a1=" << alpha[0] << ", a2=" << alpha[1] << ", a3=" << alpha[2]
+              << ", a4=" << alpha[3] << "\n";
+    std::cout << "  c1 = (" << c[0] << ", " << c[1] << ", " << c[2] << ")\n";
+    std::cout << "  c2 = (" << c[3] << ", " << c[4] << ", " << c[5] << ")\n";
+    std::cout << "  c3 = (" << c[6] << ", " << c[7] << ", " << c[8] << ")\n";
+    std::cout << "  c4 = (" << c[9] << ", " << c[10] << ", " << c[11] << ")\n";
+    std::cout << "  Tolerance = " << tol << std::endl;
     for (int j = 0; j < nl; ++j) {
         for (int i = 0; i < nr; ++i) {
             delta_sum =
@@ -92,7 +98,6 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
     sum = sum * (4.0 / pi) * std::pow(alpha[0] * alpha[1] * alpha[2] * alpha[3], 1.5);
 
     // sum up result, multiply with constant and return
-    std::cout << "Tolerance: " << tol << std::endl;
     std::cout << "Total values of r skipped for different l's: " << r_skipped << "/" << nr * nl
               << std::endl;
     return sum;

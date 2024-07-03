@@ -5,6 +5,7 @@
 #include <chrono>
 #include <iomanip> // for std::setprecision
 #include <iostream>
+#include <string>
 
 #include "../include/evalIntegral.h"
 using namespace std;
@@ -36,6 +37,10 @@ int main(int argc, const char *argv[]) {
             std::cout << "Options:\n";
             std::cout << "  --help\t\tDisplay this help message and exit\n";
             std::cout << "  -a a1 a2 a3 a4\tSet alpha values\n";
+            std::cout << "  -c1 x1 y1 z1\t\tSets coordinates for c1 (c1.x, c1.y, c1.z)\n";
+            std::cout << "  -c2 x2 y2 z2\t\tSets coordinates for c2 (c2.x, c2.y, c2.z)\n";
+            std::cout << "  -c3 x3 y3 z3\t\tSets coordinates for c3 (c3.x, c3.y, c3.z)\n";
+            std::cout << "  -c4 x4 y4 z4\t\tSets coordinates for c4 (c4.x, c4.y, c4.z)\n";
             std::cout << "  -t tol\t\tSet tolerance value\n";
             exit(EXIT_SUCCESS); // Exit after printing help message
 
@@ -45,16 +50,46 @@ int main(int argc, const char *argv[]) {
                 std::cerr << "Error: Fewer than 4 alpha parameters provided.\n";
                 exit(EXIT_FAILURE);
             }
-            for (int j = 0; j < 4; ++j) {
+            for (int j = 1; j <= 4; ++j) {
                 // a_j = i+1, i+2, i+3, i+4
                 try {
-                    alpha[j] = std::atof(argv[j + 1 + i]);
+                    alpha[j - 1] = std::atof(argv[i + j]);
                 } catch (...) {
-                    std::cerr << "Error: Insufficient values provided for -a option.\n";
+                    std::cerr << "Error: Insufficient numerical values provided for -a option.\n";
                     exit(EXIT_FAILURE);
                 }
             }
             i += 4; // Skip over processed alpha values
+
+        } else if (argv[i][0] == '-' && argv[i][1] == 'c') {
+            int centNum = 0;
+            std::string argi = argv[i];
+            if (argi.length() != 3) {
+                std::cerr << "Error: Please provide 1 digit for the center number.\n";
+                exit(EXIT_FAILURE);
+            } else if (argi.substr(2, 1) != "1" && argi.substr(2, 1) != "2" &&
+                       argi.substr(2, 1) != "3" && argi.substr(2, 1) != "4") {
+                std::cerr << "Error: Please provide `-ci` where i = 1,2,3,4.\n";
+                exit(EXIT_FAILURE);
+            }
+            // shift by '0' to convert char->int
+            centNum = argi[2] - '0';
+            // Read next 3 values coordinates for ci
+            if (i + 3 >= argc) {
+                std::cerr << "Error: Fewer than 3 coordinates provided for c" << centNum << ".\n";
+                exit(EXIT_FAILURE);
+            }
+            for (int j = 0; j < 3; ++j) {
+                // ci_j = i+1, i+2, i+3
+                try {
+                    c[(centNum - 1) * 3 + j] = std::atof(argv[i + 1 + j]);
+                } catch (...) {
+                    std::cerr << "Error: Insufficient numerical values provided for -c" << centNum
+                              << " option.\n";
+                    exit(EXIT_FAILURE);
+                }
+            }
+            i += 3; // Skip over processed ci values
 
         } else if (std::strcmp(argv[i], "-t") == 0) {
             if (i + 1 >= argc) {
@@ -64,6 +99,9 @@ int main(int argc, const char *argv[]) {
                 tol = std::atof(argv[i + 1]);
                 ++i; // Skip over tol value
             }
+        } else {
+            std::cerr << "Error: Invalid command line parameter. Use ./simple --help for more information.\n";
+            exit(EXIT_FAILURE);
         }
     }
 
