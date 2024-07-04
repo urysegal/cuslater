@@ -2,22 +2,22 @@
 
 namespace cuslater {
 
-#define HANDLE_TENSOR_ERROR(x)                                  \
-    {                                                           \
-        const auto err = x;                                     \
-        if (err != CUTENSOR_STATUS_SUCCESS) {                   \
-            printf("Error: %s\n", cutensorGetErrorString(err)); \
-            return err;                                         \
-        }                                                       \
+#define HANDLE_TENSOR_ERROR(x)                                                                     \
+    {                                                                                              \
+        const auto err = x;                                                                        \
+        if (err != CUTENSOR_STATUS_SUCCESS) {                                                      \
+            printf("Error: %s\n", cutensorGetErrorString(err));                                    \
+            return err;                                                                            \
+        }                                                                                          \
     };
 
-#define HANDLE_CUDA_ERROR(x)                                \
-    {                                                       \
-        const auto err = x;                                 \
-        if (err != cudaSuccess) {                           \
-            printf("Error: %s\n", cudaGetErrorString(err)); \
-            return err;                                     \
-        }                                                   \
+#define HANDLE_CUDA_ERROR(x)                                                                       \
+    {                                                                                              \
+        const auto err = x;                                                                        \
+        if (err != cudaSuccess) {                                                                  \
+            printf("Error: %s\n", cudaGetErrorString(err));                                        \
+            return err;                                                                            \
+        }                                                                                          \
     };
 
 struct GPUTimer {
@@ -42,8 +42,8 @@ struct GPUTimer {
         return time * 1e-3;
     }
 
-   private:
+  private:
     cudaEvent_t start_, stop_;
 };
 
-}  // namespace cuslater
+} // namespace cuslater

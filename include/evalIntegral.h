@@ -8,26 +8,24 @@
 
 #include <vector>
 
+#include "cuda_profiler_api.h"
 #include "cuslater.cuh"
 #include "grids.h"
 #include "utilities.h"
 // #include "evalInnerIntegral.h"
 namespace cuslater {
-double evaluateFourCenterIntegral(float* c, float* alpha, int nr, int nl,
-                                  int nx, int ny, int nz,
+double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx, int ny, int nz,
                                   const std::string x1_type, double tol);
 
-double evaluateInnerSum(
-    unsigned int nx, unsigned int ny, unsigned int nz, float r, float l_x,
-    float l_y, float l_z, float r_weight, float l_weight,
-    thrust::device_vector<double>& __restrict__ d_result,
-    double* __restrict__ d_sum, int blocks, int threads, int gpu_num);
+double evaluateInnerSum(unsigned int nx, unsigned int ny, unsigned int nz, float r, float l_x,
+                        float l_y, float l_z, float r_weight, float l_weight,
+                        thrust::device_vector<double> &__restrict__ d_result,
+                        double *__restrict__ d_sum, int blocks, int threads, int gpu_num);
 
-__global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r,
-                                         float l_x, float l_y, float l_z,
-                                         double* __restrict__ res);
+__global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r, float l_x, float l_y,
+                                         float l_z, double *__restrict__ res);
 
 __global__ void accumulateSum(double result, float r_weight, float l_weight,
-                              double* __restrict__ d_sum);
+                              double *__restrict__ d_sum);
 
-}  // namespace cuslater
+} // namespace cuslater
