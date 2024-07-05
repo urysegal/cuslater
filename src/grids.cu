@@ -7,8 +7,6 @@ namespace cuslater {
 void make_1d_grid_legendre(double start, double stop, unsigned int N,
                            std::vector<double>* grid,
                            std::vector<double>* weights) {
-    // N must be multiple of 25
-    assert(N % 25 == 0);
 
     std::ifstream infile("gauss_grids/nodes_weights_" + std::to_string(N) +
                          ".txt");
