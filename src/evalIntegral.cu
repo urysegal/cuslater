@@ -11,9 +11,12 @@ const double pi = 3.14159265358979323846;
 #include <thread>
 #define THREADS_PER_BLOCK 128
 __constant__ float d_c[12];
-__constant__ float d_alpha[4];
 __constant__ float d_x_grid[600];
 __constant__ float d_x_weights[600];
+__constant__ float d_y_grid[600];
+__constant__ float d_y_weights[600];
+__constant__ float d_z_grid[600];
+__constant__ float d_z_weights[600];
 
 namespace cuslater {
 double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx, int ny, int nz,
@@ -35,14 +38,38 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
     read_l_grid_from_file(l_filepath, l_nodes_x, l_nodes_y, l_nodes_z, l_weights);
 
     // Read x1 grid
-    std::cout << "Reading x1 Grid Files" << std::endl;
-    const std::string x1_filepath =
-        "grid_files/x1_" + x1_type + "_1d_" + std::to_string(nx) + ".grid";
-    std::vector<float> x1_nodes;
-    std::vector<float> x1_weights;
-    float a;
-    float b;
-    read_x1_1d_grid_from_file(x1_filepath, a, b, x1_nodes, x1_weights);
+   std::cout << "Reading x1 Grid Files" << std::endl;
+            const std::string x1_filepath = "grid_files_adap/leg64/x1_"+ x1_type +"_1d_" + std::to_string(nx) + ".grid";
+            std::vector<float> x1_standard_nodes;
+            std::vector<float> x1_standard_weights;
+            read_x1_1d_grid_from_file(x1_filepath, x1_standard_nodes, x1_standard_weights);
+
+            std::vector<float> x1_nodes;
+            std::vector<float> x1_weights;
+            std::vector<float> y1_nodes;
+            std::vector<float> y1_weights;
+            std::vector<float> z1_nodes;
+            std::vector<float> z1_weights;
+	    // Avleen : You can change these to the min max functions with the centers
+	    // the centers are stored in vector c as [c1x,c1y,c1z, and so on till c4z] 
+			float delta = 1;
+			//float ax = std::min(c[0], c[3]) - (10.0 / (std::abs(c[0] - c[3])+delta));
+			//float bx = std::max(c[0], c[3]) + (10.0 / (std::abs(c[0] - c[3])+delta));
+			// float ay = std::min(c[1], c[4]) - (10.0 / (std::abs(c[1] - c[4])+delta));
+			// float by = std::max(c[1], c[4]) + (10.0 / (std::abs(c[1] - c[4])+delta));
+			// float az = std::min(c[2], c[5]) - (10.0 / (std::abs(c[2] - c[5])+delta));
+			// float bz = std::max(c[2], c[5]) + (10.0 / (std::abs(c[2] - c[5])+delta));
+			float ax = -10;
+			float bx = 11;
+			float ay = -10;
+			float by = 11;
+			float az= -10;
+			float bz=11;
+            
+	    generate_x1_from_std(ax,bx, x1_standard_nodes, x1_standard_weights, x1_nodes, x1_weights); 
+	    generate_x1_from_std(ay,by, x1_standard_nodes, x1_standard_weights, y1_nodes, y1_weights); 
+	    generate_x1_from_std(az,bz, x1_standard_nodes, x1_standard_weights, z1_nodes, z1_weights); 
+
 
     // Initializing Device Variables
     std::cout << "Initializing Device Variables" << std::endl;
@@ -55,9 +82,12 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
     // cuda memory initialization
     cudaMemcpyToSymbol(d_c, c, 12 * sizeof(float));
     cudaMemcpyToSymbol(d_alpha, alpha, 4 * sizeof(float));
-    cudaMemcpyToSymbol(d_x_grid, x1_nodes.data(), PX * sizeof(float));
-    cudaMemcpyToSymbol(d_x_weights, x1_weights.data(), PX * sizeof(float));
-
+    cudaMemcpyToSymbol(d_x_grid, x1_nodes.data(), PX*sizeof(float));
+	cudaMemcpyToSymbol(d_x_weights, x1_weights.data(), PX*sizeof(float));
+    cudaMemcpyToSymbol(d_y_grid, y1_nodes.data(), PY*sizeof(float));
+	cudaMemcpyToSymbol(d_y_weights, y1_weights.data(), PY*sizeof(float));
+    cudaMemcpyToSymbol(d_z_grid, z1_nodes.data(), PZ*sizeof(float));
+	cudaMemcpyToSymbol(d_z_weights, z1_weights.data(), PZ*sizeof(float));
     // thrust devices
     thrust::device_vector<float> d_r_weights(nr);
     thrust::device_vector<float> d_l_weights(nl);
@@ -102,6 +132,20 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
               << std::endl;
     return sum;
 }
+
+void generate_x1_from_std(float a, float b, const std::vector<float>& x1_standard_nodes, const std::vector<float>& x1_standard_weights, std::vector<float>& x1_nodes, std::vector<float>& x1_weights) {
+		float shift = (a + b) / 2.0;
+		float factor = (b - a) / 2.0;
+		float node;
+		float weight;
+		for (std::vector<float>::size_type i = 0; i < x1_standard_nodes.size(); ++i) {
+			node = x1_standard_nodes[i] * factor + shift;
+			x1_nodes.push_back(node);
+			weight = x1_standard_weights[i] * factor;
+			x1_weights.push_back(weight);
+		}
+	}
+
 
 double evaluateInnerSum(unsigned int nx, unsigned int ny, unsigned int nz, float r, float l_x,
                         float l_y, float l_z, float r_weight, float l_weight,
