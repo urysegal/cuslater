@@ -134,23 +134,25 @@ __global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r, float 
         // exp(-α1|x1-c1| - α2|x1-c2| - α3|x1-c3+r*l| - α4|x1-c4+r*l|)
         // note |a-b| = sqrt( (a.x-b.x)^2 + (a.y-b.y)^2 + (a.z-b.z)^2 )
 
-        float xdiffc_1 = xvalue - d_c[0];            // x1.x - c1.x
-        float ydiffc_1 = yvalue - d_c[1];            // x1.y - c1.y
-        float xdiffc_2 = xvalue - d_c[3];            // x1.x - c2.x
-        float ydiffc_2 = yvalue - d_c[4];            // x1.y - c2.y
-        float xdiffc_3 = xvalue - d_c[6] + r * l_x;  // x1.x - c3.x + lx
-        float ydiffc_3 = yvalue - d_c[7] + r * l_y;  // x1.y - c3.y + ly
+        float xdiffc_1 = xvalue - d_c[0]; // x1.x - c1.x
+        float ydiffc_1 = yvalue - d_c[1]; // x1.y - c1.y
+        // h1 ≈ sqrt( (x1.x - c1.x)^2 + (x1.y - c1.y)^2 )
+        float h1 = manhatdist(xdiffc_1, ydiffc_1);
+
+        float xdiffc_2 = xvalue - d_c[3]; // x1.x - c2.x
+        float ydiffc_2 = yvalue - d_c[4]; // x1.y - c2.y
+        // h2 ≈ sqrt( (x2.x - c2.x)^2 + (x2.y - c2.y)^2 )
+        float h2 = manhatdist(xdiffc_2, ydiffc_2);
+
+        float xdiffc_3 = xvalue - d_c[6] + r * l_x; // x1.x - c3.x + lx
+        float ydiffc_3 = yvalue - d_c[7] + r * l_y; // x1.y - c3.y + ly
+        // h3 ≈ sqrt( (x1.x - c3.x + lx)^2 + (x1.y - c3.y + ly)^2 )
+        float h3 = manhatdist(xdiffc_3, ydiffc_3);
+
         float xdiffc_4 = xvalue - d_c[9] + r * l_x;  // x1.x - c4.x + lx
         float ydiffc_4 = yvalue - d_c[10] + r * l_y; // x1.y - c4.y + ly
-
-        // (x1.x - c1.x)^2 + (x1.y - c1.y)^2
-        float xysq1 = xdiffc_1 * xdiffc_1 + ydiffc_1 * ydiffc_1;
-        // (x1.x - c2.x)^2 + (x1.y - c2.y)^2
-        float xysq2 = xdiffc_2 * xdiffc_2 + ydiffc_2 * ydiffc_2;
-        // (x1.x - c3.x + lx)^2 + (x1.y - c3.y + ly)^2
-        float xysq3 = xdiffc_3 * xdiffc_3 + ydiffc_3 * ydiffc_3;
-        // (x1.x - c4.x + lx)^2 + (x1.y - c4.y + ly)^2
-        float xysq4 = xdiffc_4 * xdiffc_4 + ydiffc_4 * ydiffc_4;
+        // h4 ≈ sqrt( (x2.x - c4.x + lx)^2 + (x2.y - c4.y + ly)^2 )
+        float h4 = manhatdist(xdiffc_4, ydiffc_4);
 
         double v = 0.0;
 
@@ -161,10 +163,10 @@ __global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r, float 
             float zdiffc_2 = zvalue - d_c[5];                             // x1.z - c2.z
             float zdiffc_3 = zvalue - d_c[8] + r * l_z;                   // x1.z - c3.z + lz
             float zdiffc_4 = zvalue - d_c[11] + r * l_z;                  // x1.z - c4.z + lz
-            float term1 = d_alpha[0] * sqrt(xysq1 + zdiffc_1 * zdiffc_1); // α1 * ✓|x - c1|
-            float term2 = d_alpha[1] * sqrt(xysq2 + zdiffc_2 * zdiffc_2); // α2 * ✓|x - c2|
-            float term3 = d_alpha[2] * sqrt(xysq3 + zdiffc_3 * zdiffc_3); // α3 * ✓|x - c3 + r*l|
-            float term4 = d_alpha[3] * sqrt(xysq4 + zdiffc_4 * zdiffc_4); // α4 * ✓|x - c4 + r*l|
+            float term1 = d_alpha[0] * manhatdist(h1, zdiffc_1); // α1 * ✓|x - c1|
+            float term2 = d_alpha[1] * manhatdist(h2, zdiffc_2); // α2 * ✓|x - c2|
+            float term3 = d_alpha[2] * manhatdist(h3, zdiffc_3); // α3 * ✓|x - c3 + r*l|
+            float term4 = d_alpha[3] * manhatdist(h4, zdiffc_4); // α4 * ✓|x - c4 + r*l|
             float exponent = -term1 - term2 - term3 - term4 + r;
             v += exp(exponent) * wxy * wz;
         }
@@ -175,6 +177,26 @@ __global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r, float 
 __global__ void accumulateSum(double result, float r_weight, float l_weight,
                               double *__restrict__ d_sum) {
     atomicAdd(d_sum, result * r_weight * l_weight);
+}
+
+// calculates the manhatten distance between 2d vectors by the approximation
+//  sqrt( (p.x - q.x)^2 + (p.y - q.y)^2 ) ≈ alpha*MAX + beta*MIN
+// where MAX and MIN correspond to larger/smaller of |p.x - q.x| and |p.y - q.y|
+__device__ float manhatdist(float diffx, float diffy) {
+    // params for Manhatten approximation
+    float m_alpha = 0.9604;
+    float m_beta = 0.3978;
+    float MAX, MIN;
+
+    if (diffx > diffy) {
+        MAX = abs(diffx);
+        MIN = abs(diffy);
+    } else {
+        MAX = abs(diffy);
+        MIN = abs(diffx);
+    }
+
+    return m_alpha * MAX + m_beta * MIN;
 }
 
 } // namespace cuslater

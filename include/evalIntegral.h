@@ -28,4 +28,6 @@ __global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r, float 
 __global__ void accumulateSum(double result, float r_weight, float l_weight,
                               double *__restrict__ d_sum);
 
+__device__ float manhatdist(float px, float py);
+
 } // namespace cuslater
