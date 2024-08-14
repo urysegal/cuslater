@@ -194,7 +194,12 @@ __device__ float manhatdist(float diffx, float diffy) {
     float MAX = max(diffx, diffy);
     float MIN = min(diffx, diffy);
 
-    return m_alpha * MAX + m_beta * MIN;
+    float extra = 0;
+    if (MAX < 16 * MIN) {
+        extra = 0.0390625 * MAX;
+    }
+
+    return m_alpha * MAX + m_beta * MIN - extra;
 }
 
 } // namespace cuslater
