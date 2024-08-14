@@ -30,6 +30,9 @@ int main(int argc, const char *argv[]) {
     // c4 = (c4.x, c4.y, c4.z) = (c[9], c[10], c[11])
     float c[] = {0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0};
 
+    // manhat[0] = alpha and manhat[1] = beta for MaxMin norm approximation
+    float manhat[] = {1, 1};
+
     for (int i = 1; i < argc; ++i) {
         if (std::strcmp(argv[i], "--help") == 0) {
             // Print help message
@@ -42,6 +45,7 @@ int main(int argc, const char *argv[]) {
             std::cout << "  -c3 x3 y3 z3\t\tSets coordinates for c3 (c3.x, c3.y, c3.z)\n";
             std::cout << "  -c4 x4 y4 z4\t\tSets coordinates for c4 (c4.x, c4.y, c4.z)\n";
             std::cout << "  -t tol\t\tSet tolerance value\n";
+            std::cout << "  -m mha mhb\t\tSets alpha and beta parameters for Manhatten Distance\n";
             exit(EXIT_SUCCESS); // Exit after printing help message
 
         } else if (std::strcmp(argv[i], "-a") == 0) {
@@ -99,8 +103,25 @@ int main(int argc, const char *argv[]) {
                 tol = std::atof(argv[i + 1]);
                 ++i; // Skip over tol value
             }
+        } else if (std::strcmp(argv[i], "-m") == 0) {
+            // Read next 2 values as manhatten parameters
+            if (i + 2 >= argc) {
+                std::cerr << "Error: Fewer than 2 manhatten parameters provided.\n";
+                exit(EXIT_FAILURE);
+            }
+            for (int j = 1; j <= 2; ++j) {
+                // a_j = i+1, i+2
+                try {
+                    manhat[j - 1] = std::atof(argv[i + j]);
+                } catch (...) {
+                    std::cerr << "Error: Insufficient numerical values provided for -m option.\n";
+                    exit(EXIT_FAILURE);
+                }
+            }
+            i += 2; // Skip over processed manhatten values
         } else {
-            std::cerr << "Error: Invalid command line parameter. Use ./simple --help for more information.\n";
+            std::cerr << "Error: Invalid command line parameter. Use ./simple --help for more "
+                         "information.\n";
             exit(EXIT_FAILURE);
         }
     }
@@ -110,7 +131,8 @@ int main(int argc, const char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
 
     // this is where all the computation time takes place
-    double sum = cuslater::evaluateFourCenterIntegral(c, alpha, nr, nl, nx, ny, nz, x1_type, tol);
+    double sum =
+        cuslater::evaluateFourCenterIntegral(c, alpha, nr, nl, nx, ny, nz, x1_type, tol, manhat);
 
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);

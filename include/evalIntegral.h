@@ -15,7 +15,7 @@
 // #include "evalInnerIntegral.h"
 namespace cuslater {
 double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx, int ny, int nz,
-                                  const std::string x1_type, double tol);
+                                  const std::string x1_type, double tol, float *manhat);
 
 double evaluateInnerSum(unsigned int nx, unsigned int ny, unsigned int nz, float r, float l_x,
                         float l_y, float l_z, float r_weight, float l_weight,

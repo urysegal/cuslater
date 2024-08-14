@@ -12,12 +12,13 @@ const double pi = 3.14159265358979323846;
 #define THREADS_PER_BLOCK 128
 __constant__ float d_c[12];
 __constant__ float d_alpha[4];
+__constant__ float d_manhat[2];
 __constant__ float d_x_grid[600];
 __constant__ float d_x_weights[600];
 
 namespace cuslater {
 double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx, int ny, int nz,
-                                  const std::string x1_type, double tol) {
+                                  const std::string x1_type, double tol, float *manhat) {
     // read r grid
     std::cout << "Reading r Grid Files" << std::endl;
     const std::string r_filepath = "grid_files/r_" + std::to_string(nr) + ".grid";
@@ -55,6 +56,7 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
     // cuda memory initialization
     cudaMemcpyToSymbol(d_c, c, 12 * sizeof(float));
     cudaMemcpyToSymbol(d_alpha, alpha, 4 * sizeof(float));
+    cudaMemcpyToSymbol(d_manhat, manhat, 2 * sizeof(float));
     cudaMemcpyToSymbol(d_x_grid, x1_nodes.data(), PX * sizeof(float));
     cudaMemcpyToSymbol(d_x_weights, x1_weights.data(), PX * sizeof(float));
 
@@ -79,7 +81,9 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
     std::cout << "  c2 = (" << c[3] << ", " << c[4] << ", " << c[5] << ")\n";
     std::cout << "  c3 = (" << c[6] << ", " << c[7] << ", " << c[8] << ")\n";
     std::cout << "  c4 = (" << c[9] << ", " << c[10] << ", " << c[11] << ")\n";
-    std::cout << "  Tolerance = " << tol << std::endl;
+    std::cout << "  Tolerance = " << tol << "\n";
+    std::cout << "  Manhatten alpha = " << manhat[0] << ", Manhatten beta = " << manhat[1]
+              << std::endl;
     for (int j = 0; j < nl; ++j) {
         for (int i = 0; i < nr; ++i) {
             delta_sum =
@@ -159,10 +163,10 @@ __global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r, float 
         for (int z_idx = 0; z_idx < nz; ++z_idx) {
             float zvalue = d_x_grid[z_idx];
             float wz = d_x_weights[z_idx];
-            float zdiffc_1 = abs(zvalue - d_c[2]);                             // x1.z - c1.z
-            float zdiffc_2 = abs(zvalue - d_c[5]);                             // x1.z - c2.z
-            float zdiffc_3 = abs(zvalue - d_c[8] + r * l_z);                   // x1.z - c3.z + lz
-            float zdiffc_4 = abs(zvalue - d_c[11] + r * l_z);                  // x1.z - c4.z + lz
+            float zdiffc_1 = abs(zvalue - d_c[2]);               // x1.z - c1.z
+            float zdiffc_2 = abs(zvalue - d_c[5]);               // x1.z - c2.z
+            float zdiffc_3 = abs(zvalue - d_c[8] + r * l_z);     // x1.z - c3.z + lz
+            float zdiffc_4 = abs(zvalue - d_c[11] + r * l_z);    // x1.z - c4.z + lz
             float term1 = d_alpha[0] * manhatdist(h1, zdiffc_1); // α1 * ✓|x - c1|
             float term2 = d_alpha[1] * manhatdist(h2, zdiffc_2); // α2 * ✓|x - c2|
             float term3 = d_alpha[2] * manhatdist(h3, zdiffc_3); // α3 * ✓|x - c3 + r*l|
@@ -184,17 +188,11 @@ __global__ void accumulateSum(double result, float r_weight, float l_weight,
 // where MAX and MIN correspond to larger/smaller of |p.x - q.x| and |p.y - q.y|
 __device__ float manhatdist(float diffx, float diffy) {
     // params for Manhatten approximation
-    float m_alpha = 0.960433870103419;
-    float m_beta = 0.397824734759316;
-    float MAX, MIN;
-
-    if (diffx > diffy) {
-        MAX = diffx;
-        MIN = diffy;
-    } else {
-        MAX = diffy;
-        MIN = diffx;
-    }
+    float m_alpha = d_manhat[0];
+    float m_beta = d_manhat[1];
+    
+    float MAX = max(diffx, diffy);
+    float MIN = min(diffx, diffy);
 
     return m_alpha * MAX + m_beta * MIN;
 }
