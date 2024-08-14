@@ -184,8 +184,8 @@ __global__ void accumulateSum(double result, float r_weight, float l_weight,
 // where MAX and MIN correspond to larger/smaller of |p.x - q.x| and |p.y - q.y|
 __device__ float manhatdist(float diffx, float diffy) {
     // params for Manhatten approximation
-    float m_alpha = 0.9604;
-    float m_beta = 0.3978;
+    float m_alpha = 0.960433870103419;
+    float m_beta = 0.397824734759316;
     float MAX, MIN;
 
     if (diffx > diffy) {
