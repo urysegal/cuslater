@@ -67,6 +67,18 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
     HANDLE_CUDA_ERROR(cudaMalloc(&d_sum, sizeof(double)));
     HANDLE_CUDA_ERROR(cudaMemset(d_sum, 0, sizeof(double)));
 
+    // cache for center 1
+    cudaPitchedPtr cent1;
+    cudaExtent extent1 = make_cudaExtent(nx * sizeof(float), ny, nz);
+    HANDLE_CUDA_ERROR(cudaMalloc3D(&cent1, extent1));
+    HANDLE_CUDA_ERROR(cudaMemset3D(cent1, 0, extent1));
+
+    // cache for center 2
+    cudaPitchedPtr cent2;
+    cudaExtent extent2 = make_cudaExtent(nx * sizeof(float), ny, nz);
+    HANDLE_CUDA_ERROR(cudaMalloc3D(&cent2, extent2));
+    HANDLE_CUDA_ERROR(cudaMemset3D(cent2, 0, extent2));
+
     double sum = 0.0;
     double delta_sum = 0.0;
     int r_skipped = 0;
@@ -80,11 +92,15 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
     std::cout << "  c3 = (" << c[6] << ", " << c[7] << ", " << c[8] << ")\n";
     std::cout << "  c4 = (" << c[9] << ", " << c[10] << ", " << c[11] << ")\n";
     std::cout << "  Tolerance = " << tol << std::endl;
+
+    // caching for both centers that doesn't need r and l
+    cacheValues<<<blocks, threads>>>(nx, ny, nz, cent1, cent2);
+
     for (int j = 0; j < nl; ++j) {
         for (int i = 0; i < nr; ++i) {
-            delta_sum =
-                evaluateInnerSum(nx, ny, nz, r_nodes[i], l_nodes_x[j], l_nodes_y[j], l_nodes_z[j],
-                                 r_weights[i], l_weights[j], d_result, d_sum, blocks, threads, 0);
+            delta_sum = evaluateInnerSum(nx, ny, nz, r_nodes[i], l_nodes_x[j], l_nodes_y[j],
+                                         l_nodes_z[j], r_weights[i], l_weights[j], d_result, d_sum,
+                                         blocks, threads, 0, cent1, cent2);
             if (delta_sum < tol) {
                 r_skipped += nr - i;
                 break;
@@ -106,11 +122,12 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
 double evaluateInnerSum(unsigned int nx, unsigned int ny, unsigned int nz, float r, float l_x,
                         float l_y, float l_z, float r_weight, float l_weight,
                         thrust::device_vector<double> &__restrict__ d_result,
-                        double *__restrict__ d_sum, int blocks, int threads, int gpu_num) {
+                        double *__restrict__ d_sum, int blocks, int threads, int gpu_num,
+                        cudaPitchedPtr cent1, cudaPitchedPtr cent2) {
     HANDLE_CUDA_ERROR(cudaSetDevice(gpu_num));
 
     evaluateIntegrandReduceZ<<<blocks, threads>>>(nx, ny, nz, r, l_x, l_y, l_z,
-                                                  raw_pointer_cast(d_result.data()));
+                                                  raw_pointer_cast(d_result.data()), cent1, cent2);
     // Reduce vector on GPU within each block
     double delta_sum =
         thrust::reduce(d_result.begin(), d_result.end(), (double)0.0, thrust::plus<double>());
@@ -119,8 +136,7 @@ double evaluateInnerSum(unsigned int nx, unsigned int ny, unsigned int nz, float
     return delta_sum;
 } // evaluateInner
 
-__global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r, float l_x, float l_y,
-                                         float l_z, double *__restrict__ res) {
+__global__ void cacheValues(int nx, int ny, int nz, cudaPitchedPtr cent1, cudaPitchedPtr cent2) {
     // gets index for current thread and blcok
     int idx = threadIdx.x + blockIdx.x * blockDim.x;
     if (idx < nx * ny) {
@@ -134,39 +150,76 @@ __global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r, float 
         // exp(-α1|x1-c1| - α2|x1-c2| - α3|x1-c3+r*l| - α4|x1-c4+r*l|)
         // note |a-b| = sqrt( (a.x-b.x)^2 + (a.y-b.y)^2 + (a.z-b.z)^2 )
 
-        float xdiffc_1 = xvalue - d_c[0];            // x1.x - c1.x
-        float ydiffc_1 = yvalue - d_c[1];            // x1.y - c1.y
-        float xdiffc_2 = xvalue - d_c[3];            // x1.x - c2.x
-        float ydiffc_2 = yvalue - d_c[4];            // x1.y - c2.y
-        float xdiffc_3 = xvalue - d_c[6] + r * l_x;  // x1.x - c3.x + lx
-        float ydiffc_3 = yvalue - d_c[7] + r * l_y;  // x1.y - c3.y + ly
-        float xdiffc_4 = xvalue - d_c[9] + r * l_x;  // x1.x - c4.x + lx
-        float ydiffc_4 = yvalue - d_c[10] + r * l_y; // x1.y - c4.y + ly
+        float xdiffc_1 = xvalue - d_c[0]; // x1.x - c1.x
+        float ydiffc_1 = yvalue - d_c[1]; // x1.y - c1.y
+        float xdiffc_2 = xvalue - d_c[3]; // x1.x - c2.x
+        float ydiffc_2 = yvalue - d_c[4]; // x1.y - c2.y
 
         // (x1.x - c1.x)^2 + (x1.y - c1.y)^2
         float xysq1 = xdiffc_1 * xdiffc_1 + ydiffc_1 * ydiffc_1;
         // (x1.x - c2.x)^2 + (x1.y - c2.y)^2
         float xysq2 = xdiffc_2 * xdiffc_2 + ydiffc_2 * ydiffc_2;
+
+        float *row1 = (float *)((char *)cent1.ptr + y_idx * cent1.pitch) + x_idx;
+        float *row2 = (float *)((char *)cent2.ptr + y_idx * cent2.pitch) + x_idx;
+
+        for (int z_idx = 0; z_idx < nz; ++z_idx) {
+            float zvalue = d_x_grid[z_idx];
+            float zdiffc_1 = zvalue - d_c[2];
+            float zdiffc_2 = zvalue - d_c[5];
+            float term1 = d_alpha[0] * sqrt(xysq1 + zdiffc_1 * zdiffc_1); // α1 * ✓|x - c1|
+            float term2 = d_alpha[1] * sqrt(xysq2 + zdiffc_2 * zdiffc_2); // α2 * ✓|x - c2|
+            //printf("Value at (%d, %d, %d): %f\n", x_idx, y_idx, z_idx, term1);
+            row1[z_idx] = term1;
+            row2[z_idx] = term2;
+        }
+    }
+}
+
+__global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r, float l_x, float l_y,
+                                         float l_z, double *__restrict__ res, cudaPitchedPtr cent1,
+                                         cudaPitchedPtr cent2) {
+    // gets index for current thread and blcok
+    int idx = threadIdx.x + blockIdx.x * blockDim.x;
+    if (idx < nx * ny) {
+        int y_idx = idx / nx;
+        int x_idx = idx % nx;
+        float xvalue = d_x_grid[x_idx];
+        float yvalue = d_x_grid[y_idx];
+
+        float wxy = d_x_weights[x_idx] * d_x_weights[y_idx];
+        // compute function value
+        // exp(-α1|x1-c1| - α2|x1-c2| - α3|x1-c3+r*l| - α4|x1-c4+r*l|)
+        // note |a-b| = sqrt( (a.x-b.x)^2 + (a.y-b.y)^2 + (a.z-b.z)^2 )
+
+        float xdiffc_3 = xvalue - d_c[6] + r * l_x;  // x1.x - c3.x + lx
+        float ydiffc_3 = yvalue - d_c[7] + r * l_y;  // x1.y - c3.y + ly
+        float xdiffc_4 = xvalue - d_c[9] + r * l_x;  // x1.x - c4.x + lx
+        float ydiffc_4 = yvalue - d_c[10] + r * l_y; // x1.y - c4.y + ly
+
         // (x1.x - c3.x + lx)^2 + (x1.y - c3.y + ly)^2
         float xysq3 = xdiffc_3 * xdiffc_3 + ydiffc_3 * ydiffc_3;
         // (x1.x - c4.x + lx)^2 + (x1.y - c4.y + ly)^2
         float xysq4 = xdiffc_4 * xdiffc_4 + ydiffc_4 * ydiffc_4;
 
         double v = 0.0;
+        float *row1 = (float *)((char *)cent1.ptr + y_idx * cent1.pitch) + x_idx;
+        float *row2 = (float *)((char *)cent2.ptr + y_idx * cent2.pitch) + x_idx;
 
         for (int z_idx = 0; z_idx < nz; ++z_idx) {
             float zvalue = d_x_grid[z_idx];
             float wz = d_x_weights[z_idx];
-            float zdiffc_1 = zvalue - d_c[2];                             // x1.z - c1.z
-            float zdiffc_2 = zvalue - d_c[5];                             // x1.z - c2.z
-            float zdiffc_3 = zvalue - d_c[8] + r * l_z;                   // x1.z - c3.z + lz
-            float zdiffc_4 = zvalue - d_c[11] + r * l_z;                  // x1.z - c4.z + lz
-            float term1 = d_alpha[0] * sqrt(xysq1 + zdiffc_1 * zdiffc_1); // α1 * ✓|x - c1|
-            float term2 = d_alpha[1] * sqrt(xysq2 + zdiffc_2 * zdiffc_2); // α2 * ✓|x - c2|
+            float zdiffc_3 = zvalue - d_c[8] + r * l_z;  // x1.z - c3.z + lz
+            float zdiffc_4 = zvalue - d_c[11] + r * l_z; // x1.z - c4.z + lz
+            // results from cache
+            float term1 = row1[z_idx];
+            float term2 = row2[z_idx];
+            //printf("term1 = %f\n", term1);
+
             float term3 = d_alpha[2] * sqrt(xysq3 + zdiffc_3 * zdiffc_3); // α3 * ✓|x - c3 + r*l|
             float term4 = d_alpha[3] * sqrt(xysq4 + zdiffc_4 * zdiffc_4); // α4 * ✓|x - c4 + r*l|
             float exponent = -term1 - term2 - term3 - term4 + r;
-            v += exp(exponent) * wxy * wz;
+            v += __expf(exponent) * wxy * wz;
         }
         res[idx] = v;
     }

@@ -20,10 +20,14 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
 double evaluateInnerSum(unsigned int nx, unsigned int ny, unsigned int nz, float r, float l_x,
                         float l_y, float l_z, float r_weight, float l_weight,
                         thrust::device_vector<double> &__restrict__ d_result,
-                        double *__restrict__ d_sum, int blocks, int threads, int gpu_num);
+                        double *__restrict__ d_sum, int blocks, int threads, int gpu_num,
+                        cudaPitchedPtr cent1, cudaPitchedPtr cent2);
+
+__global__ void cacheValues(int nx, int ny, int nz, cudaPitchedPtr cent1, cudaPitchedPtr cent2);
 
 __global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r, float l_x, float l_y,
-                                         float l_z, double *__restrict__ res);
+                                         float l_z, double *__restrict__ res, cudaPitchedPtr cent1,
+                                         cudaPitchedPtr cent2);
 
 __global__ void accumulateSum(double result, float r_weight, float l_weight,
                               double *__restrict__ d_sum);

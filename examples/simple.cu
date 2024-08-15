@@ -124,7 +124,7 @@ int main(int argc, const char *argv[]) {
     message << "result: ";
     message << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10);
     message << sum << "\n";
-    message << "Time Elapsed: " << duration.count() / 1e6 << " seconds";
+    message << "Time Elapsed: " << duration.count() / 1e6 << " seconds\n";
 
     std::cout << message.str() << std::endl;
 }
