@@ -143,28 +143,35 @@ __global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r, float 
         float xdiffc_4 = xvalue - d_c[9] + r * l_x;  // x1.x - c4.x + lx
         float ydiffc_4 = yvalue - d_c[10] + r * l_y; // x1.y - c4.y + ly
 
-        // (x1.x - c1.x)^2 + (x1.y - c1.y)^2
-        float xysq1 = xdiffc_1 * xdiffc_1 + ydiffc_1 * ydiffc_1;
-        // (x1.x - c2.x)^2 + (x1.y - c2.y)^2
-        float xysq2 = xdiffc_2 * xdiffc_2 + ydiffc_2 * ydiffc_2;
-        // (x1.x - c3.x + lx)^2 + (x1.y - c3.y + ly)^2
-        float xysq3 = xdiffc_3 * xdiffc_3 + ydiffc_3 * ydiffc_3;
-        // (x1.x - c4.x + lx)^2 + (x1.y - c4.y + ly)^2
-        float xysq4 = xdiffc_4 * xdiffc_4 + ydiffc_4 * ydiffc_4;
+        const double xyarr1[2] = {xdiffc_1, ydiffc_1};
+        const double xyarr2[2] = {xdiffc_2, ydiffc_2};
+        const double xyarr3[2] = {xdiffc_3, ydiffc_3};
+        const double xyarr4[2] = {xdiffc_4, ydiffc_4};
+
+        float h1 = norm(2, xyarr1);
+        float h2 = norm(2, xyarr2);
+        float h3 = norm(2, xyarr3);
+        float h4 = norm(2, xyarr4);
 
         double v = 0.0;
 
         for (int z_idx = 0; z_idx < nz; ++z_idx) {
             float zvalue = d_x_grid[z_idx];
             float wz = d_x_weights[z_idx];
-            float zdiffc_1 = zvalue - d_c[2];                             // x1.z - c1.z
-            float zdiffc_2 = zvalue - d_c[5];                             // x1.z - c2.z
-            float zdiffc_3 = zvalue - d_c[8] + r * l_z;                   // x1.z - c3.z + lz
-            float zdiffc_4 = zvalue - d_c[11] + r * l_z;                  // x1.z - c4.z + lz
-            float term1 = d_alpha[0] * sqrt(xysq1 + zdiffc_1 * zdiffc_1); // α1 * ✓|x - c1|
-            float term2 = d_alpha[1] * sqrt(xysq2 + zdiffc_2 * zdiffc_2); // α2 * ✓|x - c2|
-            float term3 = d_alpha[2] * sqrt(xysq3 + zdiffc_3 * zdiffc_3); // α3 * ✓|x - c3 + r*l|
-            float term4 = d_alpha[3] * sqrt(xysq4 + zdiffc_4 * zdiffc_4); // α4 * ✓|x - c4 + r*l|
+            float zdiffc_1 = zvalue - d_c[2];            // x1.z - c1.z
+            float zdiffc_2 = zvalue - d_c[5];            // x1.z - c2.z
+            float zdiffc_3 = zvalue - d_c[8] + r * l_z;  // x1.z - c3.z + lz
+            float zdiffc_4 = zvalue - d_c[11] + r * l_z; // x1.z - c4.z + lz
+
+            const double hzarr1[2] = {h1, zdiffc_1};
+            const double hzarr2[2] = {h2, zdiffc_2};
+            const double hzarr3[2] = {h3, zdiffc_3};
+            const double hzarr4[2] = {h4, zdiffc_4};
+
+            double term1 = d_alpha[0] * norm(2, hzarr1); // α1 * ✓|x - c1|
+            double term2 = d_alpha[1] * norm(2, hzarr2); // α2 * ✓|x - c2|
+            double term3 = d_alpha[2] * norm(2, hzarr3); // α3 * ✓|x - c3 + r*l|
+            double term4 = d_alpha[3] * norm(2, hzarr4); // α4 * ✓|x - c4 + r*l|
             float exponent = -term1 - term2 - term3 - term4 + r;
             v += exp(exponent) * wxy * wz;
         }
