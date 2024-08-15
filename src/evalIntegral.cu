@@ -19,14 +19,14 @@ namespace cuslater {
 double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx, int ny, int nz,
                                   const std::string x1_type, double tol) {
     // read r grid
-    std::cout << "Reading r Grid Files" << std::endl;
+    //std::cout << "Reading r Grid Files" << std::endl;
     const std::string r_filepath = "grid_files/r_" + std::to_string(nr) + ".grid";
     std::vector<float> r_nodes;
     std::vector<float> r_weights;
     read_r_grid_from_file(r_filepath, r_nodes, r_weights);
 
     // read l grid
-    std::cout << "Reading l Grid Files" << std::endl;
+    //std::cout << "Reading l Grid Files" << std::endl;
     const std::string l_filepath = "grid_files/l_" + std::to_string(nl) + ".grid";
     std::vector<float> l_nodes_x;
     std::vector<float> l_nodes_y;
@@ -35,7 +35,7 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
     read_l_grid_from_file(l_filepath, l_nodes_x, l_nodes_y, l_nodes_z, l_weights);
 
     // Read x1 grid
-    std::cout << "Reading x1 Grid Files" << std::endl;
+    //std::cout << "Reading x1 Grid Files" << std::endl;
     const std::string x1_filepath =
         "grid_files/x1_" + x1_type + "_1d_" + std::to_string(nx) + ".grid";
     std::vector<float> x1_nodes;
@@ -45,7 +45,7 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
     read_x1_1d_grid_from_file(x1_filepath, a, b, x1_nodes, x1_weights);
 
     // Initializing Device Variables
-    std::cout << "Initializing Device Variables" << std::endl;
+    //std::cout << "Initializing Device Variables" << std::endl;
     unsigned int PX = x1_nodes.size();
     int threads = THREADS_PER_BLOCK;                // Max threads per block
     int blocks = (PX * PX + threads - 1) / threads; // Max blocks, better if multiple of SM = 80
@@ -79,7 +79,9 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
     std::cout << "  c2 = (" << c[3] << ", " << c[4] << ", " << c[5] << ")\n";
     std::cout << "  c3 = (" << c[6] << ", " << c[7] << ", " << c[8] << ")\n";
     std::cout << "  c4 = (" << c[9] << ", " << c[10] << ", " << c[11] << ")\n";
-    std::cout << "  Tolerance = " << tol << std::endl;
+    std::cout << "  Tolerance = " << tol << "\n";
+    std::cout << "  nl = " << nl << ", nr = " << nr << std::endl;
+
     for (int j = 0; j < nl; ++j) {
         for (int i = 0; i < nr; ++i) {
             delta_sum =
@@ -90,9 +92,9 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
                 break;
             }
         }
-        if (j % 50 == 0) {
-            std::cout << "computed for l_j:" << j << "/" << nl << std::endl;
-        }
+        // if (j % 50 == 0) {
+        //     std::cout << "computed for l_j:" << j << "/" << nl << std::endl;
+        // }
     }
     HANDLE_CUDA_ERROR(cudaMemcpy(&sum, d_sum, sizeof(double), cudaMemcpyDeviceToHost));
     sum = sum * (4.0 / pi) * std::pow(alpha[0] * alpha[1] * alpha[2] * alpha[3], 1.5);
