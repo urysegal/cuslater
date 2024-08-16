@@ -100,7 +100,8 @@ int main(int argc, const char *argv[]) {
                 ++i; // Skip over tol value
             }
         } else {
-            std::cerr << "Error: Invalid command line parameter. Use ./simple --help for more information.\n";
+            std::cerr << "Error: Invalid command line parameter. Use ./simple --help for more "
+                         "information.\n";
             exit(EXIT_FAILURE);
         }
     }
@@ -109,8 +110,23 @@ int main(int argc, const char *argv[]) {
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    // this is where all the computation time takes place
-    double sum = cuslater::evaluateFourCenterIntegral(c, alpha, nr, nl, nx, ny, nz, x1_type, tol);
+    double sum = 0;
+    float normdiff13 = sqrt((c[0] - c[6]) * (c[0] - c[6]) +
+                            (c[1] - c[7]) * (c[1] - c[7]) +
+                            (c[2] - c[8]) * (c[2] - c[8]));
+    float normdiff24 = sqrt((c[3] - c[9]) * (c[3] - c[9]) +
+                            (c[4] - c[10]) * (c[4] - c[10]) +
+                            (c[5] - c[11]) * (c[5] - c[11]));
+    float cond = min(alpha[0], alpha[2]) * normdiff13 + min(alpha[1], alpha[3]) * normdiff24;
+    float r0 = 1;
+    int inv_machine_eps = 1e8;
+    printf("zero condition: check wheter %f > %f, \n", cond, log(r0 * inv_machine_eps));
+    if (cond > log(r0 * inv_machine_eps)) {
+        std::cout << "Zero condition met" << std::endl;
+    } else {
+        // this is where all the computation time takes place
+        sum = cuslater::evaluateFourCenterIntegral(c, alpha, nr, nl, nx, ny, nz, x1_type, tol);
+    }
 
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
