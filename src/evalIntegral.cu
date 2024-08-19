@@ -166,8 +166,9 @@ __global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r, float 
             float term3 = d_alpha[2] * sqrt(xysq3 + zdiffc_3 * zdiffc_3); // α3 * ✓|x - c3 + r*l|
             float term4 = d_alpha[3] * sqrt(xysq4 + zdiffc_4 * zdiffc_4); // α4 * ✓|x - c4 + r*l|
             float exponent = -term1 - term2 - term3 - term4 + r;
-            if (x_idx < 3 && y_idx < 3 && z_idx < 3) {
-                printf("Thread  read [%d, %d, %d] -> exponent = %f\n", x_idx, y_idx, z_idx, exponent);
+            if (x_idx < 5 && y_idx < 5 && z_idx < 5) {
+                printf("Thread  read [%d, %d, %d] -> term1 = %f, term 2 = %f\n", x_idx, y_idx,
+                       z_idx, term1, term2);
             }
             v += exp(exponent) * wxy * wz;
         }
