@@ -12,9 +12,9 @@ using namespace std;
 
 int main(int argc, const char *argv[]) {
     // represents number of points to calculate in the x,y,z direction
-    int nx = 21;
-    int ny = 21;
-    int nz = 21;
+    int nx = 375;
+    int ny = 375;
+    int nz = 375;
     int nr = 89;
     int nl = 590;
 
