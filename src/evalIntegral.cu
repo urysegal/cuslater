@@ -19,14 +19,14 @@ namespace cuslater {
 double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx, int ny, int nz,
                                   const std::string x1_type, double tol) {
     // read r grid
-    //std::cout << "Reading r Grid Files" << std::endl;
+    // std::cout << "Reading r Grid Files" << std::endl;
     const std::string r_filepath = "grid_files/r_" + std::to_string(nr) + ".grid";
     std::vector<float> r_nodes;
     std::vector<float> r_weights;
     read_r_grid_from_file(r_filepath, r_nodes, r_weights);
 
     // read l grid
-    //std::cout << "Reading l Grid Files" << std::endl;
+    // std::cout << "Reading l Grid Files" << std::endl;
     const std::string l_filepath = "grid_files/l_" + std::to_string(nl) + ".grid";
     std::vector<float> l_nodes_x;
     std::vector<float> l_nodes_y;
@@ -35,7 +35,7 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
     read_l_grid_from_file(l_filepath, l_nodes_x, l_nodes_y, l_nodes_z, l_weights);
 
     // Read x1 grid
-    //std::cout << "Reading x1 Grid Files" << std::endl;
+    // std::cout << "Reading x1 Grid Files" << std::endl;
     const std::string x1_filepath =
         "grid_files/x1_" + x1_type + "_1d_" + std::to_string(nx) + ".grid";
     std::vector<float> x1_nodes;
@@ -45,7 +45,7 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
     read_x1_1d_grid_from_file(x1_filepath, a, b, x1_nodes, x1_weights);
 
     // Initializing Device Variables
-    //std::cout << "Initializing Device Variables" << std::endl;
+    // std::cout << "Initializing Device Variables" << std::endl;
     unsigned int PX = x1_nodes.size();
     int threads = THREADS_PER_BLOCK;                // Max threads per block
     int blocks = (PX * PX + threads - 1) / threads; // Max blocks, better if multiple of SM = 80
@@ -68,7 +68,6 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
     HANDLE_CUDA_ERROR(cudaMemset(d_sum, 0, sizeof(double)));
 
     double sum = 0.0;
-    double delta_sum = 0.0;
     int r_skipped = 0;
 
     // main loop
@@ -84,13 +83,12 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
 
     for (int j = 0; j < nl; ++j) {
         for (int i = 0; i < nr; ++i) {
-            delta_sum =
-                evaluateInnerSum(nx, ny, nz, r_nodes[i], l_nodes_x[j], l_nodes_y[j], l_nodes_z[j],
-                                 r_weights[i], l_weights[j], d_result, d_sum, blocks, threads, 0);
-            if (delta_sum < tol) {
-                r_skipped += nr - i;
-                break;
-            }
+            evaluateInnerSum(nx, ny, nz, r_nodes[i], l_nodes_x[j], l_nodes_y[j], l_nodes_z[j],
+                             r_weights[i], l_weights[j], d_result, d_sum, blocks, threads, 0);
+            // if (delta_sum < tol) {
+            //     r_skipped += nr - i;
+            //     break;
+            // }
         }
         // if (j % 50 == 0) {
         //     std::cout << "computed for l_j:" << j << "/" << nl << std::endl;
@@ -168,6 +166,9 @@ __global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r, float 
             float term3 = d_alpha[2] * sqrt(xysq3 + zdiffc_3 * zdiffc_3); // α3 * ✓|x - c3 + r*l|
             float term4 = d_alpha[3] * sqrt(xysq4 + zdiffc_4 * zdiffc_4); // α4 * ✓|x - c4 + r*l|
             float exponent = -term1 - term2 - term3 - term4 + r;
+            if (x_idx < 3 && y_idx < 3 && z_idx < 3) {
+                printf("Thread  read [%d, %d, %d] -> exponent = %f\n", x_idx, y_idx, z_idx, exponent);
+            }
             v += exp(exponent) * wxy * wz;
         }
         res[idx] = v;
