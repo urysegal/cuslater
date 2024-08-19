@@ -67,17 +67,17 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
     HANDLE_CUDA_ERROR(cudaMalloc(&d_sum, sizeof(double)));
     HANDLE_CUDA_ERROR(cudaMemset(d_sum, 0, sizeof(double)));
 
-    // cache for center 1
+    // memory allocation for center 1 cache
     cudaPitchedPtr cent1;
     cudaExtent extent1 = make_cudaExtent(nx * sizeof(float), ny, nz);
     HANDLE_CUDA_ERROR(cudaMalloc3D(&cent1, extent1));
-    HANDLE_CUDA_ERROR(cudaMemset3D(cent1, 0, extent1));
+    HANDLE_CUDA_ERROR(cudaMemset3D(cent1, 0, extent1)); // fill with 0s initially
 
-    // cache for center 2
+    // memory allocation for center 2 cache
     cudaPitchedPtr cent2;
     cudaExtent extent2 = make_cudaExtent(nx * sizeof(float), ny, nz);
     HANDLE_CUDA_ERROR(cudaMalloc3D(&cent2, extent2));
-    HANDLE_CUDA_ERROR(cudaMemset3D(cent2, 0, extent2));
+    HANDLE_CUDA_ERROR(cudaMemset3D(cent2, 0, extent2)); // fill with 0s initially
 
     double sum = 0.0;
     double delta_sum = 0.0;
@@ -98,9 +98,10 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
 
     for (int j = 0; j < nl; ++j) {
         for (int i = 0; i < nr; ++i) {
-            delta_sum = evaluateInnerSum(nx, ny, nz, r_nodes[i], l_nodes_x[j], l_nodes_y[j], l_nodes_z[j],
-                             r_weights[i], l_weights[j], d_result, d_sum, blocks, threads, 0, cent1,
-                             cent2);
+            delta_sum = evaluateInnerSum(nx, ny, nz, r_nodes[i], l_nodes_x[j], l_nodes_y[j],
+                                         l_nodes_z[j], r_weights[i], l_weights[j], d_result, d_sum,
+                                         blocks, threads, 0, cent1, cent2);
+            // smaller tolerence size -> more precision, slower speed
             if (delta_sum < tol) {
                 r_skipped += nr - i;
                 break;
@@ -136,6 +137,7 @@ double evaluateInnerSum(unsigned int nx, unsigned int ny, unsigned int nz, float
     return delta_sum;
 } // evaluateInner
 
+// function to compute exponent terms for center 1 and 2 and put them in cache to be read later
 __global__ void cacheValues(int nx, int ny, int nz, cudaPitchedPtr cent1, cudaPitchedPtr cent2) {
     // gets index for current thread and blcok
     int idx = threadIdx.x + blockIdx.x * blockDim.x;
@@ -146,9 +148,6 @@ __global__ void cacheValues(int nx, int ny, int nz, cudaPitchedPtr cent1, cudaPi
         float yvalue = d_x_grid[y_idx];
 
         float wxy = d_x_weights[x_idx] * d_x_weights[y_idx];
-        // compute function value
-        // exp(-α1|x1-c1| - α2|x1-c2| - α3|x1-c3+r*l| - α4|x1-c4+r*l|)
-        // note |a-b| = sqrt( (a.x-b.x)^2 + (a.y-b.y)^2 + (a.z-b.z)^2 )
 
         float xdiffc_1 = xvalue - d_c[0]; // x1.x - c1.x
         float ydiffc_1 = yvalue - d_c[1]; // x1.y - c1.y
@@ -160,6 +159,12 @@ __global__ void cacheValues(int nx, int ny, int nz, cudaPitchedPtr cent1, cudaPi
         // (x1.x - c2.x)^2 + (x1.y - c2.y)^2
         float xysq2 = xdiffc_2 * xdiffc_2 + ydiffc_2 * ydiffc_2;
 
+        // Precompute the base pointer for this slice
+        char *slice1_base = (char *)cent1.ptr + y_idx * cent1.pitch;
+        float *row1_base = (float *)slice1_base + x_idx;
+        char *slice2_base = (char *)cent2.ptr + y_idx * cent2.pitch;
+        float *row2_base = (float *)slice2_base + x_idx;
+
         for (int z_idx = 0; z_idx < nz; ++z_idx) {
             float zvalue = d_x_grid[z_idx];
             float zdiffc_1 = zvalue - d_c[2];
@@ -167,22 +172,20 @@ __global__ void cacheValues(int nx, int ny, int nz, cudaPitchedPtr cent1, cudaPi
             float term1 = d_alpha[0] * sqrt(xysq1 + zdiffc_1 * zdiffc_1); // α1 * ✓|x - c1|
             float term2 = d_alpha[1] * sqrt(xysq2 + zdiffc_2 * zdiffc_2); // α2 * ✓|x - c2|
 
-            // Compute the correct offset for z_idx as well
-            char *slice1 = (char *)cent1.ptr + z_idx * cent1.pitch * ny; // Offset by z_idx
-            float *elem1 = (float *)(slice1 + y_idx * cent1.pitch) + x_idx;
-            *elem1 = term1;
-
-            char *slice2 = (char *)cent2.ptr + z_idx * cent2.pitch * ny; // Offset by z_idx
-            float *elem2 = (float *)(slice2 + y_idx * cent2.pitch) + x_idx;
-            *elem2 = term2;
+            // Compute the correct offset for element
+            float *elem1 = row1_base + z_idx * (cent1.pitch / sizeof(float) * ny);
+            *elem1 = term1; // essentially cent1[x_idx, y_idx, z_idz] = term1
+            float *elem2 = row2_base + z_idx * (cent2.pitch / sizeof(float) * ny);
+            *elem2 = term2; // essentially cent2[x_idx, y_idx, z_idz] = term2
         }
     }
 }
 
+// computes exponential terms for center 3 and 4 and reads other term values from cache
 __global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r, float l_x, float l_y,
                                          float l_z, double *__restrict__ res, cudaPitchedPtr cent1,
                                          cudaPitchedPtr cent2) {
-    // gets index for current thread and blcok
+    // gets index for current thread and block
     int idx = threadIdx.x + blockIdx.x * blockDim.x;
     if (idx < nx * ny) {
         int y_idx = idx / nx;
@@ -206,6 +209,11 @@ __global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r, float 
         float xysq4 = xdiffc_4 * xdiffc_4 + ydiffc_4 * ydiffc_4;
 
         double v = 0.0;
+        // Precompute the base pointer for this slice
+        char *slice1_base = (char *)cent1.ptr + y_idx * cent1.pitch;
+        float *row1_base = (float *)slice1_base + x_idx;
+        char *slice2_base = (char *)cent2.ptr + y_idx * cent2.pitch;
+        float *row2_base = (float *)slice2_base + x_idx;
 
         for (int z_idx = 0; z_idx < nz; ++z_idx) {
             float zvalue = d_x_grid[z_idx];
@@ -213,13 +221,11 @@ __global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r, float 
             float zdiffc_3 = zvalue - d_c[8] + r * l_z;  // x1.z - c3.z + lz
             float zdiffc_4 = zvalue - d_c[11] + r * l_z; // x1.z - c4.z + lz
 
-            // results from cache
-            char *slice1 = (char *)cent1.ptr + z_idx * cent1.pitch * ny; // Offset by z_idx
-            float *elem1 = (float *)(slice1 + y_idx * cent1.pitch) + x_idx;
-            float term1 = *elem1;
-            char *slice2 = (char *)cent2.ptr + z_idx * cent2.pitch * ny; // Offset by z_idx
-            float *elem2 = (float *)(slice2 + y_idx * cent2.pitch) + x_idx;
-            float term2 = *elem2;
+            // Compute the correct offset for element
+            float *elem1 = row1_base + z_idx * (cent1.pitch / sizeof(float) * ny);
+            float term1 = *elem1; // essentially term1 = cent1[x_idx, y_idx, z_idz]
+            float *elem2 = row2_base + z_idx * (cent2.pitch / sizeof(float) * ny);
+            float term2 = *elem2; // essentially term2 = cent2[x_idx, y_idx, z_idz]
 
             // if (x_idx < 5 && y_idx < 5 && z_idx < 5) {
             //     printf("Thread  read [%d, %d, %d] -> term1 = %f, term 2 = %f\n", x_idx, y_idx,
