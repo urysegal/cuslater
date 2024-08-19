@@ -80,7 +80,7 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
     HANDLE_CUDA_ERROR(cudaMemset3D(cent2, 0, extent2));
 
     double sum = 0.0;
-    //double delta_sum = 0.0;
+    // double delta_sum = 0.0;
     int r_skipped = 0;
 
     // main loop
@@ -160,20 +160,21 @@ __global__ void cacheValues(int nx, int ny, int nz, cudaPitchedPtr cent1, cudaPi
         // (x1.x - c2.x)^2 + (x1.y - c2.y)^2
         float xysq2 = xdiffc_2 * xdiffc_2 + ydiffc_2 * ydiffc_2;
 
-        float *row1 = (float *)((char *)cent1.ptr + y_idx * cent1.pitch) + x_idx;
-        float *row2 = (float *)((char *)cent2.ptr + y_idx * cent2.pitch) + x_idx;
-
         for (int z_idx = 0; z_idx < nz; ++z_idx) {
             float zvalue = d_x_grid[z_idx];
             float zdiffc_1 = zvalue - d_c[2];
             float zdiffc_2 = zvalue - d_c[5];
             float term1 = d_alpha[0] * sqrt(xysq1 + zdiffc_1 * zdiffc_1); // α1 * ✓|x - c1|
             float term2 = d_alpha[1] * sqrt(xysq2 + zdiffc_2 * zdiffc_2); // α2 * ✓|x - c2|
-            if (x_idx < 3 && y_idx < 3 && z_idx < 3) {
-                printf("  Thread write [%d, %d, %d] -> term1 = %f\n", x_idx, y_idx, z_idx, term1);
-            }
-            row1[z_idx] = term1;
-            row2[z_idx] = term2;
+
+            // Compute the correct offset for z_idx as well
+            char *slice1 = (char *)cent1.ptr + z_idx * cent1.pitch * ny; // Offset by z_idx
+            float *elem1 = (float *)(slice1 + y_idx * cent1.pitch) + x_idx;
+            *elem1 = term1;
+
+            char *slice2 = (char *)cent2.ptr + z_idx * cent2.pitch * ny; // Offset by z_idx
+            float *elem2 = (float *)(slice2 + y_idx * cent2.pitch) + x_idx;
+            *elem2 = term2;
         }
     }
 }
@@ -205,19 +206,24 @@ __global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r, float 
         float xysq4 = xdiffc_4 * xdiffc_4 + ydiffc_4 * ydiffc_4;
 
         double v = 0.0;
-        float *row1 = (float *)((char *)cent1.ptr + y_idx * cent1.pitch) + x_idx;
-        float *row2 = (float *)((char *)cent2.ptr + y_idx * cent2.pitch) + x_idx;
 
         for (int z_idx = 0; z_idx < nz; ++z_idx) {
             float zvalue = d_x_grid[z_idx];
             float wz = d_x_weights[z_idx];
             float zdiffc_3 = zvalue - d_c[8] + r * l_z;  // x1.z - c3.z + lz
             float zdiffc_4 = zvalue - d_c[11] + r * l_z; // x1.z - c4.z + lz
+
             // results from cache
-            float term1 = row1[z_idx];
-            float term2 = row2[z_idx];
-            if (x_idx < 3 && y_idx < 3 && z_idx < 3) {
-                printf("  Thread  read [%d, %d, %d] -> term1 = %f\n", x_idx, y_idx, z_idx, term1);
+            char *slice1 = (char *)cent1.ptr + z_idx * cent1.pitch * ny; // Offset by z_idx
+            float *elem1 = (float *)(slice1 + y_idx * cent1.pitch) + x_idx;
+            float term1 = *elem1;
+            char *slice2 = (char *)cent2.ptr + z_idx * cent2.pitch * ny; // Offset by z_idx
+            float *elem2 = (float *)(slice2 + y_idx * cent2.pitch) + x_idx;
+            float term2 = *elem2;
+
+            if (x_idx < 5 && y_idx < 5 && z_idx < 5) {
+                printf("Thread  read [%d, %d, %d] -> term1 = %f, term 2 = %f\n", x_idx, y_idx,
+                       z_idx, term1, term2);
             }
 
             float term3 = d_alpha[2] * sqrt(xysq3 + zdiffc_3 * zdiffc_3); // α3 * ✓|x - c3 + r*l|
