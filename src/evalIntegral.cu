@@ -68,6 +68,7 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
     HANDLE_CUDA_ERROR(cudaMemset(d_sum, 0, sizeof(double)));
 
     double sum = 0.0;
+    double delta_sum;
     int r_skipped = 0;
 
     // main loop
@@ -79,16 +80,16 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
     std::cout << "  c3 = (" << c[6] << ", " << c[7] << ", " << c[8] << ")\n";
     std::cout << "  c4 = (" << c[9] << ", " << c[10] << ", " << c[11] << ")\n";
     std::cout << "  Tolerance = " << tol << "\n";
-    std::cout << "  nl = " << nl << ", nr = " << nr << std::endl;
 
     for (int j = 0; j < nl; ++j) {
         for (int i = 0; i < nr; ++i) {
-            evaluateInnerSum(nx, ny, nz, r_nodes[i], l_nodes_x[j], l_nodes_y[j], l_nodes_z[j],
-                             r_weights[i], l_weights[j], d_result, d_sum, blocks, threads, 0);
-            // if (delta_sum < tol) {
-            //     r_skipped += nr - i;
-            //     break;
-            // }
+            delta_sum =
+                evaluateInnerSum(nx, ny, nz, r_nodes[i], l_nodes_x[j], l_nodes_y[j], l_nodes_z[j],
+                                 r_weights[i], l_weights[j], d_result, d_sum, blocks, threads, 0);
+            if (delta_sum < tol) {
+                r_skipped += nr - i;
+                break;
+            }
         }
         // if (j % 50 == 0) {
         //     std::cout << "computed for l_j:" << j << "/" << nl << std::endl;
@@ -166,10 +167,6 @@ __global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r, float 
             float term3 = d_alpha[2] * sqrt(xysq3 + zdiffc_3 * zdiffc_3); // α3 * ✓|x - c3 + r*l|
             float term4 = d_alpha[3] * sqrt(xysq4 + zdiffc_4 * zdiffc_4); // α4 * ✓|x - c4 + r*l|
             float exponent = -term1 - term2 - term3 - term4 + r;
-            if (x_idx < 5 && y_idx < 5 && z_idx < 5) {
-                printf("Thread  read [%d, %d, %d] -> term1 = %f, term 2 = %f\n", x_idx, y_idx,
-                       z_idx, term1, term2);
-            }
             v += exp(exponent) * wxy * wz;
         }
         res[idx] = v;

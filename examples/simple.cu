@@ -19,7 +19,7 @@ int main(int argc, const char *argv[]) {
     int nl = 590;
 
     // tolerance value for sum (if partial sum value < tol, then value is discarded)
-    double tol = 1e-10;
+    double tol = 1e-9;
 
     // α1 = alpha[0], α2 = alpha[1], α3 = alpha[2], α4 = alpha[3]
     float alpha[] = {1, 1, 1, 1};
@@ -44,6 +44,7 @@ int main(int argc, const char *argv[]) {
             std::cout << "  -t tol\t\tSet tolerance value\n";
             std::cout << "  -l nl\t\tSet nl\n";
             std::cout << "  -r nr\t\tSet nr\n";
+            std::cout << "  -n nx\t\tSet nx, ny, nz\n";
             exit(EXIT_SUCCESS); // Exit after printing help message
 
         } else if (std::strcmp(argv[i], "-a") == 0) {
@@ -117,8 +118,19 @@ int main(int argc, const char *argv[]) {
                 nr = std::atof(argv[i + 1]);
                 ++i; // Skip over tol value
             }
+        } else if (std::strcmp(argv[i], "-n") == 0) {
+            if (i + 1 >= argc) {
+                std::cerr << "Error: No nx parameter provided.\n";
+                exit(EXIT_FAILURE);
+            } else {
+                nx = std::atof(argv[i + 1]);
+                ny = nx;
+                nz = nx;
+                ++i; // Skip over tol value
+            }
         } else {
-            std::cerr << "Error: Invalid command line parameter. Use ./simple --help for more information.\n";
+            std::cerr << "Error: Invalid command line parameter. Use ./simple --help for more "
+                         "information.\n";
             exit(EXIT_FAILURE);
         }
     }
