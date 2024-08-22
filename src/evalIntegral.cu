@@ -68,7 +68,7 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
     HANDLE_CUDA_ERROR(cudaMemset(d_sum, 0, sizeof(double)));
 
     double sum = 0.0;
-    double delta_sum;
+    //double delta_sum;
     int r_skipped = 0;
 
     // main loop
@@ -83,13 +83,12 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
 
     for (int j = 0; j < nl; ++j) {
         for (int i = 0; i < nr; ++i) {
-            delta_sum =
-                evaluateInnerSum(nx, ny, nz, r_nodes[i], l_nodes_x[j], l_nodes_y[j], l_nodes_z[j],
-                                 r_weights[i], l_weights[j], d_result, d_sum, blocks, threads, 0);
-            if (delta_sum < tol) {
-                r_skipped += nr - i;
-                break;
-            }
+            evaluateInnerSum(nx, ny, nz, r_nodes[i], l_nodes_x[j], l_nodes_y[j], l_nodes_z[j],
+                             r_weights[i], l_weights[j], d_result, d_sum, blocks, threads, 0);
+            // if (delta_sum < tol) {
+            //     r_skipped += nr - i;
+            //     break;
+            // }
         }
         // if (j % 50 == 0) {
         //     std::cout << "computed for l_j:" << j << "/" << nl << std::endl;

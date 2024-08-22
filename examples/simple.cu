@@ -19,7 +19,7 @@ int main(int argc, const char *argv[]) {
     int nl = 590;
 
     // tolerance value for sum (if partial sum value < tol, then value is discarded)
-    double tol = 1e-9;
+    double tol = 1e-12;
 
     // α1 = alpha[0], α2 = alpha[1], α3 = alpha[2], α4 = alpha[3]
     float alpha[] = {1, 1, 1, 1};
