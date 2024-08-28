@@ -1,0 +1,281 @@
+
+Total Threads: 640
+Total Grid Points: 15625
+Evaluating Integral for all values of r and l with
+  a1=1, a2=1, a3=1, a4=1
+  c1 = (0, 0, 0)
+  c2 = (1, 0, 0)
+  c3 = (2, 0, 0)
+  c4 = (3, 0, 0)
+  Tolerance = 1e-12
+Total values of r skipped for different l's: 0/52510
+nr=89 nl=590 nx=25 ny=25 nz=25
+result: 0.00000000000000000
+Time Elapsed: 1.97531100000000004 seconds
+
+Total Threads: 2432
+Total Grid Points: 125000
+Evaluating Integral for all values of r and l with
+  a1=1, a2=1, a3=1, a4=1
+  c1 = (0, 0, 0)
+  c2 = (1, 0, 0)
+  c3 = (2, 0, 0)
+  c4 = (3, 0, 0)
+  Tolerance = 1e-12
+Total values of r skipped for different l's: 0/52510
+nr=89 nl=590 nx=50 ny=50 nz=50
+result: 0.11015805800635763
+Time Elapsed: 2.39096399999999987 seconds
+
+Total Threads: 5504
+Total Grid Points: 421875
+Evaluating Integral for all values of r and l with
+  a1=1, a2=1, a3=1, a4=1
+  c1 = (0, 0, 0)
+  c2 = (1, 0, 0)
+  c3 = (2, 0, 0)
+  c4 = (3, 0, 0)
+  Tolerance = 1e-12
+Total values of r skipped for different l's: 0/52510
+nr=89 nl=590 nx=75 ny=75 nz=75
+result: 0.11030095803623462
+Time Elapsed: 2.74477599999999988 seconds
+
+Total Threads: 9856
+Total Grid Points: 1000000
+Evaluating Integral for all values of r and l with
+  a1=1, a2=1, a3=1, a4=1
+  c1 = (0, 0, 0)
+  c2 = (1, 0, 0)
+  c3 = (2, 0, 0)
+  c4 = (3, 0, 0)
+  Tolerance = 1e-12
+Total values of r skipped for different l's: 0/52510
+nr=89 nl=590 nx=100 ny=100 nz=100
+result: 0.11035125703022799
+Time Elapsed: 3.07568099999999989 seconds
+
+Total Threads: 15488
+Total Grid Points: 1953125
+Evaluating Integral for all values of r and l with
+  a1=1, a2=1, a3=1, a4=1
+  c1 = (0, 0, 0)
+  c2 = (1, 0, 0)
+  c3 = (2, 0, 0)
+  c4 = (3, 0, 0)
+  Tolerance = 1e-12
+Total values of r skipped for different l's: 0/52510
+nr=89 nl=590 nx=125 ny=125 nz=125
+result: 0.00000000000000000
+Time Elapsed: 3.55890899999999988 seconds
+
+Total Threads: 22272
+Total Grid Points: 3375000
+Evaluating Integral for all values of r and l with
+  a1=1, a2=1, a3=1, a4=1
+  c1 = (0, 0, 0)
+  c2 = (1, 0, 0)
+  c3 = (2, 0, 0)
+  c4 = (3, 0, 0)
+  Tolerance = 1e-12
+Total values of r skipped for different l's: 0/52510
+nr=89 nl=590 nx=150 ny=150 nz=150
+result: 0.00000000000000000
+Time Elapsed: 4.28585499999999975 seconds
+
+Total Threads: 30336
+Total Grid Points: 5359375
+Evaluating Integral for all values of r and l with
+  a1=1, a2=1, a3=1, a4=1
+  c1 = (0, 0, 0)
+  c2 = (1, 0, 0)
+  c3 = (2, 0, 0)
+  c4 = (3, 0, 0)
+  Tolerance = 1e-12
+Total values of r skipped for different l's: 0/52510
+nr=89 nl=590 nx=175 ny=175 nz=175
+result: 0.11039508750634226
+Time Elapsed: 4.65809799999999985 seconds
+
+Total Threads: 40064
+Total Grid Points: 8000000
+Evaluating Integral for all values of r and l with
+  a1=1, a2=1, a3=1, a4=1
+  c1 = (0, 0, 0)
+  c2 = (1, 0, 0)
+  c3 = (2, 0, 0)
+  c4 = (3, 0, 0)
+  Tolerance = 1e-12
+Total values of r skipped for different l's: 0/52510
+nr=89 nl=590 nx=200 ny=200 nz=200
+result: 0.31117925405421987
+Time Elapsed: 5.57184200000000018 seconds
+
+Total Threads: 50688
+Total Grid Points: 11390625
+Evaluating Integral for all values of r and l with
+  a1=1, a2=1, a3=1, a4=1
+  c1 = (0, 0, 0)
+  c2 = (1, 0, 0)
+  c3 = (2, 0, 0)
+  c4 = (3, 0, 0)
+  Tolerance = 1e-12
+Total values of r skipped for different l's: 0/52510
+nr=89 nl=590 nx=225 ny=225 nz=225
+result: 0.31118109735313143
+Time Elapsed: 6.83897099999999991 seconds
+
+Total Threads: 62592
+Total Grid Points: 15625000
+Evaluating Integral for all values of r and l with
+  a1=1, a2=1, a3=1, a4=1
+  c1 = (0, 0, 0)
+  c2 = (1, 0, 0)
+  c3 = (2, 0, 0)
+  c4 = (3, 0, 0)
+  Tolerance = 1e-12
+Total values of r skipped for different l's: 0/52510
+nr=89 nl=590 nx=250 ny=250 nz=250
+result: 0.31118303281386855
+Time Elapsed: 9.35873999999999917 seconds
+
+Total Threads: 75648
+Total Grid Points: 20796875
+Evaluating Integral for all values of r and l with
+  a1=1, a2=1, a3=1, a4=1
+  c1 = (0, 0, 0)
+  c2 = (1, 0, 0)
+  c3 = (2, 0, 0)
+  c4 = (3, 0, 0)
+  Tolerance = 1e-12
+Total values of r skipped for different l's: 0/52510
+nr=89 nl=590 nx=275 ny=275 nz=275
+result: 0.31118475942468266
+Time Elapsed: 11.25079299999999982 seconds
+
+Total Threads: 90112
+Total Grid Points: 27000000
+Evaluating Integral for all values of r and l with
+  a1=1, a2=1, a3=1, a4=1
+  c1 = (0, 0, 0)
+  c2 = (1, 0, 0)
+  c3 = (2, 0, 0)
+  c4 = (3, 0, 0)
+  Tolerance = 1e-12
+Total values of r skipped for different l's: 0/52510
+nr=89 nl=590 nx=300 ny=300 nz=300
+result: 0.31118641189960172
+Time Elapsed: 13.13712100000000049 seconds
+
+Total Threads: 105728
+Total Grid Points: 34328125
+Evaluating Integral for all values of r and l with
+  a1=1, a2=1, a3=1, a4=1
+  c1 = (0, 0, 0)
+  c2 = (1, 0, 0)
+  c3 = (2, 0, 0)
+  c4 = (3, 0, 0)
+  Tolerance = 1e-12
+Total values of r skipped for different l's: 0/52510
+nr=89 nl=590 nx=325 ny=325 nz=325
+result: 0.31118555916507223
+Time Elapsed: 16.44353100000000012 seconds
+
+Total Threads: 122624
+Total Grid Points: 42875000
+Evaluating Integral for all values of r and l with
+  a1=1, a2=1, a3=1, a4=1
+  c1 = (0, 0, 0)
+  c2 = (1, 0, 0)
+  c3 = (2, 0, 0)
+  c4 = (3, 0, 0)
+  Tolerance = 1e-12
+Total values of r skipped for different l's: 0/52510
+nr=89 nl=590 nx=350 ny=350 nz=350
+result: 0.31118408268463421
+Time Elapsed: 18.70953000000000088 seconds
+
+Total Threads: 140672
+Total Grid Points: 52734375
+Evaluating Integral for all values of r and l with
+  a1=1, a2=1, a3=1, a4=1
+  c1 = (0, 0, 0)
+  c2 = (1, 0, 0)
+  c3 = (2, 0, 0)
+  c4 = (3, 0, 0)
+  Tolerance = 1e-12
+Total values of r skipped for different l's: 0/52510
+nr=89 nl=590 nx=375 ny=375 nz=375
+result: 0.31118357764734778
+Time Elapsed: 24.07815300000000036 seconds
+
+Total Threads: 160000
+Total Grid Points: 64000000
+Evaluating Integral for all values of r and l with
+  a1=1, a2=1, a3=1, a4=1
+  c1 = (0, 0, 0)
+  c2 = (1, 0, 0)
+  c3 = (2, 0, 0)
+  c4 = (3, 0, 0)
+  Tolerance = 1e-12
+Total values of r skipped for different l's: 0/52510
+nr=89 nl=590 nx=400 ny=400 nz=400
+result: 0.31118349314225990
+Time Elapsed: 28.91376700000000000 seconds
+
+Total Threads: 180736
+Total Grid Points: 76765625
+Evaluating Integral for all values of r and l with
+  a1=1, a2=1, a3=1, a4=1
+  c1 = (0, 0, 0)
+  c2 = (1, 0, 0)
+  c3 = (2, 0, 0)
+  c4 = (3, 0, 0)
+  Tolerance = 1e-12
+Total values of r skipped for different l's: 0/52510
+nr=89 nl=590 nx=425 ny=425 nz=425
+result: 0.31118356239913636
+Time Elapsed: 33.18635799999999847 seconds
+
+Total Threads: 202624
+Total Grid Points: 91125000
+Evaluating Integral for all values of r and l with
+  a1=1, a2=1, a3=1, a4=1
+  c1 = (0, 0, 0)
+  c2 = (1, 0, 0)
+  c3 = (2, 0, 0)
+  c4 = (3, 0, 0)
+  Tolerance = 1e-12
+Total values of r skipped for different l's: 0/52510
+nr=89 nl=590 nx=450 ny=450 nz=450
+result: 0.31118365637769124
+Time Elapsed: 38.15248100000000164 seconds
+
+Total Threads: 225664
+Total Grid Points: 107171875
+Evaluating Integral for all values of r and l with
+  a1=1, a2=1, a3=1, a4=1
+  c1 = (0, 0, 0)
+  c2 = (1, 0, 0)
+  c3 = (2, 0, 0)
+  c4 = (3, 0, 0)
+  Tolerance = 1e-12
+Total values of r skipped for different l's: 0/52510
+nr=89 nl=590 nx=475 ny=475 nz=475
+result: 0.31118382031306469
+Time Elapsed: 45.74615599999999915 seconds
+
+Total Threads: 250112
+Total Grid Points: 125000000
+Evaluating Integral for all values of r and l with
+  a1=1, a2=1, a3=1, a4=1
+  c1 = (0, 0, 0)
+  c2 = (1, 0, 0)
+  c3 = (2, 0, 0)
+  c4 = (3, 0, 0)
+  Tolerance = 1e-12
+Total values of r skipped for different l's: 0/52510
+nr=89 nl=590 nx=500 ny=500 nz=500
+result: 0.31118402336922490
+Time Elapsed: 52.94055999999999784 seconds
+
