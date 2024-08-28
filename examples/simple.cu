@@ -42,6 +42,9 @@ int main(int argc, const char *argv[]) {
             std::cout << "  -c3 x3 y3 z3\t\tSets coordinates for c3 (c3.x, c3.y, c3.z)\n";
             std::cout << "  -c4 x4 y4 z4\t\tSets coordinates for c4 (c4.x, c4.y, c4.z)\n";
             std::cout << "  -t tol\t\tSet tolerance value\n";
+            std::cout << "  -l nl\t\tSet nl\n";
+            std::cout << "  -r nr\t\tSet nr\n";
+            std::cout << "  -n nx\t\tSet nx, ny, nz\n";
             exit(EXIT_SUCCESS); // Exit after printing help message
 
         } else if (std::strcmp(argv[i], "-a") == 0) {
@@ -99,8 +102,35 @@ int main(int argc, const char *argv[]) {
                 tol = std::atof(argv[i + 1]);
                 ++i; // Skip over tol value
             }
+        } else if (std::strcmp(argv[i], "-l") == 0) {
+            if (i + 1 >= argc) {
+                std::cerr << "Error: No nl parameter provided.\n";
+                exit(EXIT_FAILURE);
+            } else {
+                nl = std::atof(argv[i + 1]);
+                ++i; // Skip over tol value
+            }
+        } else if (std::strcmp(argv[i], "-r") == 0) {
+            if (i + 1 >= argc) {
+                std::cerr << "Error: No nr parameter provided.\n";
+                exit(EXIT_FAILURE);
+            } else {
+                nr = std::atof(argv[i + 1]);
+                ++i; // Skip over tol value
+            }
+        } else if (std::strcmp(argv[i], "-n") == 0) {
+            if (i + 1 >= argc) {
+                std::cerr << "Error: No nx parameter provided.\n";
+                exit(EXIT_FAILURE);
+            } else {
+                nx = std::atof(argv[i + 1]);
+                ny = nx;
+                nz = nx;
+                ++i; // Skip over tol value
+            }
         } else {
-            std::cerr << "Error: Invalid command line parameter. Use ./simple --help for more information.\n";
+            std::cerr << "Error: Invalid command line parameter. Use ./simple --help for more "
+                         "information.\n";
             exit(EXIT_FAILURE);
         }
     }
