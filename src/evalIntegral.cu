@@ -91,9 +91,9 @@ double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx
                 break;
             }
         }
-        // if (j % 50 == 0) {
-        //     std::cout << "computed for l_j:" << j << "/" << nl << std::endl;
-        // }
+        if (j % 50 == 0) {
+            std::cout << "computed for l_j:" << j << "/" << nl << std::endl;
+        }
     }
     HANDLE_CUDA_ERROR(cudaMemcpy(&sum, d_sum, sizeof(double), cudaMemcpyDeviceToHost));
     sum = sum * (4.0 / pi) * std::pow(alpha[0] * alpha[1] * alpha[2] * alpha[3], 1.5);
