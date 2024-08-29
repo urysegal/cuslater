@@ -48,10 +48,10 @@ function generate_grid_r_laguerre(nr_start::Int=10,precision_type=Float64)
 	rnodes_new=rnodes[rweights .!= 0]
 	nr=length(rnodes_new)
 	if precision_type == Float64
-		r_file = "../grid_files/lag64/r_$(nr)_$(nr_start).grid"
+		r_file = "../grid_files/lag64/r_$(nr).grid"
 	end
 	if precision_type == Float32
-		r_file = "../grid_files/lag32/r_$(nr)_$(nr_start).grid"
+		r_file = "../grid_files/lag32/r_$(nr).grid"
 	end
     writedlm(r_file, [rnodes_new rweights_new])
 	return nr
