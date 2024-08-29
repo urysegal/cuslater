@@ -1,4 +1,5 @@
 
+#code by Avleen for grid generation 
 
 using FastGaussQuadrature, Plots, Lebedev
 using DelimitedFiles
@@ -47,10 +48,10 @@ function generate_grid_r_laguerre(nr_start::Int=10,precision_type=Float64)
 	rnodes_new=rnodes[rweights .!= 0]
 	nr=length(rnodes_new)
 	if precision_type == Float64
-		r_file = "grid_files_adap/lag64/r_$(nr_start)_$(nr).grid"
+		r_file = "../grid_files/lag64/r_$(nr_start)_$(nr).grid"
 	end
 	if precision_type == Float32
-		r_file = "grid_files_adap/lag32/r_$(nr_start)_$(nr).grid"
+		r_file = "../grid_files/lag32/r_$(nr_start)_$(nr).grid"
 	end
     writedlm(r_file, [rnodes_new rweights_new])
 	return nr
@@ -73,10 +74,10 @@ function generate_grid_l_lebedev(nl_start::Int=2,precision_type=Float64)
 	lzgrid = lnodes_z[lweights .!= 0]
 	nl = length(lzgrid)
 	if precision_type == Float64
-		l_file = "grid_files_adap/leb64/l_$(nl).grid"
+		l_file = "../grid_files/leb64/l_$(nl).grid"
 	end
 	if precision_type == Float32
-		l_file = "grid_files_adap/leb32/l_$(nl).grid"
+		l_file = "../grid_files/leb32/l_$(nl).grid"
 	end
     writedlm(l_file, [lxgrid lygrid lzgrid lweights_new],' ')
 	return nl
@@ -92,10 +93,10 @@ function generate_grid_x1_simpson(a,b,n,precision_type=Float64)
 	nodes_new=nodes[weights .!= 0]
 	nx = length(weights_new)
 	if precision_type == Float64
-		x1_file = "grid_files_adap/sim64/x1_simpson_1d_$(nx-1).grid"
+		x1_file = "../grid_files/sim64/x1_simpson_1d_$(nx-1).grid"
 	end
 	if precision_type == Float32
-		x1_file = "grid_files_adap/sim32/x1_simpson_1d_$(nx-1).grid"
+		x1_file = "../grid_files/sim32/x1_simpson_1d_$(nx-1).grid"
 	end
 	open(x1_file, "w") do file
 			# Write a and b values in the first two lines
@@ -117,10 +118,10 @@ function generate_grid_x1_legendre(n,precision_type=Float64)
 	nodes_new=nodes[weights .!= 0]
 	nx = length(weights_new)
 	if precision_type == Float64
-		x1_file = "grid_files_adap/leg64/x1_legendre_1d_$(nx).grid"
+		x1_file = "../grid_files/leg64/x1_legendre_1d_$(nx).grid"
 	end
 	if precision_type == Float32
-		x1_file = "grid_files_adap/leg32/x1_legendre_1d_$(nx).grid"
+		x1_file = "../grid_files/leg32/x1_legendre_1d_$(nx).grid"
 	end
 	open(x1_file, "w") do file
 		# Write nodes_new and weights_new

@@ -1,4 +1,4 @@
-
+#code by Avleen for grid printing
 include("grids.jl")
 
 nv = 25:25:500
