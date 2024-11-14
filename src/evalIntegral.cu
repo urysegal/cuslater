@@ -127,15 +127,16 @@ namespace cuslater{
                               l_weights);
         // Read x1 grid
         std::cout << "Reading x1 Grid Files" << std::endl;
-        const std::string x1_filepath = "grid_files_leg64/x1_"+x1_type+"_1d_" + std::to_string(nx) + ".grid";
+        const std::string x1_filepath = "grid_files_adap/leg64/x1_"+x1_type+"_1d_" + std::to_string(nx) + ".grid";
+        std::vector<float> x1_standard_nodes;
+        std::vector<float> x1_standard_weights;
+        read_x1_1d_grid_from_file(x1_filepath, x1_standard_nodes, x1_standard_weights);
         std::vector<float> x1_nodes;
         std::vector<float> x1_weights;
 	std::vector<float> y1_nodes;
 	std::vector<float> y1_weights;
 	std::vector<float> z1_nodes;
 	std::vector<float> z1_weights;
-        float a;
-        float b;
 	float ax = -10;
 	float bx = 11;
 	float ay = -10;
@@ -182,6 +183,7 @@ namespace cuslater{
         double sum = 0.0;
         double delta_sum=0.0;
 	int r_skipped = 0;
+
 	std::cout << "Evaluating Integral for all values of r and l with\n";
         std::cout << "  a1=" << alpha[0] << ", a2=" << alpha[1] << ", a3=" << alpha[2]
                   << ", a4=" << alpha[3] << "\n";
@@ -212,7 +214,7 @@ namespace cuslater{
                     }
         }
         //HANDLE_CUDA_ERROR(cudaMemcpy(&sum, d_sum, sizeof(double), cudaMemcpyDeviceToHost));
-	thrust::sort(d_sorted.begin(), d_sorted.end());
+	//thrust::sort(d_sorted.begin(), d_sorted.end());
 	//thrust:: host_vector<double> h_vector = d_sorted;
 	//for (long unsigned int i = 0; i < h_vector.size(); ++i) {
         //	std::cout << h_vector[i] << " ";

@@ -120,9 +120,20 @@ namespace cuslater {
             file.close();
 
     }
+	void generate_x1_from_std(float a, float b, const std::vector<float>& x1_standard_nodes, const std::vector<float>& x1_standard_weights, std::vector<float>& x1_nodes, std::vector<float>& x1_weights) {
+		float shift = (a + b) / 2.0;
+		float factor = (b - a) / 2.0;
+		float node;
+		float weight;
+		for (std::vector<float>::size_type i = 0; i < x1_standard_nodes.size(); ++i) {
+			node = x1_standard_nodes[i] * factor + shift;
+			x1_nodes.push_back(node);
+			weight = x1_standard_weights[i] * factor;
+			x1_weights.push_back(weight);
+		}
+	}
+
     void read_x1_1d_grid_from_file(const std::string& filepath,
-                                   float &a,
-                                   float &b,
                                    std::vector<float>& x1_nodes,
                                    std::vector<float>& x1_weights){
             std::ifstream file(filepath);
@@ -131,10 +142,6 @@ namespace cuslater {
                     std::exit(EXIT_FAILURE);
             }
 
-            if (!(file >> a >> b)) {
-                    std::cerr << "Error reading a and b from file." << std::endl;
-                    return; // or handle the error appropriately
-            }
 
             // Clear vectors to ensure they are empty
             x1_nodes.clear();

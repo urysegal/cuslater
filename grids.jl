@@ -88,3 +88,17 @@ function generate_grid_x1_legendre(a,b,n)
 
 		return nx
 end
+function generate_standard_grid_x1_legendre(n)
+	nodes, weights = gausslegendre(n)
+        weights=making_zeros(weights)
+        weights_new=weights[weights .!= 0]
+        nodes_new=nodes[weights .!= 0]
+		nx = length(weights_new)
+		x1_file = "grid_files_adap/leg64/x1_legendre_1d_$(nx).grid"
+		open(x1_file, "w") do file
+			# Write nodes_new and weights_new
+			writedlm(file, [nodes_new weights_new], ' ')
+    	end
+
+		return nx
+end
