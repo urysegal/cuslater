@@ -26,8 +26,9 @@ main(int argc, const char *argv[])
     	// c4 = (c4.x, c4.y, c4.z) = (c[9], c[10], c[11])
 	float c[] = {0,0,0,
                       1,0,0,
-                      2,0,0,
-                      3,0,0};
+                      20,0,0,
+                      30,0,0};
+	bool check_zero_cond  = false;
 
 	    for (int i = 1; i < argc; ++i) {
         if (std::strcmp(argv[i], "--help") == 0) {
@@ -44,6 +45,7 @@ main(int argc, const char *argv[])
             std::cout << "  -l nl\t\tSet nl\n";
             std::cout << "  -r nr\t\tSet nr\n";
             std::cout << "  -n nx\t\tSet nx, ny, nz\n";
+            std::cout << "  -z \t\tChecks Zero Condition\n";
             exit(EXIT_SUCCESS); // Exit after printing help message
 
         } else if (std::strcmp(argv[i], "-a") == 0) {
@@ -101,6 +103,8 @@ main(int argc, const char *argv[])
                 tol = std::atof(argv[i + 1]);
                 ++i; // Skip over tol value
             }
+        } else if (std::strcmp(argv[i], "-z") == 0) {
+		check_zero_cond= true ;
         } else if (std::strcmp(argv[i], "-l") == 0) {
             if (i + 1 >= argc) {
                 std::cerr << "Error: No nl parameter provided.\n";
@@ -137,10 +141,29 @@ main(int argc, const char *argv[])
         const std::string x1_type = "legendre"; //legendre or simpson
 
         auto start = std::chrono::high_resolution_clock::now();
-        auto sum = cuslater::evaluateFourCenterIntegral(c,alpha,nr,nl,nx,ny,nz,x1_type,tol);
-        //auto sum = cuslater::evaluateFourCenterIntegral(c,nr,nl,nx,x1_type,4);
+	float normdiff13 = sqrt((c[0] - c[6]) * (c[0] - c[6]) +
+                            (c[1] - c[7]) * (c[1] - c[7]) +
+                            (c[2] - c[8]) * (c[2] - c[8]));
+    	float normdiff24 = sqrt((c[3] - c[9]) * (c[3] - c[9]) +
+                            (c[4] - c[10]) * (c[4] - c[10]) +
+                            (c[5] - c[11]) * (c[5] - c[11]));
+    	float cond = min(alpha[0], alpha[2]) * normdiff13 + min(alpha[1], alpha[3]) * normdiff24;
+	double sum = 0;
+    	if (check_zero_cond){
+		float r0 = 1;
+    		int inv_machine_eps = 1e8;
+    		printf("zero condition: check wheter %f > %f, \n", cond, log(r0 * inv_machine_eps));
+    		if (cond > log(r0 * inv_machine_eps)) {
+        		std::cout << "Zero condition met" << std::endl;
+    		} else {
+        		// this is where all the computation time takes place
+        		sum = cuslater::evaluateFourCenterIntegral(c, alpha, nr, nl, nx, ny, nz, x1_type, tol);
+        	}
+	} else{
+       		sum = cuslater::evaluateFourCenterIntegral(c, alpha, nr, nl, nx, ny, nz, x1_type, tol);
+	}
         auto end = std::chrono::high_resolution_clock::now();
-	    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
         std::cout << "nr: " << nr << " nl: " << nl << " nx: " << nx << " ny: " << ny << " nz: " << nz << std::endl;
         std::cout << "result: " << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << sum << std::endl;
         std::cout << "Time Elapsed: " << duration.count()/1e6 << " seconds" << std::endl;
