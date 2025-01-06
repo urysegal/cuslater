@@ -106,8 +106,23 @@ namespace cuslater{
 
     double evaluateFourCenterIntegral( float* c, float* alpha,
                                 int nr,  int nl,  int nx, int ny, int nz,
-                               const std::string x1_type, double tol) {
+                               const std::string x1_type, double tol, bool check_zero_cond) {
 
+	float normdiff13 = sqrt((c[0] - c[6]) * (c[0] - c[6]) +
+                            (c[1] - c[7]) * (c[1] - c[7]) +
+                            (c[2] - c[8]) * (c[2] - c[8]));
+    	float normdiff24 = sqrt((c[3] - c[9]) * (c[3] - c[9]) +
+                            (c[4] - c[10]) * (c[4] - c[10]) +
+                            (c[5] - c[11]) * (c[5] - c[11]));
+    	float cond = min(alpha[0], alpha[2]) * normdiff13 + min(alpha[1], alpha[3]) * normdiff24;
+	float r0 = 1;
+    	int inv_machine_eps = 1e8;
+    	if (check_zero_cond && cond > log(r0 * inv_machine_eps)){
+    		printf("zero condition: check wheter %f > %f, \n", cond, log(r0 * inv_machine_eps));
+        	std::cout << "Zero condition met" << std::endl;
+		return 0;
+	} else{
+	
         // read r grid
         std::cout << "Reading r Grid Files" << std::endl;
         const std::string r_filepath = "grid_files/r_" + std::to_string(nr) + ".grid";
@@ -137,13 +152,27 @@ namespace cuslater{
 	std::vector<float> y1_weights;
 	std::vector<float> z1_nodes;
 	std::vector<float> z1_weights;
-	float ax = -10;
-	float bx = 11;
-	float ay = -10;
-	float by = 11;
-	float az= -10;
-	float bz=11;
-
+	//float ax = -10;
+	//float bx = 11;
+	//float ay = -10;
+	//float by = 11;
+	//float az= -10;
+	//float bz=11;
+	float dx = std::abs(c[0]-c[3]);
+	float dy = std::abs(c[1]-c[4]);
+	float dz = std::abs(c[2]-c[5]);
+	float lx = 18.0 + dx; // why 18?
+	float ly = 18.0 + dy;
+	float lz = 18.0 + dz;
+	float mx = (c[0] + c[3])/2;
+	float my = (c[1] + c[4])/2;
+	float mz = (c[2] + c[5])/2;
+	float ax = mx - (lx/2);
+	float bx = mx + (lx/2);
+	float ay = my - (ly/2);
+	float by = my + (ly/2);
+	float az = mz - (lz/2);
+	float bz = mz + (lz/2);
 	generate_x1_from_std(ax,bx, x1_standard_nodes, x1_standard_weights, x1_nodes, x1_weights); 
 	generate_x1_from_std(ay,by, x1_standard_nodes, x1_standard_weights, y1_nodes, y1_weights); 
 	generate_x1_from_std(az,bz, x1_standard_nodes, x1_standard_weights, z1_nodes, z1_weights); 
@@ -228,5 +257,5 @@ namespace cuslater{
         std::cout << "Total values of r skipped for different l's: " << r_skipped << "/" << nr*nl << std::endl;
         return sum;
     }
-
+  }
 }

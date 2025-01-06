@@ -1,6 +1,8 @@
 //
 // Created by gkluhana on 04/03/24.
 //
+#ifndef UTILITIES_H
+#define UTILITIES_H
 #include "cuslater.cuh"
 
 
@@ -26,6 +28,23 @@
 namespace cg = cooperative_groups;
 namespace cuslater{
 
+    struct ProgramParameters {
+        int nr = 97;
+        int nl = 590;
+        int nx = 200;
+        int ny = 200;
+        int nz = 200;
+        double tol = 1e-10;	
+	float alpha[4] = {1,1,1,1};
+
+	float c[12] = {0,0,0,
+                      1,0,0,
+                      2,0,0,
+                      3,0,0};
+	bool check_zero_cond  = false;
+    };
+    void handleArguments(int argc,const char* argv[], ProgramParameters& params);
+
     void getAvailableMemory(size_t& availableMemory);
 
     __global__
@@ -49,3 +68,4 @@ namespace cuslater{
                                double *res);
 
 }
+#endif // UTILITIES_H
