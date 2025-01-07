@@ -27,6 +27,7 @@ add_library(cuSlater SHARED
 		include/utilities.h src/utilities.cu
 		include/grids.h		src/grids.cu
 		include/evalIntegral.h src/evalIntegral.cu
+		include/hadamard.h  src/hadamard.cu
 )
 
 set_property(TARGET cuSlater PROPERTY CUDA_ARCHITECTURES 70)

@@ -1,4 +1,5 @@
-#include "../include/gputensors.h"
+#include "../include/utilities.h"
+#include "../include/hadamard.h"
 
 using namespace std;
 

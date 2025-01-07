@@ -1,9 +1,15 @@
 //
 // Created by gkluhana on 26/03/24.
 //
+// editted by MarkEwert03 on 13/05/24
+
+#include <thrust/device_vector.h>
+#include <thrust/reduce.h>
+
 #include <vector>
+
+#include "cuda_profiler_api.h"
 #include "cuslater.cuh"
-#include "utilities.h"
 #include "grids.h"
 #include "evalInnerIntegral.h"
 namespace cuslater{
@@ -36,4 +42,5 @@ namespace cuslater{
                                   const std::string x1_type,
                                   int num_gpus);
 
-}
+
+} // namespace cuslater
