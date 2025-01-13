@@ -11,7 +11,6 @@
 #include "cuda_profiler_api.h"
 #include "cuslater.cuh"
 #include "grids.h"
-#include "evalInnerIntegral.h"
 namespace cuslater{
 	__global__ void accumulateSum(double result, 
 						float r_weight, 

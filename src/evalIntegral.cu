@@ -1,15 +1,11 @@
 //
 // Created by gkluhana on 26/03/24.
 //
-// editted by MarkEwert03 on 13/05/24
-
-#include <thrust/device_vector.h>
-
 #include "../include/evalIntegral.h"
-
+#include <thrust/device_vector.h>
 const double pi = 3.14159265358979323846;
 #include <thread>
-#define THREADS_PER_BLOCK 128
+#define THREADS_PER_BLOCK 128 
 __constant__ float d_c[12];
 __constant__ float d_alpha[4];
 __constant__ float d_x_grid[600];
@@ -256,48 +252,10 @@ namespace cuslater{
 	std::cout << "sum before multiplication " << sum << std::endl;
         sum *= (4.0/pi) * std::pow(alpha[0] * alpha[1] * alpha[2] * alpha[3], 1.5);
 
-        float wxy = d_x_weights[x_idx] * d_x_weights[y_idx];
-        // compute function value
-        // exp(-α1|x1-c1| - α2|x1-c2| - α3|x1-c3+r*l| - α4|x1-c4+r*l|)
-        // note |a-b| = sqrt( (a.x-b.x)^2 + (a.y-b.y)^2 + (a.z-b.z)^2 )
-
-        float xdiffc_1 = xvalue - d_c[0];            // x1.x - c1.x
-        float ydiffc_1 = yvalue - d_c[1];            // x1.y - c1.y
-        float xdiffc_2 = xvalue - d_c[3];            // x1.x - c2.x
-        float ydiffc_2 = yvalue - d_c[4];            // x1.y - c2.y
-        float xdiffc_3 = xvalue - d_c[6] + r * l_x;  // x1.x - c3.x + lx
-        float ydiffc_3 = yvalue - d_c[7] + r * l_y;  // x1.y - c3.y + ly
-        float xdiffc_4 = xvalue - d_c[9] + r * l_x;  // x1.x - c4.x + lx
-        float ydiffc_4 = yvalue - d_c[10] + r * l_y; // x1.y - c4.y + ly
-
-        // (x1.x - c1.x)^2 + (x1.y - c1.y)^2
-        float xysq1 = xdiffc_1 * xdiffc_1 + ydiffc_1 * ydiffc_1;
-        // (x1.x - c2.x)^2 + (x1.y - c2.y)^2
-        float xysq2 = xdiffc_2 * xdiffc_2 + ydiffc_2 * ydiffc_2;
-        // (x1.x - c3.x + lx)^2 + (x1.y - c3.y + ly)^2
-        float xysq3 = xdiffc_3 * xdiffc_3 + ydiffc_3 * ydiffc_3;
-        // (x1.x - c4.x + lx)^2 + (x1.y - c4.y + ly)^2
-        float xysq4 = xdiffc_4 * xdiffc_4 + ydiffc_4 * ydiffc_4;
-
-        double v = 0.0;
-
-        for (int z_idx = 0; z_idx < nz; ++z_idx) {
-            float zvalue = d_x_grid[z_idx];
-            float wz = d_x_weights[z_idx];
-            float zdiffc_1 = zvalue - d_c[2];                             // x1.z - c1.z
-            float zdiffc_2 = zvalue - d_c[5];                             // x1.z - c2.z
-            float zdiffc_3 = zvalue - d_c[8] + r * l_z;                   // x1.z - c3.z + lz
-            float zdiffc_4 = zvalue - d_c[11] + r * l_z;                  // x1.z - c4.z + lz
-            float term1 = d_alpha[0] * sqrt(xysq1 + zdiffc_1 * zdiffc_1); // α1 * ✓|x - c1|
-            float term2 = d_alpha[1] * sqrt(xysq2 + zdiffc_2 * zdiffc_2); // α2 * ✓|x - c2|
-            float term3 = d_alpha[2] * sqrt(xysq3 + zdiffc_3 * zdiffc_3); // α3 * ✓|x - c3 + r*l|
-            float term4 = d_alpha[3] * sqrt(xysq4 + zdiffc_4 * zdiffc_4); // α4 * ✓|x - c4 + r*l|
-            float exponent = -term1 - term2 - term3 - term4 + r;
-            v += exp(exponent) * wxy * wz;
-        }
-        res[idx] = v;
+        // sum up result, multiply with constant and return
+        std::cout << "Tolerance: " << tol << std::endl;
+        std::cout << "Total values of r skipped for different l's: " << r_skipped << "/" << nr*nl << std::endl;
+        return sum;
     }
   }
 }
-
-} // namespace cuslater

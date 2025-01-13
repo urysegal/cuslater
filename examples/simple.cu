@@ -7,6 +7,7 @@
 #include <iostream>
 #include <chrono>
 #include <string>
+#include "../include/evalIntegral.h"
 using namespace std;
 
 int
