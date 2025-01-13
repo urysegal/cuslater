@@ -40,12 +40,9 @@ set_target_properties(cuSlater PROPERTIES
         CUDA_SEPARABLE_COMPILATION ON)
 set_target_properties(cuSlater PROPERTIES CUDA_ARCHITECTURE 70-real)
 
-add_executable(hadamard examples/test-hadamard.cu)
 add_executable(simple examples/simple.cu)
 
-add_dependencies(hadamard cuSlater)
 add_dependencies(simple cuSlater)
 
-target_link_libraries(hadamard cuSlater)
 target_link_libraries(simple cuSlater)
 

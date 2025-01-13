@@ -11,21 +11,36 @@
 #include "cuda_profiler_api.h"
 #include "cuslater.cuh"
 #include "grids.h"
-#include "utilities.h"
-// #include "evalInnerIntegral.h"
-namespace cuslater {
-double evaluateFourCenterIntegral(float *c, float *alpha, int nr, int nl, int nx, int ny, int nz,
-                                  const std::string x1_type, double tol);
+#include "evalInnerIntegral.h"
+namespace cuslater{
+	__global__ void accumulateSum(double result, 
+						float r_weight, 
+						float l_weight, 
+						double* __restrict__ d_sum);
+	__global__
+	void evaluateIntegrandReduceZ(int x_dim, int y_dim, int z_dim,
+	                                      float r, float l_x, float l_y, float l_z,
+	                                      double * __restrict__ res);
 
-double evaluateInnerSum(unsigned int nx, unsigned int ny, unsigned int nz, float r, float l_x,
-                        float l_y, float l_z, float r_weight, float l_weight,
-                        thrust::device_vector<double> &__restrict__ d_result,
-                        double *__restrict__ d_sum, int blocks, int threads, int gpu_num);
+	double evaluateInnerSum(unsigned int x_axis_points, unsigned int y_axis_points, unsigned int z_axis_points,
+	                                 float r,float l_x,float l_y,float l_z,
+					 float r_weight,float  l_weight,
+	                                 thrust::device_vector<double>& __restrict__ d_result, 
+	                                 thrust::device_vector<double>& __restrict__ d_sorted, 
+					 int i, int j, int nl,
+	                                 double* __restrict__ d_sum, 
+	                                 int blocks, 
+	                                 int threads, 
+	                                 int gpu_num); 
+	    
 
-__global__ void evaluateIntegrandReduceZ(int nx, int ny, int nz, float r, float l_x, float l_y,
-                                         float l_z, double *__restrict__ res);
+	double evaluateFourCenterIntegral( float* c, float* alphas,
+                                    int nr,  int nl,  int nx, int ny, int nz,
+	                            const std::string x1_type, double tol, bool check_zero_cond);
+	double evaluateFourCenterIntegral( float* c, float* alphas,
+                                  int nr,  int nl,  int nx, int ny, int nz,
+                                  const std::string x1_type,
+                                  int num_gpus);
 
-__global__ void accumulateSum(double result, float r_weight, float l_weight,
-                              double *__restrict__ d_sum);
 
 } // namespace cuslater
