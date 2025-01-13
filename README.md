@@ -26,3 +26,12 @@ Below is a list of the current configuration options
 - `-c3 x3 y3 z3`  Sets coordinates for c3 (c3.x, c3.y, c3.z)
 - `-c4 x4 y4 z4`  Sets coordinates for c4 (c4.x, c4.y, c4.z)
 - `-t tol`  Set tolerance threshold (halts inner loop once value drops below threshold)
+
+
+The following modules need to be loaded:
+module load cuda
+module load gcc
+module load cmake
+module load apptainer
+
+You may need to add the .../gcc-9.4.0/cuda-11.3.1 to CUDA_ROOT and LD_LIBRARY_PATH environment variables.
