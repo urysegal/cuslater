@@ -13,8 +13,8 @@ namespace cuslater{
 	double tol=params.tol;
 	bool check_zero_cond=params.check_zero_cond;
 
-	float alpha[4] ;
-	float c[12];
+	real_t alpha[4] ;
+	real_t c[12];
 	for (int i = 0; i < 4; ++i) {
     		alpha[i] = params.alpha[i];
 	}	
@@ -215,18 +215,18 @@ __global__ void reduceSumWithWeights(double *input, double *output,
     if (id == 0) output[blockIdx.x] = tsum[0];
 }
 
-__global__ void reduceSumFast(const float *__restrict data,
-                              float *__restrict sums, int n) {
+__global__ void reduceSumFast(const real_t *__restrict data,
+                              real_t *__restrict sums, int n) {
     auto grid = cg::this_grid();
     auto block = cg::this_thread_block();
     auto warp = cg::tiled_partition<32>(block);
 
-    float v = 0.0f;
+    real_t v = 0.0f;
 
     for (int tid = grid.thread_rank(); tid < n; tid += grid.size())
         v += data[tid];
     warp.sync();
-    v = cg::reduce(warp, v, cg::plus<float>());
+    v = cg::reduce(warp, v, cg::plus<real_t>());
 
     if (warp.thread_rank() == 0) atomicAdd(&sums[block.group_index().x], v);
 }

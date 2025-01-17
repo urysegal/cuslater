@@ -23,23 +23,23 @@ void make_1d_grid_simpson(double start, double stop, unsigned int N, std::vector
                           std::vector<double> *weights);
 
     void read_l_grid_from_file(const std::string& filepath,
-                               std::vector<float>& l_nodes_x, std::vector<float>& l_nodes_y,std::vector<float>& l_nodes_z,
-                               std::vector<float>& l_weights);
-    void generate_x1_from_std(float a, float b, 
-			      const std::vector<float>& x1_standard_nodes, const std::vector<float>& x1_standard_weights, 
-			      std::vector<float>& x1_nodes, std::vector<float>& x1_weights);
+                               std::vector<real_t>& l_nodes_x, std::vector<real_t>& l_nodes_y,std::vector<real_t>& l_nodes_z,
+                               std::vector<real_t>& l_weights);
+    void generate_x1_from_std(real_t a, real_t b, 
+			      const std::vector<real_t>& x1_standard_nodes, const std::vector<real_t>& x1_standard_weights, 
+			      std::vector<real_t>& x1_nodes, std::vector<real_t>& x1_weights);
 
     void read_x1_1d_grid_from_file(const std::string& filepath,
-                                std::vector<float>& x1_nodes,
-                                std::vector<float>& x1_weights);
+                                std::vector<real_t>& x1_nodes,
+                                std::vector<real_t>& x1_weights);
 
-void read_r_grid_from_file(const std::string &filepath, std::vector<float> &r_nodes,
-                           std::vector<float> &r_weights);
+void read_r_grid_from_file(const std::string &filepath, std::vector<real_t> &r_nodes,
+                           std::vector<real_t> &r_weights);
 
-void read_l_grid_from_file(const std::string &filepath, std::vector<float> &l_nodes_x,
-                           std::vector<float> &l_nodes_y, std::vector<float> &l_nodes_z,
-                           std::vector<float> &l_weights);
-void read_x1_1d_grid_from_file(const std::string &filepath, float &a, float &b,
-                               std::vector<float> &x1_nodes, std::vector<float> &x1_weights);
+void read_l_grid_from_file(const std::string &filepath, std::vector<real_t> &l_nodes_x,
+                           std::vector<real_t> &l_nodes_y, std::vector<real_t> &l_nodes_z,
+                           std::vector<real_t> &l_weights);
+void read_x1_1d_grid_from_file(const std::string &filepath, real_t &a, real_t &b,
+                               std::vector<real_t> &x1_nodes, std::vector<real_t> &x1_weights);
 
 } // namespace cuslater

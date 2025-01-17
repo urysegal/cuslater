@@ -23,6 +23,14 @@
 #include "cooperative_groups/reduce.h"
 #include <cuda_runtime_api.h>
 
+#ifdef PRECISION_DOUBLE
+typedef double real_t;
+#pragma message("real_t is set to double.")
+#else
+typedef float real_t;
+#pragma message("real_t is set to float.")
+#endif
+
 namespace cg = cooperative_groups;
 namespace cuslater{
 

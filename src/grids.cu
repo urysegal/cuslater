@@ -69,8 +69,8 @@ double make_1d_grid_uniform(double start, double stop, unsigned int N,
 }
 
 void read_r_grid_from_file(const std::string& filepath,
-                           std::vector<float>& r_nodes,
-                           std::vector<float>& r_weights) {
+                           std::vector<real_t>& r_nodes,
+                           std::vector<real_t>& r_weights) {
     // Open the file
     std::ifstream file(filepath);
     if (!file.is_open()) {
@@ -83,7 +83,7 @@ void read_r_grid_from_file(const std::string& filepath,
     r_weights.clear();
 
     // Read data from file
-    float node, weight;
+    real_t node, weight;
     while (file >> node >> weight) {
         // Store data in vectors
         r_nodes.push_back(node);
@@ -94,10 +94,10 @@ void read_r_grid_from_file(const std::string& filepath,
     file.close();
 }
 void read_l_grid_from_file(const std::string& filepath,
-                           std::vector<float>& l_nodes_x,
-                           std::vector<float>& l_nodes_y,
-                           std::vector<float>& l_nodes_z,
-                           std::vector<float>& l_weights) {
+                           std::vector<real_t>& l_nodes_x,
+                           std::vector<real_t>& l_nodes_y,
+                           std::vector<real_t>& l_nodes_z,
+                           std::vector<real_t>& l_weights) {
     std::ifstream file(filepath);
     if (!file.is_open()) {
         std::cerr << "Error opening file: " << filepath << std::endl;
@@ -123,12 +123,12 @@ void read_l_grid_from_file(const std::string& filepath,
     file.close();
 }
 
-	void generate_x1_from_std(float a, float b, const std::vector<float>& x1_standard_nodes, const std::vector<float>& x1_standard_weights, std::vector<float>& x1_nodes, std::vector<float>& x1_weights) {
-		float shift = (a + b) / 2.0;
-		float factor = (b - a) / 2.0;
-		float node;
-		float weight;
-		for (std::vector<float>::size_type i = 0; i < x1_standard_nodes.size(); ++i) {
+	void generate_x1_from_std(real_t a, real_t b, const std::vector<real_t>& x1_standard_nodes, const std::vector<real_t>& x1_standard_weights, std::vector<real_t>& x1_nodes, std::vector<real_t>& x1_weights) {
+		real_t shift = (a + b) / 2.0;
+		real_t factor = (b - a) / 2.0;
+		real_t node;
+		real_t weight;
+		for (std::vector<real_t>::size_type i = 0; i < x1_standard_nodes.size(); ++i) {
 			node = x1_standard_nodes[i] * factor + shift;
 			x1_nodes.push_back(node);
 			weight = x1_standard_weights[i] * factor;
@@ -137,8 +137,8 @@ void read_l_grid_from_file(const std::string& filepath,
 	}
 
     void read_x1_1d_grid_from_file(const std::string& filepath,
-                                   std::vector<float>& x1_nodes,
-                                   std::vector<float>& x1_weights){
+                                   std::vector<real_t>& x1_nodes,
+                                   std::vector<real_t>& x1_weights){
             std::ifstream file(filepath);
             if (!file.is_open()) {
                     std::cerr << "Error opening file: " << filepath << std::endl;
@@ -151,7 +151,7 @@ void read_l_grid_from_file(const std::string& filepath,
             x1_weights.clear();
 
             // Read data from file
-            float node, weight;
+            real_t node, weight;
             while (file >> node >> weight) {
                     // Store data in vectors
                     x1_nodes.push_back(node);

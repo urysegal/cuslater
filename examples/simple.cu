@@ -23,8 +23,8 @@ main(int argc, const char *argv[])
 	int nx = sys.nx;
 	int ny = sys.ny;
 	int nz = sys.nz;
-	float alpha[4];
-	float c[12];
+	real_t alpha[4];
+	real_t c[12];
 
 	for (int i = 0; i < 4; ++i) {
     		alpha[i] = sys.alpha[i];
