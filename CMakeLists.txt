@@ -6,6 +6,9 @@ set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch=SM_70")
 #set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -lineinfo  --tool memcheck -arch=SM_70")
 set(COMPILE_FLAGS -g -O4 -Wall -Xcompiler -Werror)
 
+#Precision Flag
+set(PRECISION PRECISION_DOUBLE)
+
 # Set compiler flags for debug mode
 set(CUDA_NVCC_FLAGS_DEBUG "${CUDA_NVCC_FLAGS_DEBUG} -lineinfo -G -O0 -arch=SM_70")
 
@@ -33,6 +36,7 @@ set_property(TARGET cuSlater PROPERTY CUDA_ARCHITECTURES 70)
 
 target_link_libraries(cuSlater ${CUBLASLT_LIBRARY} ${CUTENSOR_LIBRARY} cuda)
 target_compile_options(cuSlater PUBLIC ${COMPILE_FLAGS} $<$<COMPILE_LANGUAGE:CUDA>:-gencode arch=compute_70,code=sm_70>)
+target_compile_definitions(cuSlater PRIVATE ${PRECISION})
 target_include_directories(cuSlater PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 set_target_properties(cuSlater PROPERTIES
@@ -43,5 +47,6 @@ add_executable(simple examples/simple.cu)
 
 add_dependencies(simple cuSlater)
 
+target_compile_definitions(simple PRIVATE ${PRECISION})
 target_link_libraries(simple cuSlater)
 
