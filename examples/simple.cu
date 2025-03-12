@@ -23,6 +23,9 @@ main(int argc, const char *argv[])
 	int nx = sys.nx;
 	int ny = sys.ny;
 	int nz = sys.nz;
+	int a = sys.a;
+	int b = sys.b;
+	int c = sys.c;
 	real_t alpha[4];
 	real_t c[12];
 
@@ -40,10 +43,11 @@ main(int argc, const char *argv[])
 
         auto start = std::chrono::high_resolution_clock::now();
 	double sum = 0;
-        sum = cuslater::evaluateFourCenterIntegral(c, alpha, nr, nl, nx, ny, nz, x1_type, tol, check_zero_cond);
+        sum = cuslater::evaluateFourCenterIntegral(c, alpha, nr, nl, nx, ny, nz, a, b, c, x1_type, tol, check_zero_cond);
         auto end = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
         std::cout << "nr: " << nr << " nl: " << nl << " nx: " << nx << " ny: " << ny << " nz: " << nz << std::endl;
+	std::cout << "a: " << a << " b: " << b << " c: " << c << std::endl;
         std::cout << "result: " << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << sum << std::endl;
         std::cout << "Time Elapsed: " << duration.count()/1e6 << " seconds" << std::endl;
 }
