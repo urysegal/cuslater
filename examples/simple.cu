@@ -23,19 +23,19 @@ main(int argc, const char *argv[])
 	int nx = sys.nx;
 	int ny = sys.ny;
 	int nz = sys.nz;
-	int a = sys.a;
-	int b = sys.b;
-	int c = sys.c;
-	int n = sys.n;
 	real_t alpha[4];
 	real_t c[12];
+	real_t qn[16];
 
 	for (int i = 0; i < 4; ++i) {
     		alpha[i] = sys.alpha[i];
 	}	
 	for (int i = 0; i < 12; ++i) {
     		c[i] = sys.c[i];
-	}	
+	}
+	for (int i = 0; i < 16; ++i) {
+    		qn[i] = sys.qn[i];
+	}
 
 	double tol = sys.tol;
 	int check_zero_cond = sys.check_zero_cond;
@@ -44,11 +44,10 @@ main(int argc, const char *argv[])
 
         auto start = std::chrono::high_resolution_clock::now();
 	double sum = 0;
-        sum = cuslater::evaluateFourCenterIntegral(c, alpha, nr, nl, nx, ny, nz, a, b, c, n, x1_type, tol, check_zero_cond);
+        sum = cuslater::evaluateFourCenterIntegral(c, alpha, qn, nr, nl, nx, ny, nz, a, b, c, n, x1_type, tol, check_zero_cond);
         auto end = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
         std::cout << "nr: " << nr << " nl: " << nl << " nx: " << nx << " ny: " << ny << " nz: " << nz << std::endl;
-	std::cout << "a: " << a << " b: " << b << " c: " << c << " n: " << n << std::endl;
         std::cout << "result: " << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << sum << std::endl;
         std::cout << "Time Elapsed: " << duration.count()/1e6 << " seconds" << std::endl;
 }
