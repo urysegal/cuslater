@@ -44,7 +44,7 @@ main(int argc, const char *argv[])
 
         auto start = std::chrono::high_resolution_clock::now();
 	double sum = 0;
-        sum = cuslater::evaluateFourCenterIntegral(c, alpha, qn, nr, nl, nx, ny, nz, a, b, c, n, x1_type, tol, check_zero_cond);
+        sum = cuslater::evaluateFourCenterIntegral(c, alpha, qn, nr, nl, nx, ny, nz, x1_type, tol, check_zero_cond);
         auto end = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
         std::cout << "nr: " << nr << " nl: " << nl << " nx: " << nx << " ny: " << ny << " nz: " << nz << std::endl;
