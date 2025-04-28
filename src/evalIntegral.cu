@@ -158,24 +158,66 @@ namespace cuslater{
 	//real_t by = 11;
 	//real_t az= -10;
 	//real_t bz=11;
-	real_t dx = std::abs(c[0]-c[3]);
-	real_t dy = std::abs(c[1]-c[4]);
-	real_t dz = std::abs(c[2]-c[5]);
-	real_t lx = 18.0 + dx; // why 18?
+	std::cout << "Generating x1 Grid using Trapezoidal Rule" << std::endl;
+
+	// Now define physical domain boundaries
+	real_t dx = std::abs(c[0] - c[3]);
+	real_t dy = std::abs(c[1] - c[4]);
+	real_t dz = std::abs(c[2] - c[5]);
+	real_t lx = 18.0 + dx;
 	real_t ly = 18.0 + dy;
 	real_t lz = 18.0 + dz;
-	real_t mx = (c[0] + c[3])/2;
-	real_t my = (c[1] + c[4])/2;
-	real_t mz = (c[2] + c[5])/2;
-	real_t ax = mx - (lx/2);
-	real_t bx = mx + (lx/2);
-	real_t ay = my - (ly/2);
-	real_t by = my + (ly/2);
-	real_t az = mz - (lz/2);
-	real_t bz = mz + (lz/2);
-	generate_x1_from_std(ax,bx, x1_standard_nodes, x1_standard_weights, x1_nodes, x1_weights); 
-	generate_x1_from_std(ay,by, x1_standard_nodes, x1_standard_weights, y1_nodes, y1_weights); 
-	generate_x1_from_std(az,bz, x1_standard_nodes, x1_standard_weights, z1_nodes, z1_weights); 
+	real_t mx = (c[0] + c[3]) / 2.0;
+	real_t my = (c[1] + c[4]) / 2.0;
+	real_t mz = (c[2] + c[5]) / 2.0;
+	real_t ax = mx - (lx / 2.0);
+	real_t bx = mx + (lx / 2.0);
+	real_t ay = my - (ly / 2.0);
+	real_t by = my + (ly / 2.0);
+	real_t az = mz - (lz / 2.0);
+	real_t bz = mz + (lz / 2.0);
+
+	// Generate trapezoidal nodes and weights for x1
+	std::vector<real_t> x1_nodes(nx);
+	std::vector<real_t> x1_weights(nx);
+	real_t hx = (bx - ax) / (nx - 1);
+
+	for (int i = 0; i < nx; ++i) {
+    		x1_nodes[i] = ax + i * hx;
+    		if (i == 0 || i == nx - 1) {
+        		x1_weights[i] = 0.5 * hx; // half weight at endpoints
+   		 } else {
+        		x1_weights[i] = hx;
+    		}
+	}	
+
+	// Generate trapezoidal nodes and weights for y1
+	std::vector<real_t> y1_nodes(nx);
+	std::vector<real_t> y1_weights(nx);
+	real_t hy = (by - ay) / (nx - 1);
+
+	for (int i = 0; i < nx; ++i) {
+    		y1_nodes[i] = ay + i * hy;
+    		if (i == 0 || i == nx - 1) {
+        		y1_weights[i] = 0.5 * hy;
+   		 } else {
+        		y1_weights[i] = hy;
+ 	   }
+	}
+
+	// Generate trapezoidal nodes and weights for z1
+	std::vector<real_t> z1_nodes(nx);
+	std::vector<real_t> z1_weights(nx);
+	real_t hz = (bz - az) / (nx - 1);
+
+	for (int i = 0; i < nx; ++i) {
+    		z1_nodes[i] = az + i * hz;
+    		if (i == 0 || i == nx - 1) {
+        		z1_weights[i] = 0.5 * hz;
+   		 } else {
+        		z1_weights[i] = hz;
+   		 }
+	}
 
         //read_x1_1d_grid_from_file(x1_filepath, a, b, x1_nodes, x1_weights);
         //read_x1_1d_grid_from_file(x1_filepath, a, b, y1_nodes, y1_weights);
