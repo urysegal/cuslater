@@ -142,17 +142,7 @@ namespace cuslater{
                               l_weights);
         // Read x1 grid
         std::cout << "Reading x1 Grid Files" << std::endl;
-        const std::string x1_filepath = "grid_files_adap/leg64/x1_"+x1_type+"_1d_" + std::to_string(nx) + ".grid";
-        std::vector<real_t> x1_standard_nodes;
-        std::vector<real_t> x1_standard_weights;
-        read_x1_1d_grid_from_file(x1_filepath, x1_standard_nodes, x1_standard_weights);
-        std::vector<real_t> x1_nodes;
-        std::vector<real_t> x1_weights;
-	std::vector<real_t> y1_nodes;
-	std::vector<real_t> y1_weights;
-	std::vector<real_t> z1_nodes;
-	std::vector<real_t> z1_weights;
-	//real_t ax = -10;
+      	//real_t ax = -10;
 	//real_t bx = 11;
 	//real_t ay = -10;
 	//real_t by = 11;
