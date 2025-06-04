@@ -23,8 +23,8 @@ __constant__ real_t d_y_weights[600];
 __constant__ real_t d_x_weights[600];
 __constant__ real_t d_z_weights[600];
 
-__constant__ real_t d_r_nodes[600];
-__constant__ real_t d_r_weights[600];
+// __constant__ real_t d_r_nodes[600];
+// __constant__ real_t d_r_weights[600];
 // __constant__ real_t d_lx[MAX_NL];
 // __constant__ real_t d_ly[MAX_NL];
 // __constant__ real_t d_lz[ MAX_NL ];
@@ -65,6 +65,10 @@ namespace cuslater {
         real_t a2  = d_alpha[2];
         real_t a3  = d_alpha[3];
 
+        real_t rlx = r * lx;
+        real_t rly = r * ly;
+        real_t rlz = r * lz;
+
         real_t local = 0;
         for (; idx_flat < totalXY; idx_flat += gridDim.x * blockDim.x) {
             int    y = idx_flat / nx, x = idx_flat % nx;
@@ -76,10 +80,10 @@ namespace cuslater {
             real_t ydiffc_1 = yvalue - c1;
             real_t xdiffc_2 = xvalue - c3;
             real_t ydiffc_2 = yvalue - c4;
-            real_t xdiffc_3 = xvalue - c6 + r * lx;
-            real_t ydiffc_3 = yvalue - c7 + r * ly;
-            real_t xdiffc_4 = xvalue - c9 + r * lx;
-            real_t ydiffc_4 = yvalue - c10 + r * ly;
+            real_t xdiffc_3 = xvalue - c6 + rlx;
+            real_t ydiffc_3 = yvalue - c7 + rly;
+            real_t xdiffc_4 = xvalue - c9 + rlx;
+            real_t ydiffc_4 = yvalue - c10 + rly;
 
             real_t xysq1 = xdiffc_1 * xdiffc_1 + ydiffc_1 * ydiffc_1;
             real_t xysq2 = xdiffc_2 * xdiffc_2 + ydiffc_2 * ydiffc_2;
@@ -93,8 +97,8 @@ namespace cuslater {
 
                 real_t zdiffc_1 = zvalue - c2;
                 real_t zdiffc_2 = zvalue - c5;
-                real_t zdiffc_3 = zvalue - c8 + r * lz;
-                real_t zdiffc_4 = zvalue - c11 + r * lz;
+                real_t zdiffc_3 = zvalue - c8 + rlz;
+                real_t zdiffc_4 = zvalue - c11 + rlz;
                 real_t term1    = a0 * __fsqrt_rn(xysq1 + zdiffc_1 * zdiffc_1);
                 real_t term2    = a1 * __fsqrt_rn(xysq2 + zdiffc_2 * zdiffc_2);
                 real_t term3    = a2 * __fsqrt_rn(xysq3 + zdiffc_3 * zdiffc_3);
@@ -112,11 +116,11 @@ namespace cuslater {
         if (threadIdx.x == 0) block_sums[blockIdx.x] = block_sum;
     }
 
+    template<int BLOCKSIZE>
     double evaluateInnerSum(int nx, int ny, int nz, real_t r, real_t l_x, real_t l_y, real_t l_z,
-                            thrust::device_vector<double>& __restrict__ d_block_sums, int blocks,
-                            int threads) {
-        int shared_size = (THREADS_PER_BLOCK / 32) * sizeof(double);
-        evalIntegrand_3DBloackReduce<<<blocks, threads, shared_size>>>(
+                            thrust::device_vector<double>& __restrict__ d_block_sums, int blocks) {
+        int shared_size = blocks * sizeof(double);
+        evalIntegrand_3DBloackReduce<<<blocks, BLOCKSIZE, shared_size>>>(
             nx, ny, nz, r, l_x, l_y, l_z, thrust::raw_pointer_cast(d_block_sums.data()));
 
         thrust::host_vector<double> h = d_block_sums;
@@ -129,7 +133,8 @@ namespace cuslater {
                                  + (c[2] - c[8]) * (c[2] - c[8]));
         real_t normdiff24 = sqrt((c[3] - c[9]) * (c[3] - c[9]) + (c[4] - c[10]) * (c[4] - c[10])
                                  + (c[5] - c[11]) * (c[5] - c[11]));
-        real_t cond       = std::min(alpha[0], alpha[2]) * normdiff13
+
+        real_t cond = std::min(alpha[0], alpha[2]) * normdiff13
                     + std::min(alpha[1], alpha[3]) * normdiff24;
         real_t r0              = 1;
         int    inv_machine_eps = 1e8;
@@ -184,47 +189,40 @@ namespace cuslater {
         real_t az = mz - (lz / 2.0);
         real_t bz = mz + (lz / 2.0);
 
-        // Generate trapezoidal nodes and weights for x1
+        // Generate trapezoidal nodes and weights for x1, y1, z1
         std::vector<real_t> x1_nodes(nx);
         std::vector<real_t> x1_weights(nx);
         real_t              hx = (bx - ax) / (nx - 1);
 
-        for (int i = 0; i < nx; ++i) {
-            x1_nodes[i] = ax + i * hx;
-            if (i == 0 || i == nx - 1) {
-                x1_weights[i] = 0.5 * hx; // half weight at endpoints
-            } else {
-                x1_weights[i] = hx;
-            }
-        }
-
-        // Generate trapezoidal nodes and weights for y1
         std::vector<real_t> y1_nodes(nx);
         std::vector<real_t> y1_weights(nx);
         real_t              hy = (by - ay) / (nx - 1);
 
-        for (int i = 0; i < nx; ++i) {
-            y1_nodes[i] = ay + i * hy;
-            if (i == 0 || i == nx - 1) {
-                y1_weights[i] = 0.5 * hy;
-            } else {
-                y1_weights[i] = hy;
-            }
-        }
-
-        // Generate trapezoidal nodes and weights for z1
         std::vector<real_t> z1_nodes(nx);
         std::vector<real_t> z1_weights(nx);
         real_t              hz = (bz - az) / (nx - 1);
 
         for (int i = 0; i < nx; ++i) {
-            z1_nodes[i] = az + i * hz;
-            if (i == 0 || i == nx - 1) {
-                z1_weights[i] = 0.5 * hz;
-            } else {
-                z1_weights[i] = hz;
-            }
+            x1_nodes[i]   = ax + i * hx;
+            x1_weights[i] = hx;
         }
+
+        for (int i = 0; i < nx; ++i) {
+            y1_nodes[i]   = ay + i * hy;
+            y1_weights[i] = hy;
+        }
+
+        for (int i = 0; i < nx; ++i) {
+            z1_nodes[i]   = az + i * hz;
+            z1_weights[i] = hz;
+        }
+
+        x1_weights[0]      = 0.5 * hx; // half weight at endpoints
+        y1_weights[0]      = 0.5 * hy; // half weight at endpoints
+        z1_weights[0]      = 0.5 * hz; // half weight at endpoints
+        x1_weights[nx - 1] = 0.5 * hx; // half weight at endpoints
+        y1_weights[nx - 1] = 0.5 * hy; // half weight at endpoints
+        z1_weights[nx - 1] = 0.5 * hz; // half weight at endpoints
 
         std::cout << "Initializing Device Variables" << std::endl;
         unsigned int PX = x1_nodes.size();
@@ -268,8 +266,9 @@ namespace cuslater {
 
         for (int j = 0; j < nl; ++j) {
             for (int i = 0; i < nr; ++i) {
-                delta_sum = evaluateInnerSum(nx, ny, nz, r_nodes[i], l_nodes_x[j], l_nodes_y[j],
-                                             l_nodes_z[j], d_block_sums, blocks, threads);
+                delta_sum = evaluateInnerSum<THREADS_PER_BLOCK>(nx, ny, nz, r_nodes[i],
+                                                                l_nodes_x[j], l_nodes_y[j],
+                                                                l_nodes_z[j], d_block_sums, blocks);
 
                 sum += delta_sum * r_weights[i] * l_weights[j];
                 if (delta_sum < tol) {
