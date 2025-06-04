@@ -1,0 +1,44 @@
+If:
+  PathMatch: .*\.(c|h|hpp|cpp)
+CompileFlags:
+  Compiler: /arc/software/spack-2024/opt/spack/linux-rocky9-skylake_avx512/gcc-11.4.1/gcc-9.4.0-xraorchustmpt5xtpv3f7z2mw4wdkpef/bin/g++
+
+---
+If:
+  PathMatch: .*\.cuh
+
+CompileFlags:
+  Add: -xcuda
+---
+If:
+  PathMatch: .*\.cu
+CompileFlags:
+  Add:
+    - -xcuda
+    - --cuda-path=/arc/software/spack-2024/opt/spack/linux-rocky9-skylake_avx512/gcc-9.4.0/cuda-11.3.1-pwzx2bw72sresgc76i7fv54qvt3xwrxf/
+    - -I/arc/software/spack-2024/opt/spack/linux-rocky9-skylake_avx512/gcc-9.4.0/cuda-11.3.1-pwzx2bw72sresgc76i7fv54qvt3xwrxf/include/
+    - -L/arc/software/spack-2024/opt/spack/linux-rocky9-skylake_avx512/gcc-9.4.0/cuda-11.3.1-pwzx2bw72sresgc76i7fv54qvt3xwrxf/lib64/
+    - --cuda-gpu-arch=sm_70
+---
+
+CompileFlags:
+  Compiler: /arc/software/spack-2024/opt/spack/linux-rocky9-skylake_avx512/gcc-11.4.1/gcc-9.4.0-xraorchustmpt5xtpv3f7z2mw4wdkpef/bin/g++
+  Add:
+    - -std=c++14
+  Remove:
+    - "-Xfatbin*"
+    - "-gencode*"
+    - "--generate-code*"
+    - "-ccbin*"
+    - "--compiler-options*"
+    - "--expt-extended-lambda"
+    - "--expt-relaxed-constexpr"
+    - "-forward-unknown-to-host-compiler"
+    - "-Werror=cross-execution-space-call"
+    - -rdc=true
+    - -ccbin=*
+    - -forward-unknown-to-host-compiler
+    - --generate-code=*
+    - --options-file
+    - -Xcompiler=*
+    - -gencode
