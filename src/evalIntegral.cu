@@ -21,7 +21,7 @@ __constant__ real_t d_z_grid[600];
 
 namespace cuslater {
     __global__ void evalIntegrand_3DBloackReduce(int n, real_t hx, real_t hy, real_t hz, real_t r,
-                                                 real_t lx, real_t ly, real_t lz, double* block_sums) {
+                                                 real_t lx, real_t ly, real_t lz, real_t* block_sums) {
         int idx_flat = blockIdx.x * blockDim.x + threadIdx.x;
         int totalXY  = n * n;
         int y        = idx_flat / n;
@@ -77,7 +77,7 @@ namespace cuslater {
             real_t ydiffc_3 = yvalue - c7 + rly;
             real_t ydiffc_4 = yvalue - c10 + rly;
 
-            double v = 0;
+            real_t v = 0;
 
             {
                 real_t zvalue = __ldg(&d_z_grid[0]);
@@ -130,7 +130,7 @@ namespace cuslater {
 
         __shared__ typename BlockReduce::TempStorage temp;
 
-        double block_sum = BlockReduce(temp).Sum(local);
+        real_t block_sum = BlockReduce(temp).Sum(local);
         if (threadIdx.x == 0) block_sums[blockIdx.x] = block_sum;
     }
 
@@ -252,8 +252,8 @@ namespace cuslater {
         std::cout << " ygrid (ay , by) : (" << ay << " , " << by << ")" << std::endl;
         std::cout << " zgrid (az , bz) : (" << az << " , " << bz << ")" << std::endl;
 
-        static thrust::device_vector<double> d_block_sums(blocks);
-        static thrust::host_vector<double>   block_sums(blocks);
+        static thrust::device_vector<real_t> d_block_sums(blocks);
+        static thrust::host_vector<real_t>   block_sums(blocks);
 
         double sum       = 0.0;
         double delta_sum = 0.0;
