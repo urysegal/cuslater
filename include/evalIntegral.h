@@ -7,7 +7,7 @@
 #include <thrust/device_vector.h>
 #include <thrust/reduce.h>
 namespace cuslater {
-    double evaluateFourCenterIntegral(real_t* c, real_t* alphas, int nr, int nl, int nx, int ny, int nz,
+    double evaluateFourCenterIntegral(real_t* c, real_t* alphas, int nr, int nl, int n,
                                       const std::string x1_type, double tol, bool check_zero_cond);
     double evaluateFourCenterIntegral(real_t* c, real_t* alphas, int nr, int nl, int nx, int ny,
                                       int nz, const std::string x1_type, int num_gpus);

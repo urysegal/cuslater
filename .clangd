@@ -35,6 +35,9 @@ CompileFlags:
     - "--expt-relaxed-constexpr"
     - "-forward-unknown-to-host-compiler"
     - "-Werror=cross-execution-space-call"
+    - "-prec-*"
+    - "-ftz=true"
+    - "-fmad=true"
     - -rdc=true
     - -ccbin=*
     - -forward-unknown-to-host-compiler

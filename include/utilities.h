@@ -3,11 +3,7 @@
 //
 #ifndef UTILITIES_H
 #define UTILITIES_H
-#include <assert.h>
-#include <cassert>
 #include <cuda_runtime_api.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 #ifdef PRECISION_DOUBLE
 typedef double  real_t;

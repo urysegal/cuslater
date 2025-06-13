@@ -15,13 +15,14 @@ const double pi = 3.14159265358979323846;
 __constant__ real_t d_c[12];
 __constant__ real_t d_alpha[4];
 
-__constant__ real_t d_x_grid[600];
-__constant__ real_t d_y_grid[600];
-__constant__ real_t d_z_grid[600];
+__constant__ real_t d_x_grid[200];
+__constant__ real_t d_y_grid[200];
+__constant__ real_t d_z_grid[200];
 
 namespace cuslater {
     __global__ void evalIntegrand_3DBloackReduce(int n, real_t hx, real_t hy, real_t hz, real_t r,
-                                                 real_t lx, real_t ly, real_t lz, real_t* block_sums) {
+                                                 real_t lx, real_t ly, real_t lz,
+                                                 real_t* __restrict__ block_sums) {
         int idx_flat = blockIdx.x * blockDim.x + threadIdx.x;
         int totalXY  = n * n;
         int y        = idx_flat / n;
@@ -49,21 +50,21 @@ namespace cuslater {
         real_t rlx = r * lx;
         real_t rly = r * ly;
         real_t rlz = r * lz;
-
-        real_t dxy = hx * hy;
+        real_t hxyz = hx * hy * hz;
 
         // inform the compiler this is unlikely (__builtin_expect(cond, 0))
-        if (__builtin_expect(x == 0 || x == n - 1, 0)) {
-            dxy *= 0.5; // half weight at endpoints
+        if (__builtin_expect(x == 0 || x == n - 1, 0)) [[unlikely]] {
+            hx *= 0.5; // half weight at endpoints
         }
-        if (__builtin_expect(y == 0 || y == n - 1, 0)) {
-            dxy *= 0.5; // half weight at endpoints
+        if (__builtin_expect(y == 0 || y == n - 1, 0)) [[unlikely]] {
+            hy *= 0.5; // half weight at endpoints
         }
 
         real_t local = 0;
-        if (idx_flat < totalXY) {
+        if (__builtin_expect(idx_flat < totalXY, 1)) [[likely]] {
             real_t xvalue = __ldg(&d_x_grid[x]);
             real_t yvalue = __ldg(&d_y_grid[y]);
+            real_t zvalue;
 
             real_t xdiffc_1 = xvalue - c0;
             real_t xdiffc_2 = xvalue - c3;
@@ -77,37 +78,36 @@ namespace cuslater {
             real_t ydiffc_3 = yvalue - c7 + rly;
             real_t ydiffc_4 = yvalue - c10 + rly;
 
-            real_t v = 0;
+            real_t v = 0.f;
 
             {
-                real_t zvalue = __ldg(&d_z_grid[0]);
-                real_t dz     = hz * 0.5;
-
+                zvalue          = __ldg(&d_z_grid[0]);
                 real_t zdiffc_1 = zvalue - c2;
                 real_t zdiffc_2 = zvalue - c5;
                 real_t zdiffc_3 = zvalue - c8 + rlz;
                 real_t zdiffc_4 = zvalue - c11 + rlz;
+
                 real_t term1    = a0 * norm3df(xdiffc_1, ydiffc_1, zdiffc_1);
                 real_t term2    = a1 * norm3df(xdiffc_2, ydiffc_2, zdiffc_2);
                 real_t term3    = a2 * norm3df(xdiffc_3, ydiffc_3, zdiffc_3);
                 real_t term4    = a3 * norm3df(xdiffc_4, ydiffc_4, zdiffc_4);
                 real_t exponent = -term1 - term2 - term3 - term4 + r;
-                v += __expf(exponent) * dz;
+                v += __expf(exponent) * 0.5f;
             } // first run
             {
-                real_t zvalue = __ldg(&d_z_grid[n - 1]);
-                real_t dz     = hz * 0.5;
+                zvalue = __ldg(&d_z_grid[n - 1]);
 
                 real_t zdiffc_1 = zvalue - c2;
                 real_t zdiffc_2 = zvalue - c5;
                 real_t zdiffc_3 = zvalue - c8 + rlz;
                 real_t zdiffc_4 = zvalue - c11 + rlz;
+
                 real_t term1    = a0 * norm3df(xdiffc_1, ydiffc_1, zdiffc_1);
                 real_t term2    = a1 * norm3df(xdiffc_2, ydiffc_2, zdiffc_2);
                 real_t term3    = a2 * norm3df(xdiffc_3, ydiffc_3, zdiffc_3);
                 real_t term4    = a3 * norm3df(xdiffc_4, ydiffc_4, zdiffc_4);
                 real_t exponent = -term1 - term2 - term3 - term4 + r;
-                v += __expf(exponent) * dz;
+                v += __expf(exponent) * 0.5f;
             } // second run at the end point
 
             for (int k = 1; k < n - 1; ++k) {
@@ -122,16 +122,21 @@ namespace cuslater {
                 real_t term3    = a2 * norm3df(xdiffc_3, ydiffc_3, zdiffc_3);
                 real_t term4    = a3 * norm3df(xdiffc_4, ydiffc_4, zdiffc_4);
                 real_t exponent = -term1 - term2 - term3 - term4 + r;
-                v += __expf(exponent) * hz;
+                // v += term2 * term3 * term4 * __expf(exponent);
+                v += __expf(exponent);
+                // v += __logf(term2) * __logf(term3) + __logf(term4) + exponent;
+                // v += __logf(__fabs(exponent));
+                // v += (exponent);
             }
-            local += v * dxy;
+            local += v * hxyz;
         }
         using BlockReduce = cub::BlockReduce<real_t, THREADS_PER_BLOCK>;
 
         __shared__ typename BlockReduce::TempStorage temp;
 
         real_t block_sum = BlockReduce(temp).Sum(local);
-        if (threadIdx.x == 0) block_sums[blockIdx.x] = block_sum;
+        if (__builtin_expect(threadIdx.x == 0, 0)) [[unlikely]]
+            block_sums[blockIdx.x] = block_sum;
     }
 
     bool checkZero(real_t* c, real_t* alpha) {
@@ -153,7 +158,7 @@ namespace cuslater {
         return false;
     }
 
-    double evaluateFourCenterIntegral(real_t* c, real_t* alpha, int nr, int nl, int nx, int ny, int nz,
+    double evaluateFourCenterIntegral(real_t* c, real_t* alpha, int nr, int nl, int n,
                                       const std::string x1_type, double tol, bool check_zero_cond) {
         if (check_zero_cond && checkZero(c, alpha)) {
             return 0.0;
@@ -197,47 +202,44 @@ namespace cuslater {
         real_t bz = mz + (lz / 2.0);
 
         // Generate trapezoidal nodes and weights for x1, y1, z1
-        std::vector<real_t> x1_nodes(nx);
-        std::vector<real_t> x1_weights(nx);
-        real_t              hx = (bx - ax) / (nx - 1);
+        std::vector<real_t> x1_nodes(n);
+        std::vector<real_t> x1_weights(n);
+        real_t              hx = (bx - ax) / (n - 1);
 
-        std::vector<real_t> y1_nodes(nx);
-        std::vector<real_t> y1_weights(nx);
-        real_t              hy = (by - ay) / (nx - 1);
+        std::vector<real_t> y1_nodes(n);
+        std::vector<real_t> y1_weights(n);
+        real_t              hy = (by - ay) / (n - 1);
 
-        std::vector<real_t> z1_nodes(nx);
-        std::vector<real_t> z1_weights(nx);
-        real_t              hz = (bz - az) / (nx - 1);
+        std::vector<real_t> z1_nodes(n);
+        std::vector<real_t> z1_weights(n);
+        real_t              hz = (bz - az) / (n - 1);
 
-        for (int i = 0; i < nx; ++i) {
+        for (int i = 0; i < n; ++i) {
             x1_nodes[i] = ax + i * hx;
         }
 
-        for (int i = 0; i < nx; ++i) {
+        for (int i = 0; i < n; ++i) {
             y1_nodes[i] = ay + i * hy;
         }
 
-        for (int i = 0; i < nx; ++i) {
+        for (int i = 0; i < n; ++i) {
             z1_nodes[i] = az + i * hz;
         }
 
         std::cout << "Initializing Device Variables" << std::endl;
-        unsigned int PX = x1_nodes.size();
-        unsigned int PY = y1_nodes.size();
-        unsigned int PZ = z1_nodes.size();
 
-        constexpr int threads = THREADS_PER_BLOCK;                 // Max threads per block
-        const int     blocks  = (PX * PY + threads - 1) / threads; // Max blocks, better if
-                                                                   // multiple of SM = 80
+        constexpr int threads = THREADS_PER_BLOCK;               // Max threads per block
+        int           blocks  = (n * n + threads - 1) / threads; // Max blocks, better if
+                                                                 // multiple of SM = 80
         std::cout << "Total Blocks: " << blocks << std::endl;
         std::cout << "Total Threads: " << blocks * threads << std::endl;
-        std::cout << "Total Grid Points: " << nx * ny * nz << std::endl;
+        std::cout << "Total Grid Points: " << n * n * n << std::endl;
 
         cudaMemcpyToSymbol(d_c, c, 12 * sizeof(real_t));
         cudaMemcpyToSymbol(d_alpha, alpha, 4 * sizeof(real_t));
-        cudaMemcpyToSymbol(d_x_grid, x1_nodes.data(), PX * sizeof(real_t));
-        cudaMemcpyToSymbol(d_y_grid, y1_nodes.data(), PY * sizeof(real_t));
-        cudaMemcpyToSymbol(d_z_grid, z1_nodes.data(), PZ * sizeof(real_t));
+        cudaMemcpyToSymbol(d_x_grid, x1_nodes.data(), n * sizeof(real_t));
+        cudaMemcpyToSymbol(d_y_grid, y1_nodes.data(), n * sizeof(real_t));
+        cudaMemcpyToSymbol(d_z_grid, z1_nodes.data(), n * sizeof(real_t));
 
         std::cout << "Evaluating Integral for all values of r and l with\n";
         std::cout << "  a1=" << alpha[0] << ", a2=" << alpha[1] << ", a3=" << alpha[2]
@@ -255,10 +257,9 @@ namespace cuslater {
         static thrust::device_vector<real_t> d_block_sums(blocks);
         static thrust::host_vector<real_t>   block_sums(blocks);
 
-        double sum       = 0.0;
-        double delta_sum = 0.0;
+        double sum       = 0.0f;
+        double delta_sum = 0.0f;
         int    r_skipped = 0;
-        int    n         = nx; // number of grid points in x1, y1, z1
 
         for (int j = 0; j < nl; ++j) {
             for (int i = 0; i < nr; ++i) {
