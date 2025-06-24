@@ -47,9 +47,9 @@ namespace cuslater {
         real_t a2  = d_alpha[2];
         real_t a3  = d_alpha[3];
 
-        real_t rlx = r * lx;
-        real_t rly = r * ly;
-        real_t rlz = r * lz;
+        real_t rlx  = r * lx;
+        real_t rly  = r * ly;
+        real_t rlz  = r * lz;
         real_t hxyz = hx * hy * hz;
 
         // inform the compiler this is unlikely (__builtin_expect(cond, 0))
@@ -122,11 +122,7 @@ namespace cuslater {
                 real_t term3    = a2 * norm3df(xdiffc_3, ydiffc_3, zdiffc_3);
                 real_t term4    = a3 * norm3df(xdiffc_4, ydiffc_4, zdiffc_4);
                 real_t exponent = -term1 - term2 - term3 - term4 + r;
-                // v += term2 * term3 * term4 * __expf(exponent);
                 v += __expf(exponent);
-                // v += __logf(term2) * __logf(term3) + __logf(term4) + exponent;
-                // v += __logf(__fabs(exponent));
-                // v += (exponent);
             }
             local += v * hxyz;
         }
@@ -257,16 +253,20 @@ namespace cuslater {
         static thrust::device_vector<real_t> d_block_sums(blocks);
         static thrust::host_vector<real_t>   block_sums(blocks);
 
-        double sum       = 0.0f;
-        double delta_sum = 0.0f;
-        int    r_skipped = 0;
+        double                    sum       = 0.0f;
+        double                    delta_sum = 0.0f;
+        int                       r_skipped = 0;
+        std::chrono::microseconds duration(0);
 
         for (int j = 0; j < nl; ++j) {
             for (int i = 0; i < nr; ++i) {
+                auto start = std::chrono::high_resolution_clock::now();
                 evalIntegrand_3DBloackReduce<<<blocks, THREADS_PER_BLOCK>>>(
                     n, hx, hy, hz, r_nodes[i], l_nodes_x[j], l_nodes_y[j], l_nodes_z[j],
                     thrust::raw_pointer_cast(d_block_sums.data()));
-
+                cudaDeviceSynchronize();
+                auto end = std::chrono::high_resolution_clock::now();
+                duration += std::chrono::duration_cast<std::chrono::microseconds>(end - start);
                 block_sums = d_block_sums;
                 delta_sum  = std::accumulate(block_sums.begin(), block_sums.end(), 0.0);
 
@@ -280,13 +280,20 @@ namespace cuslater {
                 std::cout << "computed for l_j:" << j << "/" << nl << std::endl;
             }
         }
+
+        // sum up result, multiply with constant and return
         std::cout << "sum before multiplication " << sum << std::endl;
         sum *= (4.0 / pi) * std::pow(alpha[0] * alpha[1] * alpha[2] * alpha[3], 1.5);
 
-        // sum up result, multiply with constant and return
         std::cout << "Tolerance: " << tol << std::endl;
         std::cout << "Total values of r skipped for different l's: " << r_skipped << "/" << nr * nl
                   << std::endl;
+        auto avgTime = duration.count() / (nr * nl - r_skipped);
+        std::cout << "Total Time: " << duration.count() << " microseconds" << std::endl;
+        std::cout << "Total Kernel Calls: " << nr * nl - r_skipped << std::endl;
+        std::cout << "Avg Per Kernel Time: " << avgTime << " microseconds" << std::endl;
+        std::cout << "Effective Bandwidth: " << (202.0 * 4 * n * n + blocks * 4) / avgTime / 1e3
+                  << " GB/s" << std::endl;
         return sum;
     }
 } // namespace cuslater
