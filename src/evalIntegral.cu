@@ -2,7 +2,6 @@
 //  Created by gkluhana on 26/03/24.
 //
 #include "../include/evalIntegral.h"
-#include "cuslater.cuh"
 #include "grids.h"
 #include "utilities.h"
 #include <algorithm>
@@ -15,9 +14,9 @@ const double pi = 3.14159265358979323846;
 __constant__ real_t d_c[12];
 __constant__ real_t d_alpha[4];
 
-__constant__ real_t d_x_grid[200];
-__constant__ real_t d_y_grid[200];
-__constant__ real_t d_z_grid[200];
+__constant__ real_t d_x_grid[500];
+__constant__ real_t d_y_grid[500];
+__constant__ real_t d_z_grid[500];
 
 namespace cuslater {
     __global__ void evalIntegrand_3DBloackReduce(int n, real_t hx, real_t hy, real_t hz, real_t r,
@@ -109,19 +108,92 @@ namespace cuslater {
                 real_t exponent = -term1 - term2 - term3 - term4 + r;
                 v += __expf(exponent) * 0.5f;
             } // second run at the end point
+            {
+                float2 zvalue = reinterpret_cast<float2*>(&d_z_grid[n - 3])[0];
 
-            for (int k = 1; k < n - 1; ++k) {
-                real_t zvalue = __ldg(&d_z_grid[k]);
+                real_t zdiffc_1 = zvalue.x - c2;
+                real_t zdiffc_2 = zvalue.x - c5;
+                real_t zdiffc_3 = zvalue.x - c8 + rlz;
+                real_t zdiffc_4 = zvalue.x - c11 + rlz;
 
-                real_t zdiffc_1 = zvalue - c2;
-                real_t zdiffc_2 = zvalue - c5;
-                real_t zdiffc_3 = zvalue - c8 + rlz;
-                real_t zdiffc_4 = zvalue - c11 + rlz;
                 real_t term1    = a0 * norm3df(xdiffc_1, ydiffc_1, zdiffc_1);
                 real_t term2    = a1 * norm3df(xdiffc_2, ydiffc_2, zdiffc_2);
                 real_t term3    = a2 * norm3df(xdiffc_3, ydiffc_3, zdiffc_3);
                 real_t term4    = a3 * norm3df(xdiffc_4, ydiffc_4, zdiffc_4);
                 real_t exponent = -term1 - term2 - term3 - term4 + r;
+                v += __expf(exponent);
+
+                zdiffc_1 = zvalue.y - c2;
+                zdiffc_2 = zvalue.y - c5;
+                zdiffc_3 = zvalue.y - c8 + rlz;
+                zdiffc_4 = zvalue.y - c11 + rlz;
+
+                term1    = a0 * norm3df(xdiffc_1, ydiffc_1, zdiffc_1);
+                term2    = a1 * norm3df(xdiffc_2, ydiffc_2, zdiffc_2);
+                term3    = a2 * norm3df(xdiffc_3, ydiffc_3, zdiffc_3);
+                term4    = a3 * norm3df(xdiffc_4, ydiffc_4, zdiffc_4);
+                exponent = -term1 - term2 - term3 - term4 + r;
+                v += __expf(exponent);
+            } // 2 more to cover the the remainder
+
+            // each iteration we compute 4 z-nodes to reduce memory reads
+            for (int k = 1; k < n - 3; k += 4) {
+                // for (int k = 1; k < n - 1; ++k) {
+                //     float  zvalue   = d_z_grid[k];
+                //     real_t zdiffc_1 = zvalue - c2;
+                //     real_t zdiffc_2 = zvalue - c5;
+                //     real_t zdiffc_3 = zvalue - c8 + rlz;
+                //     real_t zdiffc_4 = zvalue - c11 + rlz;
+                //     real_t term1    = a0 * norm3df(xdiffc_1, ydiffc_1, zdiffc_1);
+                //     real_t term2    = a1 * norm3df(xdiffc_2, ydiffc_2, zdiffc_2);
+                //     real_t term3    = a2 * norm3df(xdiffc_3, ydiffc_3, zdiffc_3);
+                //     real_t term4    = a3 * norm3df(xdiffc_4, ydiffc_4, zdiffc_4);
+                //     real_t exponent = -term1 - term2 - term3 - term4 + r;
+                //     v += __expf(exponent);
+                float4 zvalue = reinterpret_cast<float4*>(&d_z_grid[k])[0];
+
+                real_t zdiffc_1 = zvalue.x - c2;
+                real_t zdiffc_2 = zvalue.x - c5;
+                real_t zdiffc_3 = zvalue.x - c8 + rlz;
+                real_t zdiffc_4 = zvalue.x - c11 + rlz;
+                real_t term1    = a0 * norm3df(xdiffc_1, ydiffc_1, zdiffc_1);
+                real_t term2    = a1 * norm3df(xdiffc_2, ydiffc_2, zdiffc_2);
+                real_t term3    = a2 * norm3df(xdiffc_3, ydiffc_3, zdiffc_3);
+                real_t term4    = a3 * norm3df(xdiffc_4, ydiffc_4, zdiffc_4);
+                real_t exponent = -term1 - term2 - term3 - term4 + r;
+                v += __expf(exponent);
+
+                zdiffc_1 = zvalue.y - c2;
+                zdiffc_2 = zvalue.y - c5;
+                zdiffc_3 = zvalue.y - c8 + rlz;
+                zdiffc_4 = zvalue.y - c11 + rlz;
+                term1    = a0 * norm3df(xdiffc_1, ydiffc_1, zdiffc_1);
+                term2    = a1 * norm3df(xdiffc_2, ydiffc_2, zdiffc_2);
+                term3    = a2 * norm3df(xdiffc_3, ydiffc_3, zdiffc_3);
+                term4    = a3 * norm3df(xdiffc_4, ydiffc_4, zdiffc_4);
+                exponent = -term1 - term2 - term3 - term4 + r;
+                v += __expf(exponent);
+
+                zdiffc_1 = zvalue.z - c2;
+                zdiffc_2 = zvalue.z - c5;
+                zdiffc_3 = zvalue.z - c8 + rlz;
+                zdiffc_4 = zvalue.z - c11 + rlz;
+                term1    = a0 * norm3df(xdiffc_1, ydiffc_1, zdiffc_1);
+                term2    = a1 * norm3df(xdiffc_2, ydiffc_2, zdiffc_2);
+                term3    = a2 * norm3df(xdiffc_3, ydiffc_3, zdiffc_3);
+                term4    = a3 * norm3df(xdiffc_4, ydiffc_4, zdiffc_4);
+                exponent = -term1 - term2 - term3 - term4 + r;
+                v += __expf(exponent);
+
+                zdiffc_1 = zvalue.w - c2;
+                zdiffc_2 = zvalue.w - c5;
+                zdiffc_3 = zvalue.w - c8 + rlz;
+                zdiffc_4 = zvalue.w - c11 + rlz;
+                term1    = a0 * norm3df(xdiffc_1, ydiffc_1, zdiffc_1);
+                term2    = a1 * norm3df(xdiffc_2, ydiffc_2, zdiffc_2);
+                term3    = a2 * norm3df(xdiffc_3, ydiffc_3, zdiffc_3);
+                term4    = a3 * norm3df(xdiffc_4, ydiffc_4, zdiffc_4);
+                exponent = -term1 - term2 - term3 - term4 + r;
                 v += __expf(exponent);
             }
             local += v * hxyz;
@@ -147,20 +219,18 @@ namespace cuslater {
         real_t r0              = 1;
         int    inv_machine_eps = 1e8;
         if (cond > log(r0 * inv_machine_eps)) {
-            printf("zero condition: check wheter %f > %f, \n", cond, log(r0 * inv_machine_eps));
-            std::cout << "Zero condition met" << std::endl;
+            // printf("zero condition: check wheter %f > %f, \n", cond, log(r0 * inv_machine_eps));
+            // std::cout << "Zero condition met" << std::endl;
             return true;
         }
         return false;
     }
 
     double evaluateFourCenterIntegral(real_t* c, real_t* alpha, int nr, int nl, int n,
-                                      const std::string x1_type, double tol, bool check_zero_cond) {
+                                       double tol, bool check_zero_cond) {
         if (check_zero_cond && checkZero(c, alpha)) {
             return 0.0;
         }
-
-        HANDLE_CUDA_ERROR(cudaSetDevice(0));
 
         // read r grid
         std::cout << "Reading r Grid Files" << std::endl;
@@ -250,28 +320,29 @@ namespace cuslater {
         std::cout << " ygrid (ay , by) : (" << ay << " , " << by << ")" << std::endl;
         std::cout << " zgrid (az , bz) : (" << az << " , " << bz << ")" << std::endl;
 
-        static thrust::device_vector<real_t> d_block_sums(blocks);
-        static thrust::host_vector<real_t>   block_sums(blocks);
+        thrust::device_vector<real_t> d_block_sums(blocks);
+        thrust::host_vector<real_t>   block_sums(blocks);
 
         double                    sum       = 0.0f;
         double                    delta_sum = 0.0f;
         int                       r_skipped = 0;
         std::chrono::microseconds duration(0);
 
+        auto grand_start = std::chrono::high_resolution_clock::now();
         for (int j = 0; j < nl; ++j) {
             for (int i = 0; i < nr; ++i) {
                 auto start = std::chrono::high_resolution_clock::now();
                 evalIntegrand_3DBloackReduce<<<blocks, THREADS_PER_BLOCK>>>(
                     n, hx, hy, hz, r_nodes[i], l_nodes_x[j], l_nodes_y[j], l_nodes_z[j],
                     thrust::raw_pointer_cast(d_block_sums.data()));
-                cudaDeviceSynchronize();
+                // cudaDeviceSynchronize();
                 auto end = std::chrono::high_resolution_clock::now();
                 duration += std::chrono::duration_cast<std::chrono::microseconds>(end - start);
                 block_sums = d_block_sums;
                 delta_sum  = std::accumulate(block_sums.begin(), block_sums.end(), 0.0);
 
                 sum += delta_sum * r_weights[i] * l_weights[j];
-                if (delta_sum < tol) {
+                if (delta_sum < tol) [[unlikely]] {
                     r_skipped += nr - i;
                     break;
                 }
@@ -280,6 +351,8 @@ namespace cuslater {
                 std::cout << "computed for l_j:" << j << "/" << nl << std::endl;
             }
         }
+        auto grand_end = std::chrono::high_resolution_clock::now();
+        auto grand_dur = std::chrono::duration_cast<std::chrono::microseconds>(grand_end - grand_start);
 
         // sum up result, multiply with constant and return
         std::cout << "sum before multiplication " << sum << std::endl;
@@ -289,7 +362,8 @@ namespace cuslater {
         std::cout << "Total values of r skipped for different l's: " << r_skipped << "/" << nr * nl
                   << std::endl;
         auto avgTime = duration.count() / (nr * nl - r_skipped);
-        std::cout << "Total Time: " << duration.count() << " microseconds" << std::endl;
+        std::cout << "Total Kernel Time: " << duration.count() << " microseconds" << std::endl;
+        std::cout << "Total Time: " << grand_dur.count() << " microseconds" << std::endl;
         std::cout << "Total Kernel Calls: " << nr * nl - r_skipped << std::endl;
         std::cout << "Avg Per Kernel Time: " << avgTime << " microseconds" << std::endl;
         std::cout << "Effective Bandwidth: " << (202.0 * 4 * n * n + blocks * 4) / avgTime / 1e3
