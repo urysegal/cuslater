@@ -10,22 +10,22 @@
 
 namespace cg = cooperative_groups;
 
-namespace cuslater{
+namespace cuslater {
 
     void handleArguments(int argc, const char* argv[], ProgramParameters& params) {
 
-   	int nr=params.nr, nl=params.nl, nx=params.nx, ny=params.ny, nz=params.nz;
-	double tol=params.tol;
-	bool check_zero_cond=params.check_zero_cond;
+        int nr = params.nr, nl = params.nl, nx = params.nx, ny = params.ny, nz = params.nz;
+        double tol             = params.tol;
+        bool   check_zero_cond = params.check_zero_cond;
 
-	real_t alpha[4] ;
-	real_t c[12];
-	for (int i = 0; i < 4; ++i) {
-    		alpha[i] = params.alpha[i];
-    }
-    for (int i = 0; i < 12; ++i) {
-        c[i] = params.c[i];
-    }
+        real_t alpha[4];
+        real_t c[12];
+        for (int i = 0; i < 4; ++i) {
+            alpha[i] = params.alpha[i];
+        }
+        for (int i = 0; i < 12; ++i) {
+            c[i] = params.c[i];
+        }
 
         for (int i = 1; i < argc; ++i) {
             if (std::strcmp(argv[i], "--help") == 0) {
@@ -56,7 +56,8 @@ namespace cuslater{
                     try {
                         alpha[j - 1] = std::atof(argv[i + j]);
                     } catch (...) {
-                        std::cerr << "Error: Insufficient numerical values provided for -a option.\n";
+                        std::cerr
+                            << "Error: Insufficient numerical values provided for -a option.\n";
                         exit(EXIT_FAILURE);
                     }
                 }
@@ -77,7 +78,8 @@ namespace cuslater{
                 centNum = argi[2] - '0';
                 // Read next 3 values coordinates for ci
                 if (i + 3 >= argc) {
-                    std::cerr << "Error: Fewer than 3 coordinates provided for c" << centNum << ".\n";
+                    std::cerr << "Error: Fewer than 3 coordinates provided for c"
+                              << centNum << ".\n";
                     exit(EXIT_FAILURE);
                 }
                 for (int j = 0; j < 3; ++j) {
@@ -134,123 +136,124 @@ namespace cuslater{
                 exit(EXIT_FAILURE);
             }
         }
-    //Update Program Parameters
-	params.nr = nr;
-	params.nl = nl;
-	params.nx = nx;
-	params.ny = ny;
-	params.nz = nz;
-	params.tol = tol;
-	for (int i = 0; i < 4; ++i) {
-    		params.alpha[i] = alpha[i];
-    }
-    for (int i = 0; i < 12; ++i) {
-        params.c[i] = c[i];
-    }
+        // Update Program Parameters
+        params.nr  = nr;
+        params.nl  = nl;
+        params.nx  = nx;
+        params.ny  = ny;
+        params.nz  = nz;
+        params.tol = tol;
+        for (int i = 0; i < 4; ++i) {
+            params.alpha[i] = alpha[i];
+        }
+        for (int i = 0; i < 12; ++i) {
+            params.c[i] = c[i];
+        }
         params.check_zero_cond = check_zero_cond;
     }
     void getAvailableMemory(size_t& availableMemory) {
-        size_t free_bytes, total_bytes;
-        cudaError_t  err = cudaMemGetInfo(&free_bytes, &total_bytes);
-        if (err != cudaSuccess){
-                printf("Error: %s\n", cudaGetErrorString(err));
+        size_t      free_bytes, total_bytes;
+        cudaError_t err = cudaMemGetInfo(&free_bytes, &total_bytes);
+        if (err != cudaSuccess) {
+            printf("Error: %s\n", cudaGetErrorString(err));
         }
         availableMemory = free_bytes;
     }
 
-__device__ unsigned long upper_power_of_two(unsigned long v) {
-    v--;
-    v |= v >> 1;
-    v |= v >> 2;
-    v |= v >> 4;
-    v |= v >> 8;
-    v |= v >> 16;
-    v++;
-    return v;
-}
+    __device__ unsigned long upper_power_of_two(unsigned long v) {
+        v--;
+        v |= v >> 1;
+        v |= v >> 2;
+        v |= v >> 4;
+        v |= v >> 8;
+        v |= v >> 16;
+        v++;
+        return v;
+    }
 
-__global__ void reduceSum(double *input, double *output, int size) {
-    extern __shared__ double tsum[];
-    int id = threadIdx.x;
-    int tid = blockDim.x * blockIdx.x + threadIdx.x;
-    int stride = gridDim.x * blockDim.x;
-    tsum[id] = 0.0;
-    for (int k = tid; k < size; k += stride) tsum[id] += input[k];
-    __syncthreads();
-    int block2 = upper_power_of_two(static_cast<unsigned long>(blockDim.x));
-    for (int k = block2 / 2; k > 0; k >>= 1) {
-        if (id < k && id + k < blockDim.x) tsum[id] += tsum[id + k];
+    __global__ void reduceSum(double* input, double* output, int size) {
+        extern __shared__ double tsum[];
+        int                      id     = threadIdx.x;
+        int                      tid    = blockDim.x * blockIdx.x + threadIdx.x;
+        int                      stride = gridDim.x * blockDim.x;
+        tsum[id]                        = 0.0;
+        for (int k = tid; k < size; k += stride)
+            tsum[id] += input[k];
         __syncthreads();
-    }
-    if (id == 0) output[blockIdx.x] = tsum[0];
-}
-
-__global__ void reduceSumWrapper(double *d_results_i, int blocks, int threads) {
-    // Reduce vector on GPU within each block
-    int blocks_evaluated = blocks;
-    int numBlocksReduced = (blocks + threads - 1) / threads;
-    // Reduce vector down to < threads_per_block
-    while (blocks > threads) {
-        reduceSum<<<numBlocksReduced, threads, threads * sizeof(double)>>>(
-            d_results_i, d_results_i, blocks);
-        blocks = numBlocksReduced;
-        numBlocksReduced = (blocks + threads - 1) / threads;
+        int block2 = upper_power_of_two(static_cast<unsigned long>(blockDim.x));
+        for (int k = block2 / 2; k > 0; k >>= 1) {
+            if (id < k && id + k < blockDim.x) tsum[id] += tsum[id + k];
+            __syncthreads();
+        }
+        if (id == 0) output[blockIdx.x] = tsum[0];
     }
 
-    // Reduce vector down to 1 value
-    reduceSum<<<1, blocks, blocks * sizeof(double)>>>(d_results_i, d_results_i,
-                                                      blocks);
-    blocks = blocks_evaluated;
-}
+    __global__ void reduceSumWrapper(double* d_results_i, int blocks, int threads) {
+        // Reduce vector on GPU within each block
+        int blocks_evaluated = blocks;
+        int numBlocksReduced = (blocks + threads - 1) / threads;
+        // Reduce vector down to < threads_per_block
+        while (blocks > threads) {
+            reduceSum<<<numBlocksReduced, threads, threads * sizeof(double)>>>(
+                d_results_i, d_results_i, blocks);
+            blocks           = numBlocksReduced;
+            numBlocksReduced = (blocks + threads - 1) / threads;
+        }
 
-__global__ void reduceSumWithWeights(double *input, double *output,
-                                     double *weights, int size) {
-    extern __shared__ double tsum[];
-    int id = threadIdx.x;
-    int tid = blockDim.x * blockIdx.x + threadIdx.x;
-    int stride = gridDim.x * blockDim.x;
-    tsum[id] = 0.0;
-    for (int k = tid; k < size; k += stride) tsum[id] += input[k] * weights[k];
-    __syncthreads();
-    int block2 = upper_power_of_two(static_cast<unsigned long>(blockDim.x));
-    for (int k = block2 / 2; k > 0; k >>= 1) {
-        if (id < k && id + k < blockDim.x) tsum[id] += tsum[id + k];
+        // Reduce vector down to 1 value
+        reduceSum<<<1, blocks, blocks * sizeof(double)>>>(d_results_i, d_results_i, blocks);
+        blocks = blocks_evaluated;
+    }
+
+    __global__ void reduceSumWithWeights(double* input, double* output, double* weights,
+                                         int size) {
+        extern __shared__ double tsum[];
+        int                      id     = threadIdx.x;
+        int                      tid    = blockDim.x * blockIdx.x + threadIdx.x;
+        int                      stride = gridDim.x * blockDim.x;
+        tsum[id]                        = 0.0;
+        for (int k = tid; k < size; k += stride)
+            tsum[id] += input[k] * weights[k];
         __syncthreads();
+        int block2 = upper_power_of_two(static_cast<unsigned long>(blockDim.x));
+        for (int k = block2 / 2; k > 0; k >>= 1) {
+            if (id < k && id + k < blockDim.x) tsum[id] += tsum[id + k];
+            __syncthreads();
+        }
+        if (id == 0) output[blockIdx.x] = tsum[0];
     }
-    if (id == 0) output[blockIdx.x] = tsum[0];
-}
 
-__global__ void reduceSumFast(const real_t *__restrict data,
-                              real_t *__restrict sums, int n) {
-    auto grid = cg::this_grid();
-    auto block = cg::this_thread_block();
-    auto warp = cg::tiled_partition<32>(block);
+    __global__ void reduceSumFast(const real_t* __restrict data, real_t* __restrict sums,
+                                  int n) {
+        auto grid  = cg::this_grid();
+        auto block = cg::this_thread_block();
+        auto warp  = cg::tiled_partition<32>(block);
 
-    real_t v = 0.0f;
+        real_t v = 0.0f;
 
-    for (int tid = grid.thread_rank(); tid < n; tid += grid.size())
-        v += data[tid];
-    warp.sync();
-    v = cg::reduce(warp, v, cg::plus<real_t>());
+        for (int tid = grid.thread_rank(); tid < n; tid += grid.size())
+            v += data[tid];
+        warp.sync();
+        v = cg::reduce(warp, v, cg::plus<real_t>());
 
-    if (warp.thread_rank() == 0) atomicAdd(&sums[block.group_index().x], v);
-}
-
-__global__ void multiplyVolumeElement(int x_dim, double dxdydz, double *res) {
-    int bx = blockIdx.x;
-    int by = blockIdx.y;
-    int bz = blockIdx.z;
-    int tx = threadIdx.x;
-    int ty = threadIdx.y;
-    int tz = threadIdx.z;
-    int h = gridDim.z * blockDim.z;
-    int d = gridDim.y * blockDim.y;
-    int idx = h * d * (blockDim.x * bx + tx) + d * (blockDim.y * by + ty) +
-              (blockDim.z * bz + tz);
-
-    if (idx < x_dim * x_dim * x_dim) {
-        res[idx] = res[idx] * dxdydz;
+        if (warp.thread_rank() == 0) atomicAdd(&sums[block.group_index().x], v);
     }
-}
 
-}  // namespace cuslater
+    __global__ void multiplyVolumeElement(int x_dim, double dxdydz, double* res) {
+        int bx  = blockIdx.x;
+        int by  = blockIdx.y;
+        int bz  = blockIdx.z;
+        int tx  = threadIdx.x;
+        int ty  = threadIdx.y;
+        int tz  = threadIdx.z;
+        int h   = gridDim.z * blockDim.z;
+        int d   = gridDim.y * blockDim.y;
+        int idx = h * d * (blockDim.x * bx + tx) + d * (blockDim.y * by + ty)
+                + (blockDim.z * bz + tz);
+
+        if (idx < x_dim * x_dim * x_dim) {
+            res[idx] = res[idx] * dxdydz;
+        }
+    }
+
+} // namespace cuslater
