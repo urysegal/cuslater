@@ -19,7 +19,7 @@ set(PRECISION PRECISION_FLOAT)
 include_directories(${cuSlater_SOURCE_DIR} ${cuSlater_SOURCE_DIR}/include)
 add_library(cuSlater SHARED
 		include/utilities.h src/utilities.cu
-		include/grids.h		src/grids.cu
+		include/grids.h		src/grids.cu src/metric.cu
 		include/evalIntegral.h src/evalIntegral.cu
 )
 
@@ -37,9 +37,13 @@ set_target_properties(cuSlater PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 set_target_properties(cuSlater PROPERTIES CUDA_ARCHITECTURE 70-real)
 
 add_executable(simple examples/simple.cu)
+add_executable(conver examples/trap.cu)
 
 add_dependencies(simple cuSlater)
+add_dependencies(conver cuSlater)
 
 target_compile_definitions(simple PRIVATE ${PRECISION})
 target_link_libraries(simple cuSlater)
 
+target_compile_definitions(conver PRIVATE ${PRECISION})
+target_link_libraries(conver cuSlater)

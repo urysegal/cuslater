@@ -3,23 +3,25 @@
 // editted by MarkEwert03 on 13/05/24
 
 #include "../include/evalIntegral.h"
+#include "cuslater.cuh"
+#include "grids.h"
 #include <chrono>
 #include <iomanip> // for std::setprecision
 #include <iostream>
-#include <string>
 using namespace std;
 
 int main(int argc, const char* argv[]) {
+    HANDLE_CUDA_ERROR(cudaSetDevice(0));
     // Default Parameter Values
     cuslater::ProgramParameters sys;
     // Process Input Parameters
     cuslater::handleArguments(argc, argv, sys);
 
-    int    nr = sys.nr;
-    int    nl = sys.nl;
-    int    nx = sys.nx;
-    int    ny = sys.ny;
-    int    nz = sys.nz;
+    int nr = sys.nr;
+    int nl = sys.nl;
+    int nx = sys.nx;
+    int ny = sys.ny;
+    int nz = sys.nz;
     if (nx != ny || nx != nz || ny != nz) {
         std::cerr << "nx, ny, and nz must be equal for this example." << std::endl;
         return 1;
@@ -35,7 +37,6 @@ int main(int argc, const char* argv[]) {
     }
 
     const int n = nx;
-
 
     int gpu = 0;
     cudaGetDeviceCount(&gpu);
@@ -62,16 +63,34 @@ int main(int argc, const char* argv[]) {
     double tol             = sys.tol;
     int    check_zero_cond = sys.check_zero_cond;
 
-    const std::string x1_type = "legendre"; // legendre or simpson
+    std::cout << "Evaluating Integral for all values of r and l with\n";
+    std::cout << "  a1=" << alpha[0] << ", a2=" << alpha[1] << ", a3=" << alpha[2]
+              << ", a4=" << alpha[3] << "\n";
+    std::cout << "  c1 = (" << c[0] << ", " << c[1] << ", " << c[2] << ")\n";
+    std::cout << "  c2 = (" << c[3] << ", " << c[4] << ", " << c[5] << ")\n";
+    std::cout << "  c3 = (" << c[6] << ", " << c[7] << ", " << c[8] << ")\n";
+    std::cout << "  c4 = (" << c[9] << ", " << c[10] << ", " << c[11] << ")\n";
 
-    auto   start = std::chrono::high_resolution_clock::now();
-    double sum   = cuslater::evaluateFourCenterIntegral(c, alpha, nr, nl, n, x1_type, tol,
-                                                        check_zero_cond);
-    auto   end   = std::chrono::high_resolution_clock::now();
-    auto   duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    std::cout << "nr: " << nr << " nl: " << nl << " nx: " << nx << " ny: " << ny << " nz: " << nz
-              << std::endl;
+    std::cout << "nr: " << nr << " nl: " << nl << " nx: " << nx << " ny: " << ny
+              << " nz: " << nz << std::endl;
+
+    vector<float2> r = cuslater::read_r_grid(nr);
+    vector<float4> l = cuslater::read_l_grid(nl);
+
+    cuslater::Metric metric;
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    double sum = cuslater::evaluateFourCenterIntegral(c, alpha, r, l, n, tol,
+                                                      check_zero_cond, &metric);
+
+    auto end      = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+
+    std::cout << metric << std::endl;
+    std::cout << "Tolerance: " << tol << std::endl;
     std::cout << "result: " << std::fixed
-              << std::setprecision(std::numeric_limits<double>::max_digits10) << sum << std::endl;
+              << std::setprecision(std::numeric_limits<double>::max_digits10) << sum
+              << std::endl;
     std::cout << "Time Elapsed: " << duration.count() / 1e6 << " seconds" << std::endl;
 }

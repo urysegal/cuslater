@@ -1,8 +1,9 @@
 //
 // Created by gkluhana on 26/03/24.
 //
-#include "../include/grids.h"
 #include <fstream>
+#include <vector>
+#include "utilities.h"
 #include <iostream>
 
 namespace cuslater {
@@ -58,6 +59,32 @@ namespace cuslater {
         }
         // Close the file
         file.close();
+    }
+
+    std::vector<float2> read_r_grid(int nr) {
+        const std::string   r_filepath = "grid_files/r_" + std::to_string(nr) + ".grid";
+        std::vector<real_t> r_nodes(nr);
+        std::vector<real_t> r_weights(nr);
+        read_r_grid_from_file(r_filepath, r_nodes, r_weights);
+        std::vector<float2> r_nodes_2d(nr);
+        for (size_t i = 0; i < r_nodes.size(); ++i) {
+            r_nodes_2d[i] = make_float2(r_nodes[i], r_weights[i]);
+        }
+        return r_nodes_2d;
+    }
+
+    std::vector<float4> read_l_grid(int nl) {
+        const std::string   l_filepath = "grid_files/l_" + std::to_string(nl) + ".grid";
+        std::vector<real_t> l_nodes_x(nl);
+        std::vector<real_t> l_nodes_y(nl);
+        std::vector<real_t> l_nodes_z(nl);
+        std::vector<real_t> l_weights(nl);
+        read_l_grid_from_file(l_filepath, l_nodes_x, l_nodes_y, l_nodes_z, l_weights);
+        std::vector<float4> l_nodes_4d(nl);
+        for (size_t i = 0; i < nl; ++i) {
+            l_nodes_4d[i] = make_float4(l_nodes_x[i], l_nodes_y[i], l_nodes_z[i], l_weights[i]);
+        }
+        return l_nodes_4d;
     }
 
     void generate_x1_from_std(real_t a, real_t b, const std::vector<real_t>& x1_standard_nodes,

@@ -5,29 +5,25 @@
 //
 // Created by gkluhana on 04/03/24.
 //
-#include "utilities.h"
-#include <string>
 #include <vector>
 
 namespace cuslater {
+    /**
+     * @brief Reads the radial nodes from a file.
+     *
+     * @param nr The number of radial nodes to read.
+     * @return A vector of float2 containing the radial nodes and their weights.
+     *         r.x will be the node and r.y will be the weight.
+     */
+    std::vector<float2> read_r_grid(int nr);
 
-    void read_l_grid_from_file(const std::string& filepath, std::vector<real_t>& l_nodes_x,
-                               std::vector<real_t>& l_nodes_y, std::vector<real_t>& l_nodes_z,
-                               std::vector<real_t>& l_weights);
-    void generate_x1_from_std(real_t a, real_t b, const std::vector<real_t>& x1_standard_nodes,
-                              const std::vector<real_t>& x1_standard_weights,
-                              std::vector<real_t>& x1_nodes, std::vector<real_t>& x1_weights);
-
-    void read_x1_1d_grid_from_file(const std::string& filepath, std::vector<real_t>& x1_nodes,
-                                   std::vector<real_t>& x1_weights);
-
-    void read_r_grid_from_file(const std::string& filepath, std::vector<real_t>& r_nodes,
-                               std::vector<real_t>& r_weights);
-
-    void read_l_grid_from_file(const std::string& filepath, std::vector<real_t>& l_nodes_x,
-                               std::vector<real_t>& l_nodes_y, std::vector<real_t>& l_nodes_z,
-                               std::vector<real_t>& l_weights);
-    void read_x1_1d_grid_from_file(const std::string& filepath, real_t& a, real_t& b,
-                                   std::vector<real_t>& x1_nodes, std::vector<real_t>& x1_weights);
+    /**
+     * @brief Reads the angular nodes from a file.
+     *
+     * @param nl The number of angular nodes to read.
+     * @return A vector of float4 containing the angular nodes and weights.
+     *         Each float4 represents a point in 3D space (x, y, z) and the weight (w).
+     */
+    std::vector<float4> read_l_grid(int nl);
 
 } // namespace cuslater

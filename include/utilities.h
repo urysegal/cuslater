@@ -7,30 +7,11 @@
 
 #ifdef PRECISION_DOUBLE
 typedef double  real_t;
-typedef double3 real3_t;
     #pragma message("real_t is set to double.")
 #else
 typedef float  real_t;
-typedef float3 real3_t;
     #pragma message("real_t is set to float.")
 #endif
-
-// helper to construct real3_t from three real_t’s
-static inline __host__ __device__ real3_t make_real3(real_t x, real_t y, real_t z) {
-#ifdef PRECISION_DOUBLE
-    return make_double3(x, y, z);
-#else
-    return make_float3(x, y, z);
-#endif
-}
-
-static inline __device__ real_t norm3(real3_t x) {
-#ifdef PRECISION_DOUBLE
-    return norm3d(x.x, x.y, x.z);
-#else
-    return norm3df(x.x, x.y, x.z);
-#endif
-}
 
 namespace cuslater {
 
@@ -40,7 +21,7 @@ namespace cuslater {
         int    nx       = 200;
         int    ny       = 200;
         int    nz       = 200;
-        double tol      = 1e-10;
+        double tol      = 1e-8;
         float  alpha[4] = {1, 1, 1, 1};
 
         float c[12]           = {0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0};
