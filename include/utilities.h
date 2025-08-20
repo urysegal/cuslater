@@ -1,17 +1,8 @@
 //
 // Created by gkluhana on 04/03/24.
 //
-#ifndef UTILITIES_H
-#define UTILITIES_H
+#pragma once
 #include <cuda_runtime_api.h>
-
-#ifdef PRECISION_DOUBLE
-typedef double  real_t;
-    #pragma message("real_t is set to double.")
-#else
-typedef float  real_t;
-    #pragma message("real_t is set to float.")
-#endif
 
 namespace cuslater {
 
@@ -44,4 +35,3 @@ namespace cuslater {
     __global__ void multiplyVolumeElement(int x_dim, double dxdydz, double* res);
 
 } // namespace cuslater
-#endif // UTILITIES_H

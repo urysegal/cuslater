@@ -2,7 +2,8 @@
 // Created by gkluhana on 04/03/24.
 //
 
-#include "../include/utilities.h"
+#include "utilities.h"
+#include "number.h"
 #include "cooperative_groups.h"
 #include "cooperative_groups/reduce.h"
 #include <cstring>

@@ -5,6 +5,8 @@
 //
 // Created by gkluhana on 04/03/24.
 //
+#pragma once
+#include "number.h"
 #include <vector>
 
 namespace cuslater {
@@ -15,7 +17,7 @@ namespace cuslater {
      * @return A vector of float2 containing the radial nodes and their weights.
      *         r.x will be the node and r.y will be the weight.
      */
-    std::vector<float2> read_r_grid(int nr);
+    std::vector<real2_t> read_r_grid(int nr);
 
     /**
      * @brief Reads the angular nodes from a file.
@@ -24,6 +26,6 @@ namespace cuslater {
      * @return A vector of float4 containing the angular nodes and weights.
      *         Each float4 represents a point in 3D space (x, y, z) and the weight (w).
      */
-    std::vector<float4> read_l_grid(int nl);
+    std::vector<real4_t> read_l_grid(int nl);
 
 } // namespace cuslater

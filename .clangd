@@ -15,16 +15,16 @@ If:
 CompileFlags:
   Add:
     - -xcuda
-    - --cuda-path=/arc/software/spack-2024/opt/spack/linux-rocky9-skylake_avx512/gcc-9.4.0/cuda-11.3.1-pwzx2bw72sresgc76i7fv54qvt3xwrxf/
-    - -I/arc/software/spack-2024/opt/spack/linux-rocky9-skylake_avx512/gcc-9.4.0/cuda-11.3.1-pwzx2bw72sresgc76i7fv54qvt3xwrxf/include/
-    - -L/arc/software/spack-2024/opt/spack/linux-rocky9-skylake_avx512/gcc-9.4.0/cuda-11.3.1-pwzx2bw72sresgc76i7fv54qvt3xwrxf/lib64/
+    - --cuda-path=/usr/local/cuda-12.5/
+    - -I/usr/local/cuda-12.5/include/
+    - -L/usr/local/cuda-12.5/lib64/
     - --cuda-gpu-arch=sm_70
 ---
 
 CompileFlags:
   Compiler: /arc/software/spack-2024/opt/spack/linux-rocky9-skylake_avx512/gcc-11.4.1/gcc-9.4.0-xraorchustmpt5xtpv3f7z2mw4wdkpef/bin/g++
   Add:
-    - -std=c++14
+    - -std=c++17
   Remove:
     - "-Xfatbin*"
     - "-gencode*"
@@ -44,4 +44,5 @@ CompileFlags:
     - --generate-code=*
     - --options-file
     - -Xcompiler=*
+    - -maxrregcount=*
     - -gencode

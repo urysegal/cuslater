@@ -15,12 +15,20 @@ set(CMAKE_CUDA_USE_RESPONSE_FILE_FOR_OBJECTS 0)
 #Precision Flag
 set(PRECISION PRECISION_FLOAT)
 
+if(PRECISION_DOUBLE)
+  message(STATUS "real_t is set to double.")
+else()
+  message(STATUS "real_t is set to float.")
+endif()
+
+
 # Set compiler flags for debug mode
 include_directories(${cuSlater_SOURCE_DIR} ${cuSlater_SOURCE_DIR}/include)
 add_library(cuSlater SHARED
 		include/utilities.h src/utilities.cu
 		include/grids.h		src/grids.cu src/metric.cu
 		include/evalIntegral.h src/evalIntegral.cu
+		src/number.cu
 )
 
 set_property(TARGET cuSlater PROPERTY CUDA_ARCHITECTURES 70)
@@ -29,6 +37,7 @@ target_compile_options(cuSlater PUBLIC
         $<$<COMPILE_LANGUAGE:CXX>:-Wall -Wextra -Wpedantic -Werror -O3>
         $<$<COMPILE_LANGUAGE:CUDA>:-gencode arch=compute_70,code=sm_70>
         $<$<COMPILE_LANGUAGE:CUDA>:-O3 -use_fast_math -prec-sqrt=false -ftz=true -prec-div=false -fmad=true>
+        # $<$<COMPILE_LANGUAGE:CUDA>:-lineinfo -g>
 )
 target_compile_definitions(cuSlater PRIVATE ${PRECISION})
 target_include_directories(cuSlater PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/include)

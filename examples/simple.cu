@@ -2,9 +2,10 @@
 //
 // editted by MarkEwert03 on 13/05/24
 
-#include "../include/evalIntegral.h"
 #include "cuslater.cuh"
+#include "evalIntegral.h"
 #include "grids.h"
+#include "utilities.h"
 #include <chrono>
 #include <iomanip> // for std::setprecision
 #include <iostream>
@@ -74,8 +75,8 @@ int main(int argc, const char* argv[]) {
     std::cout << "nr: " << nr << " nl: " << nl << " nx: " << nx << " ny: " << ny
               << " nz: " << nz << std::endl;
 
-    vector<float2> r = cuslater::read_r_grid(nr);
-    vector<float4> l = cuslater::read_l_grid(nl);
+    vector<real2_t> r = cuslater::read_r_grid(nr);
+    vector<real4_t> l = cuslater::read_l_grid(nl);
 
     cuslater::Metric metric;
 

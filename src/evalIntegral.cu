@@ -2,7 +2,7 @@
 //  Created by gkluhana on 26/03/24.
 //
 #include "../include/evalIntegral.h"
-#include "utilities.h"
+#include "number.h"
 #include <algorithm>
 #include <cub/cub.cuh>
 #include <numeric>
@@ -30,11 +30,11 @@ namespace cuslater {
 
         // load to registers, or at least to shared memory
         // to avoid global memory access
-        float3 c1 = reinterpret_cast<float3*>(d_c)[0];
-        float3 c2 = reinterpret_cast<float3*>(d_c+3)[0];
-        float3 c3 = reinterpret_cast<float3*>(d_c+6)[0];
-        float3 c4 = reinterpret_cast<float3*>(d_c+9)[0];
-        float4 alpha = reinterpret_cast<float4*>(d_alpha)[0];
+        real3_t c1    = reinterpret_cast<real3_t*>(d_c)[0];
+        real3_t c2    = reinterpret_cast<real3_t*>(d_c + 3)[0];
+        real3_t c3    = reinterpret_cast<real3_t*>(d_c + 6)[0];
+        real3_t c4    = reinterpret_cast<real3_t*>(d_c + 9)[0];
+        real4_t alpha = reinterpret_cast<real4_t*>(d_alpha)[0];
 
         // inform the compiler this is unlikely (__builtin_expect(cond, 0))
         if (__builtin_expect(x == 0 || x == n - 1, 0)) [[unlikely]] {
@@ -70,25 +70,25 @@ namespace cuslater {
                 real_t zdiffc_3 = zvalue - c3.z + rlz;
                 real_t zdiffc_4 = zvalue - c4.z + rlz;
 
-                real_t term1    = alpha.x * norm3df(xdiffc_1, ydiffc_1, zdiffc_1);
-                real_t term2    = alpha.y * norm3df(xdiffc_2, ydiffc_2, zdiffc_2);
-                real_t term3    = alpha.z * norm3df(xdiffc_3, ydiffc_3, zdiffc_3);
-                real_t term4    = alpha.w * norm3df(xdiffc_4, ydiffc_4, zdiffc_4);
+                real_t term1    = alpha.x * norm(xdiffc_1, ydiffc_1, zdiffc_1);
+                real_t term2    = alpha.y * norm(xdiffc_2, ydiffc_2, zdiffc_2);
+                real_t term3    = alpha.z * norm(xdiffc_3, ydiffc_3, zdiffc_3);
+                real_t term4    = alpha.w * norm(xdiffc_4, ydiffc_4, zdiffc_4);
                 real_t exponent = -term1 - term2 - term3 - term4 + r;
                 v += __expf(exponent) * 0.5f;
             } // first run
             int k = 1; // for k = 1 to n - 1
             for (; k < n - 4; k += 4) {
-                float4 zvalue = reinterpret_cast<float4*>(&d_z_grid[k])[0];
+                real4_t zvalue = reinterpret_cast<real4_t*>(&d_z_grid[k])[0];
 
                 real_t zdiffc_1 = zvalue.x - c1.z;
                 real_t zdiffc_2 = zvalue.x - c2.z;
                 real_t zdiffc_3 = zvalue.x - c3.z + rlz;
                 real_t zdiffc_4 = zvalue.x - c4.z + rlz;
-                real_t term1    = alpha.x * norm3df(xdiffc_1, ydiffc_1, zdiffc_1);
-                real_t term2    = alpha.y * norm3df(xdiffc_2, ydiffc_2, zdiffc_2);
-                real_t term3    = alpha.z * norm3df(xdiffc_3, ydiffc_3, zdiffc_3);
-                real_t term4    = alpha.w * norm3df(xdiffc_4, ydiffc_4, zdiffc_4);
+                real_t term1    = alpha.x * norm(xdiffc_1, ydiffc_1, zdiffc_1);
+                real_t term2    = alpha.y * norm(xdiffc_2, ydiffc_2, zdiffc_2);
+                real_t term3    = alpha.z * norm(xdiffc_3, ydiffc_3, zdiffc_3);
+                real_t term4    = alpha.w * norm(xdiffc_4, ydiffc_4, zdiffc_4);
                 real_t exponent = -term1 - term2 - term3 - term4 + r;
                 v += __expf(exponent);
 
@@ -96,10 +96,10 @@ namespace cuslater {
                 zdiffc_2 = zvalue.y - c2.z;
                 zdiffc_3 = zvalue.y - c3.z + rlz;
                 zdiffc_4 = zvalue.y - c4.z + rlz;
-                term1    = alpha.x * norm3df(xdiffc_1, ydiffc_1, zdiffc_1);
-                term2    = alpha.y * norm3df(xdiffc_2, ydiffc_2, zdiffc_2);
-                term3    = alpha.z * norm3df(xdiffc_3, ydiffc_3, zdiffc_3);
-                term4    = alpha.w * norm3df(xdiffc_4, ydiffc_4, zdiffc_4);
+                term1    = alpha.x * norm(xdiffc_1, ydiffc_1, zdiffc_1);
+                term2    = alpha.y * norm(xdiffc_2, ydiffc_2, zdiffc_2);
+                term3    = alpha.z * norm(xdiffc_3, ydiffc_3, zdiffc_3);
+                term4    = alpha.w * norm(xdiffc_4, ydiffc_4, zdiffc_4);
                 exponent = -term1 - term2 - term3 - term4 + r;
                 v += __expf(exponent);
 
@@ -107,10 +107,10 @@ namespace cuslater {
                 zdiffc_2 = zvalue.z - c2.z;
                 zdiffc_3 = zvalue.z - c3.z + rlz;
                 zdiffc_4 = zvalue.z - c4.z + rlz;
-                term1    = alpha.x * norm3df(xdiffc_1, ydiffc_1, zdiffc_1);
-                term2    = alpha.y * norm3df(xdiffc_2, ydiffc_2, zdiffc_2);
-                term3    = alpha.z * norm3df(xdiffc_3, ydiffc_3, zdiffc_3);
-                term4    = alpha.w * norm3df(xdiffc_4, ydiffc_4, zdiffc_4);
+                term1    = alpha.x * norm(xdiffc_1, ydiffc_1, zdiffc_1);
+                term2    = alpha.y * norm(xdiffc_2, ydiffc_2, zdiffc_2);
+                term3    = alpha.z * norm(xdiffc_3, ydiffc_3, zdiffc_3);
+                term4    = alpha.w * norm(xdiffc_4, ydiffc_4, zdiffc_4);
                 exponent = -term1 - term2 - term3 - term4 + r;
                 v += __expf(exponent);
 
@@ -118,10 +118,10 @@ namespace cuslater {
                 zdiffc_2 = zvalue.w - c2.z;
                 zdiffc_3 = zvalue.w - c3.z + rlz;
                 zdiffc_4 = zvalue.w - c4.z + rlz;
-                term1    = alpha.x * norm3df(xdiffc_1, ydiffc_1, zdiffc_1);
-                term2    = alpha.y * norm3df(xdiffc_2, ydiffc_2, zdiffc_2);
-                term3    = alpha.z * norm3df(xdiffc_3, ydiffc_3, zdiffc_3);
-                term4    = alpha.w * norm3df(xdiffc_4, ydiffc_4, zdiffc_4);
+                term1    = alpha.x * norm(xdiffc_1, ydiffc_1, zdiffc_1);
+                term2    = alpha.y * norm(xdiffc_2, ydiffc_2, zdiffc_2);
+                term3    = alpha.z * norm(xdiffc_3, ydiffc_3, zdiffc_3);
+                term4    = alpha.w * norm(xdiffc_4, ydiffc_4, zdiffc_4);
                 exponent = -term1 - term2 - term3 - term4 + r;
                 v += __expf(exponent);
             }
@@ -132,10 +132,10 @@ namespace cuslater {
                 real_t zdiffc_3 = zvalue - c3.z + rlz;
                 real_t zdiffc_4 = zvalue - c4.z + rlz;
 
-                real_t term1    = alpha.x * norm3df(xdiffc_1, ydiffc_1, zdiffc_1);
-                real_t term2    = alpha.y * norm3df(xdiffc_2, ydiffc_2, zdiffc_2);
-                real_t term3    = alpha.z * norm3df(xdiffc_3, ydiffc_3, zdiffc_3);
-                real_t term4    = alpha.w * norm3df(xdiffc_4, ydiffc_4, zdiffc_4);
+                real_t term1    = alpha.x * norm(xdiffc_1, ydiffc_1, zdiffc_1);
+                real_t term2    = alpha.y * norm(xdiffc_2, ydiffc_2, zdiffc_2);
+                real_t term3    = alpha.z * norm(xdiffc_3, ydiffc_3, zdiffc_3);
+                real_t term4    = alpha.w * norm(xdiffc_4, ydiffc_4, zdiffc_4);
                 real_t exponent = -term1 - term2 - term3 - term4 + r;
                 v += __expf(exponent);
             }
@@ -146,10 +146,10 @@ namespace cuslater {
                 real_t zdiffc_3 = zvalue - c3.z + rlz;
                 real_t zdiffc_4 = zvalue - c4.z + rlz;
 
-                real_t term1    = alpha.x * norm3df(xdiffc_1, ydiffc_1, zdiffc_1);
-                real_t term2    = alpha.y * norm3df(xdiffc_2, ydiffc_2, zdiffc_2);
-                real_t term3    = alpha.z * norm3df(xdiffc_3, ydiffc_3, zdiffc_3);
-                real_t term4    = alpha.w * norm3df(xdiffc_4, ydiffc_4, zdiffc_4);
+                real_t term1    = alpha.x * norm(xdiffc_1, ydiffc_1, zdiffc_1);
+                real_t term2    = alpha.y * norm(xdiffc_2, ydiffc_2, zdiffc_2);
+                real_t term3    = alpha.z * norm(xdiffc_3, ydiffc_3, zdiffc_3);
+                real_t term4    = alpha.w * norm(xdiffc_4, ydiffc_4, zdiffc_4);
                 real_t exponent = -term1 - term2 - term3 - term4 + r;
                 v += __expf(exponent) * 0.5f;
             }
@@ -183,8 +183,8 @@ namespace cuslater {
         return false;
     }
 
-    double evaluateFourCenterIntegral(real_t* c, real_t* alpha, vector<float2>& r_grid,
-                                      vector<float4>& l_grid, int n, double tol,
+    double evaluateFourCenterIntegral(real_t* c, real_t* alpha, vector<real2_t>& r_grid,
+                                      vector<real4_t>& l_grid, int n, double tol,
                                       bool check_zero_cond, Metric* metric) {
         if (check_zero_cond && checkZero(c, alpha)) {
             return 0.0;
@@ -293,8 +293,8 @@ namespace cuslater {
             metric->totalBlocks     = blocks;
             metric->totalThreads    = blocks * threads;
             metric->totalGridPoints = n * n * n;
-            metric->a               = make_float3(ax, ay, az);
-            metric->b               = make_float3(bx, by, bz);
+            metric->a               = make_real3(ax, ay, az);
+            metric->b               = make_real3(bx, by, bz);
         }
         return sum;
     }
