@@ -1,10 +1,10 @@
 //
 // Created by gkluhana on 26/03/24.
 //
+#include "grids.h"
 #include <fstream>
-#include <vector>
-#include "number.h"
 #include <iostream>
+#include <vector>
 
 namespace cuslater {
     // delete this // clean this .grid files leg32 and leg64 from grid_adap

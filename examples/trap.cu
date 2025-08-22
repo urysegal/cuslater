@@ -171,20 +171,29 @@ int main(int argc, const char* argv[]) {
     assert(centers.size() == alphas.size());
 
     cout << "Testing Cuslater Integral Evaluation" << endl;
-    cout << "----------------------------------------" << endl;
+    cout << "========================================" << endl;
     cout << "Testing Centers/Alphas" << endl;
     cout << "Number of Centers/Alphas: " << centers.size() << endl;
+    cout << "----------------------------------------" << endl;
     test_A();
+    cout << "----------------------------------------" << endl;
     cout << "Testing N Nodes" << endl;
     cout << "Number of N Nodes: " << n_nodes.size() << endl;
+    cout << "----------------------------------------" << endl;
     test_N();
+    cout << "----------------------------------------" << endl;
     cout << "Testing L Nodes" << endl;
     cout << "Number of L Nodes: " << l_nodes.size() << endl;
+    cout << "----------------------------------------" << endl;
     test_L();
+    cout << "----------------------------------------" << endl;
     cout << "Testing R Nodes" << endl;
     cout << "Number of R Nodes: " << r_nodes.size() << endl;
+    cout << "----------------------------------------" << endl;
     test_R();
+    cout << "----------------------------------------" << endl;
     cout << "Testing Tolerance" << endl;
     cout << "Number of Tolerances: " << tols.size() << endl;
+    cout << "----------------------------------------" << endl;
     test_Tol();
 }

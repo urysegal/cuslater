@@ -55,7 +55,6 @@ __host__ __device__ __forceinline__ real3_t make_real3(real_t x, real_t y, real_
     return real3_t{x, y, z};
 }
 
-__host__ __device__ __forceinline__ real4_t make_real4(real_t x, real_t y, real_t z,
-                                                       real_t w) {
+__host__ __device__ __forceinline__ real4_t make_real4(real_t x, real_t y, real_t z, real_t w) {
     return real4_t{x, y, z, w};
 }

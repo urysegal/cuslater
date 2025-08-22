@@ -1,8 +1,7 @@
 // updated april 2025
 //  Created by gkluhana on 26/03/24.
 //
-#include "../include/evalIntegral.h"
-#include "number.h"
+#include "evalIntegral.h"
 #include <algorithm>
 #include <cub/cub.cuh>
 #include <numeric>
@@ -273,9 +272,6 @@ namespace cuslater {
                     break;
                 }
             }
-            if (j % 100 == 0) {
-                std::cout << "computed for l_j:" << j << "/" << nl << std::endl;
-            }
         }
         auto grand_end = std::chrono::high_resolution_clock::now();
         auto grand_dur =
@@ -284,7 +280,11 @@ namespace cuslater {
         sum *= (4.0 / pi) * std::pow(alpha[0] * alpha[1] * alpha[2] * alpha[3], 1.5);
         if (metric) {
             metric->totalTime          = grand_dur;
-            metric->avgKernelTime      = duration / (nr * nl - r_skipped);
+            if (nr * nl - r_skipped != 0) {
+                metric->avgKernelTime    = duration / (nr * nl - r_skipped);
+            } else {
+                metric->avgKernelTime    = duration;
+            }
             metric->totalKernelTime    = duration;
             metric->totalKernelCalls   = nr * nl - r_skipped;
             metric->skippedLebdevNodes = r_skipped;
