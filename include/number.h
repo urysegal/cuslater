@@ -47,6 +47,14 @@ __device__ __forceinline__ real_t norm(real_t x, real_t y, real_t z) {
     }
 }
 
+__device__ __forceinline__ real_t exp_fn(real_t x) {
+    if constexpr (std::is_same<real_t, float>::value) {
+        return __expf(x);
+    } else {
+        return exp(x);
+    }
+}
+
 __host__ __device__ __forceinline__ real2_t make_real2(real_t x, real_t y) {
     return real2_t{x, y};
 }
