@@ -2,13 +2,14 @@
 //  Created by gkluhana on 26/03/24.
 //
 #include "evalIntegral.h"
+#include "number.h"
 #include <algorithm>
 #include <cub/cub.cuh>
 #include <numeric>
 #include <thrust/device_vector.h>
 #include <thrust/host_vector.h>
 const double pi = 3.14159265358979323846;
-#define THREADS_PER_BLOCK 256
+#define THREADS_PER_BLOCK 128
 
 __constant__ real_t d_c[12];
 __constant__ real_t d_alpha[4];
@@ -19,21 +20,53 @@ __constant__ real_t d_z_grid[500];
 
 namespace cuslater {
 
-    __global__ void evalIntegrand_3DBloackReduce(int n, real_t hxyz, real_t rlx,
-                                                 real_t rly, real_t rlz, real_t r,
-                                                 real_t* __restrict__ block_sums) {
-        int idx_flat = (blockIdx.x * blockDim.x + threadIdx.x);
-        int totalXY  = n * n;
-        int y        = idx_flat / n;
-        int x        = idx_flat % n;
+    // result layout: idx = z * pitchXY + y * pitchX + x
+    // where pitchX pads each row to a multiple of warp-aligned elements.
+    __global__ void compute_distance_grid_zmajor(int n, int pitchX, real_t* __restrict__ result) {
+        const int idx_xy  = blockIdx.x * blockDim.x + threadIdx.x;
+        const int totalXY = n * n;
+        if (idx_xy >= totalXY) return;
+
+        const int y = idx_xy / n;
+        const int x = idx_xy - y * n;
+
+        const real3_t c1 = reinterpret_cast<const real3_t*>(d_c)[0];
+        const real3_t c2 = reinterpret_cast<const real3_t*>(d_c + 3)[0];
+        const real2_t a  = reinterpret_cast<const real2_t*>(d_alpha)[0];
+
+        const real_t X = __ldg(&d_x_grid[x]);
+        const real_t Y = __ldg(&d_y_grid[y]);
+
+        const int row     = y * pitchX;
+        const int pitchXY = pitchX * n;
+
+        for (int z = 0; z < n; ++z) {
+            const real_t Z  = __ldg(&d_z_grid[z]);
+            const real_t d1 = norm(X - c1.x, Y - c1.y, Z - c1.z);
+            const real_t d2 = norm(X - c2.x, Y - c2.y, Z - c2.z);
+            const real_t v  = a.x * d1 + a.y * d2;
+
+            result[z * pitchXY + row + x] = v;
+        }
+    }
+
+    __launch_bounds__(THREADS_PER_BLOCK, 3) __global__
+        void evalIntegrand_3DBloackReduce(int n, real_t hxyz, real_t rlx, real_t rly, real_t rlz,
+                                          real_t r, int pitchX, real_t* __restrict__ alpha12,
+                                          real_t* __restrict__ block_sums) {
+        int tid     = (blockIdx.x * blockDim.x + threadIdx.x);
+        int totalXY = n * n;
+        int y       = tid / n;
+        int x       = tid - y * n;
+        int pitchXY = pitchX * n;
+        int rowBase = y * pitchX;
+        int base    = rowBase + x;
 
         // load to registers, or at least to shared memory
         // to avoid global memory access
-        real3_t c1    = reinterpret_cast<real3_t*>(d_c)[0];
-        real3_t c2    = reinterpret_cast<real3_t*>(d_c + 3)[0];
         real3_t c3    = reinterpret_cast<real3_t*>(d_c + 6)[0];
         real3_t c4    = reinterpret_cast<real3_t*>(d_c + 9)[0];
-        real4_t alpha = reinterpret_cast<real4_t*>(d_alpha)[0];
+        real2_t alpha = reinterpret_cast<real2_t*>(d_alpha + 2)[0];
 
         // inform the compiler this is unlikely (__builtin_expect(cond, 0))
         if (__builtin_expect(x == 0 || x == n - 1, 0)) [[unlikely]] {
@@ -43,16 +76,12 @@ namespace cuslater {
             hxyz *= 0.5; // half weight at endpoints
         }
 
-        real_t local = 0.f;
-        if (__builtin_expect(idx_flat < totalXY, 1)) [[likely]] {
+        real_t local = real_t(0.0);
+        // NOTE: BELOW z loop does not have half weights at the endpoints
+
+        if (__builtin_expect(tid < totalXY, 1)) [[likely]] {
             real_t xvalue = __ldg(&d_x_grid[x]);
             real_t yvalue = __ldg(&d_y_grid[y]);
-
-            real_t xdiffc_1 = xvalue - c1.x;
-            real_t xdiffc_2 = xvalue - c2.x;
-
-            real_t ydiffc_1 = yvalue - c1.y;
-            real_t ydiffc_2 = yvalue - c2.y;
 
             real_t xdiffc_3 = xvalue - c3.x + rlx;
             real_t xdiffc_4 = xvalue - c4.x + rlx;
@@ -60,99 +89,72 @@ namespace cuslater {
             real_t ydiffc_3 = yvalue - c3.y + rly;
             real_t ydiffc_4 = yvalue - c4.y + rly;
 
-            real_t v = 0.f;
+            real_t v0 = 0, v1 = 0, v2 = 0, v3 = 0;
 
-            {
-                real_t zvalue   = __ldg(&d_z_grid[0]);
-                real_t zdiffc_1 = zvalue - c1.z;
-                real_t zdiffc_2 = zvalue - c2.z;
-                real_t zdiffc_3 = zvalue - c3.z + rlz;
-                real_t zdiffc_4 = zvalue - c4.z + rlz;
+            constexpr int UNROLL = 8; // maybe 4 for double?
+            int           k      = 0;
 
-                real_t term1    = alpha.x * norm(xdiffc_1, ydiffc_1, zdiffc_1);
-                real_t term2    = alpha.y * norm(xdiffc_2, ydiffc_2, zdiffc_2);
-                real_t term3    = alpha.z * norm(xdiffc_3, ydiffc_3, zdiffc_3);
-                real_t term4    = alpha.w * norm(xdiffc_4, ydiffc_4, zdiffc_4);
-                real_t exponent = -term1 - term2 - term3 - term4 + r;
-                v += __expf(exponent) * 0.5f;
-            } // first run
-            int k = 1; // for k = 1 to n - 1
-            for (; k < n - 4; k += 4) {
-                real4_t zvalue = reinterpret_cast<real4_t*>(&d_z_grid[k])[0];
-
-                real_t zdiffc_1 = zvalue.x - c1.z;
-                real_t zdiffc_2 = zvalue.x - c2.z;
-                real_t zdiffc_3 = zvalue.x - c3.z + rlz;
-                real_t zdiffc_4 = zvalue.x - c4.z + rlz;
-                real_t term1    = alpha.x * norm(xdiffc_1, ydiffc_1, zdiffc_1);
-                real_t term2    = alpha.y * norm(xdiffc_2, ydiffc_2, zdiffc_2);
-                real_t term3    = alpha.z * norm(xdiffc_3, ydiffc_3, zdiffc_3);
-                real_t term4    = alpha.w * norm(xdiffc_4, ydiffc_4, zdiffc_4);
-                real_t exponent = -term1 - term2 - term3 - term4 + r;
-                v += __expf(exponent);
-
-                zdiffc_1 = zvalue.y - c1.z;
-                zdiffc_2 = zvalue.y - c2.z;
-                zdiffc_3 = zvalue.y - c3.z + rlz;
-                zdiffc_4 = zvalue.y - c4.z + rlz;
-                term1    = alpha.x * norm(xdiffc_1, ydiffc_1, zdiffc_1);
-                term2    = alpha.y * norm(xdiffc_2, ydiffc_2, zdiffc_2);
-                term3    = alpha.z * norm(xdiffc_3, ydiffc_3, zdiffc_3);
-                term4    = alpha.w * norm(xdiffc_4, ydiffc_4, zdiffc_4);
-                exponent = -term1 - term2 - term3 - term4 + r;
-                v += __expf(exponent);
-
-                zdiffc_1 = zvalue.z - c1.z;
-                zdiffc_2 = zvalue.z - c2.z;
-                zdiffc_3 = zvalue.z - c3.z + rlz;
-                zdiffc_4 = zvalue.z - c4.z + rlz;
-                term1    = alpha.x * norm(xdiffc_1, ydiffc_1, zdiffc_1);
-                term2    = alpha.y * norm(xdiffc_2, ydiffc_2, zdiffc_2);
-                term3    = alpha.z * norm(xdiffc_3, ydiffc_3, zdiffc_3);
-                term4    = alpha.w * norm(xdiffc_4, ydiffc_4, zdiffc_4);
-                exponent = -term1 - term2 - term3 - term4 + r;
-                v += __expf(exponent);
-
-                zdiffc_1 = zvalue.w - c1.z;
-                zdiffc_2 = zvalue.w - c2.z;
-                zdiffc_3 = zvalue.w - c3.z + rlz;
-                zdiffc_4 = zvalue.w - c4.z + rlz;
-                term1    = alpha.x * norm(xdiffc_1, ydiffc_1, zdiffc_1);
-                term2    = alpha.y * norm(xdiffc_2, ydiffc_2, zdiffc_2);
-                term3    = alpha.z * norm(xdiffc_3, ydiffc_3, zdiffc_3);
-                term4    = alpha.w * norm(xdiffc_4, ydiffc_4, zdiffc_4);
-                exponent = -term1 - term2 - term3 - term4 + r;
-                v += __expf(exponent);
+            // prefetch first UNROLL alpha12
+            real_t a[UNROLL];
+#pragma unroll
+            for (int t = 0; t < UNROLL && t < n; ++t) {
+                a[t] = __ldg(&alpha12[(k + t) * pitchXY + base]);
             }
-            for (; k < n - 1; ++k) { // clear up the remainder
-                real_t zvalue   = __ldg(&d_z_grid[k]);
-                real_t zdiffc_1 = zvalue - c1.z;
-                real_t zdiffc_2 = zvalue - c2.z;
-                real_t zdiffc_3 = zvalue - c3.z + rlz;
-                real_t zdiffc_4 = zvalue - c4.z + rlz;
 
-                real_t term1    = alpha.x * norm(xdiffc_1, ydiffc_1, zdiffc_1);
-                real_t term2    = alpha.y * norm(xdiffc_2, ydiffc_2, zdiffc_2);
-                real_t term3    = alpha.z * norm(xdiffc_3, ydiffc_3, zdiffc_3);
-                real_t term4    = alpha.w * norm(xdiffc_4, ydiffc_4, zdiffc_4);
-                real_t exponent = -term1 - term2 - term3 - term4 + r;
-                v += __expf(exponent);
-            }
-            { // handle last
-                real_t zvalue   = __ldg(&d_z_grid[k]);
-                real_t zdiffc_1 = zvalue - c1.z;
-                real_t zdiffc_2 = zvalue - c2.z;
-                real_t zdiffc_3 = zvalue - c3.z + rlz;
-                real_t zdiffc_4 = zvalue - c4.z + rlz;
+            for (; k + UNROLL - 1 < n; k += UNROLL) {
+                // compute on the prefetched
+                real_t z0 = d_z_grid[k + 0], z1 = d_z_grid[k + 1], z2 = d_z_grid[k + 2],
+                       z3 = d_z_grid[k + 3];
+                real_t z4 = d_z_grid[k + 4], z5 = d_z_grid[k + 5], z6 = d_z_grid[k + 6],
+                       z7 = d_z_grid[k + 7];
 
-                real_t term1    = alpha.x * norm(xdiffc_1, ydiffc_1, zdiffc_1);
-                real_t term2    = alpha.y * norm(xdiffc_2, ydiffc_2, zdiffc_2);
-                real_t term3    = alpha.z * norm(xdiffc_3, ydiffc_3, zdiffc_3);
-                real_t term4    = alpha.w * norm(xdiffc_4, ydiffc_4, zdiffc_4);
-                real_t exponent = -term1 - term2 - term3 - term4 + r;
-                v += __expf(exponent) * 0.5f;
+                v0 += exp_fn(r
+                             - (a[0] + alpha.x * norm(xdiffc_3, ydiffc_3, z0 - c3.z + rlz)
+                                + alpha.y * norm(xdiffc_4, ydiffc_4, z0 - c4.z + rlz)));
+                v1 += exp_fn(r
+                             - (a[1] + alpha.x * norm(xdiffc_3, ydiffc_3, z1 - c3.z + rlz)
+                                + alpha.y * norm(xdiffc_4, ydiffc_4, z1 - c4.z + rlz)));
+                v2 += exp_fn(r
+                             - (a[2] + alpha.x * norm(xdiffc_3, ydiffc_3, z2 - c3.z + rlz)
+                                + alpha.y * norm(xdiffc_4, ydiffc_4, z2 - c4.z + rlz)));
+                v3 += exp_fn(r
+                             - (a[3] + alpha.x * norm(xdiffc_3, ydiffc_3, z3 - c3.z + rlz)
+                                + alpha.y * norm(xdiffc_4, ydiffc_4, z3 - c4.z + rlz)));
+
+                v0 += exp_fn(r
+                             - (a[4] + alpha.x * norm(xdiffc_3, ydiffc_3, z4 - c3.z + rlz)
+                                + alpha.y * norm(xdiffc_4, ydiffc_4, z4 - c4.z + rlz)));
+                v1 += exp_fn(r
+                             - (a[5] + alpha.x * norm(xdiffc_3, ydiffc_3, z5 - c3.z + rlz)
+                                + alpha.y * norm(xdiffc_4, ydiffc_4, z5 - c4.z + rlz)));
+                v2 += exp_fn(r
+                             - (a[6] + alpha.x * norm(xdiffc_3, ydiffc_3, z6 - c3.z + rlz)
+                                + alpha.y * norm(xdiffc_4, ydiffc_4, z6 - c4.z + rlz)));
+                v3 += exp_fn(r
+                             - (a[7] + alpha.x * norm(xdiffc_3, ydiffc_3, z7 - c3.z + rlz)
+                                + alpha.y * norm(xdiffc_4, ydiffc_4, z7 - c4.z + rlz)));
+
+                // prefetch the NEXT UNROLL alpha12 early
+                if (k + 2 * UNROLL - 1 < n) {
+#pragma unroll
+                    for (int t = 0; t < UNROLL; ++t) {
+                        a[t] = __ldg(&alpha12[(k + UNROLL + t) * pitchXY + base]);
+                    }
+                }
             }
-            local += v * hxyz; // multiply by the volume element
+
+            // tail
+            for (; k < n; ++k) {
+                int    idx = k * pitchXY + base;
+                real_t z   = d_z_grid[k];
+                real_t a12 = __ldg(&alpha12[idx]);
+                real_t t3  = alpha.x * norm(xdiffc_3, ydiffc_3, z - c3.z + rlz);
+                real_t t4  = alpha.y * norm(xdiffc_4, ydiffc_4, z - c4.z + rlz);
+                v0 += exp_fn(r - (a12 + t3 + t4));
+            }
+
+            real_t v = ((v0 + v1) + (v2 + v3));
+            local += v * hxyz;
         }
 
         using BlockReduce = cub::BlockReduce<real_t, THREADS_PER_BLOCK>;
@@ -168,8 +170,7 @@ namespace cuslater {
 
         real_t normdiff13 = sqrt((c[0] - c[6]) * (c[0] - c[6]) + (c[1] - c[7]) * (c[1] - c[7])
                                  + (c[2] - c[8]) * (c[2] - c[8]));
-        real_t normdiff24 = sqrt((c[3] - c[9]) * (c[3] - c[9])
-                                 + (c[4] - c[10]) * (c[4] - c[10])
+        real_t normdiff24 = sqrt((c[3] - c[9]) * (c[3] - c[9]) + (c[4] - c[10]) * (c[4] - c[10])
                                  + (c[5] - c[11]) * (c[5] - c[11]));
 
         real_t cond = std::min(alpha[0], alpha[2]) * normdiff13
@@ -243,6 +244,22 @@ namespace cuslater {
         cudaMemcpyToSymbol(d_y_grid, y1_nodes.data(), n * sizeof(real_t));
         cudaMemcpyToSymbol(d_z_grid, z1_nodes.data(), n * sizeof(real_t));
 
+        // Build cache once per grid
+        int warpBytes  = 128;
+        int alignElems = warpBytes / sizeof(real_t); // 32 for float, 16 for double
+        int pitchX     = ((n + alignElems - 1) / alignElems) * alignElems; // padded row length in
+                                                                           // elements
+
+        size_t pitchXY = size_t(pitchX) * n;
+        size_t total   = size_t(n) * pitchXY; // z * (y * pitchX)
+
+        real_t* d_distance_grid;
+        cudaMalloc(&d_distance_grid, total * sizeof(real_t));
+        compute_distance_grid_zmajor<<<(n * n + threads - 1) / threads, threads>>>(n, pitchX,
+                                                                                   d_distance_grid);
+        cudaFuncSetCacheConfig(evalIntegrand_3DBloackReduce, cudaFuncCachePreferL1);
+        cudaFuncSetCacheConfig(compute_distance_grid_zmajor, cudaFuncCachePreferL1);
+
         thrust::device_vector<real_t> d_block_sums(blocks);
         thrust::host_vector<real_t>   block_sums(blocks);
 
@@ -259,8 +276,8 @@ namespace cuslater {
                 auto   start = std::chrono::high_resolution_clock::now();
                 real_t r     = r_grid[i].x;
                 evalIntegrand_3DBloackReduce<<<blocks, THREADS_PER_BLOCK>>>(
-                    n, hxyz, r * l_grid[j].x, r * l_grid[j].y, r * l_grid[j].z, r,
-                    thrust::raw_pointer_cast(d_block_sums.data()));
+                    n, hxyz, r * l_grid[j].x, r * l_grid[j].y, r * l_grid[j].z, r, pitchX,
+                    d_distance_grid, thrust::raw_pointer_cast(d_block_sums.data()));
                 auto end = std::chrono::high_resolution_clock::now();
                 duration += std::chrono::duration_cast<std::chrono::microseconds>(end - start);
                 block_sums = d_block_sums;
@@ -272,18 +289,20 @@ namespace cuslater {
                     break;
                 }
             }
+            if (j % 100 == 0) {
+                std::cout << "Progress: " << j << "/" << nl << std::endl;
+            }
         }
         auto grand_end = std::chrono::high_resolution_clock::now();
-        auto grand_dur =
-            std::chrono::duration_cast<std::chrono::microseconds>(grand_end - grand_start);
+        auto grand_dur = std::chrono::duration_cast<std::chrono::microseconds>(grand_end - grand_start);
 
         sum *= (4.0 / pi) * std::pow(alpha[0] * alpha[1] * alpha[2] * alpha[3], 1.5);
         if (metric) {
-            metric->totalTime          = grand_dur;
+            metric->totalTime = grand_dur;
             if (nr * nl - r_skipped != 0) {
-                metric->avgKernelTime    = duration / (nr * nl - r_skipped);
+                metric->avgKernelTime = duration / (nr * nl - r_skipped);
             } else {
-                metric->avgKernelTime    = duration;
+                metric->avgKernelTime = duration;
             }
             metric->totalKernelTime    = duration;
             metric->totalKernelCalls   = nr * nl - r_skipped;
