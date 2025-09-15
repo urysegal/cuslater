@@ -77,7 +77,7 @@ namespace cuslater {
             if (__builtin_expect(y == 0 || y == n - 1, 0)) [[unlikely]] {
                 hxyz *= 0.5; // half weight at endpoints
             }
-            // NOTE: BELOW z loop does not have half weights at the endpoints
+            // NOTE: BELOW z loop does not have half weights at the endpoints (to be done later)
 
             real_t xvalue = __ldg(&d_x_grid[x]);
             real_t yvalue = __ldg(&d_y_grid[y]);
@@ -264,7 +264,9 @@ namespace cuslater {
         std::chrono::microseconds duration(0);
 
         real_t  hxyz     = hx * hy * hz;
-        real_t* d_result = nullptr;
+        real_t* d_result = nullptr; // NOTE: this approach does not show a big advantage over using
+                                    // thrust::device_vector, and it shows slightly different result
+                                    // (todo: investigate why)
         cudaMalloc(&d_result, sizeof(real_t));
 
         auto grand_start = std::chrono::high_resolution_clock::now();
@@ -306,6 +308,7 @@ namespace cuslater {
             metric->totalKernelTime    = duration;
             metric->totalKernelCalls   = nr * nl - r_skipped;
             metric->skippedLebdevNodes = r_skipped;
+            // this EBW is outdated for the current kernel (todo: update it)
             metric->effectiveBandwidth = (202.0 * 4 * n * n + blocks * 4)
                                        / metric->avgKernelTime.count() / 1e3; // GB/s
             metric->totalBlocks     = blocks;
