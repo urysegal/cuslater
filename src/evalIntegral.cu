@@ -5,7 +5,6 @@
 #include "number.h"
 #include <algorithm>
 #include <cub/cub.cuh>
-#include <numeric>
 #include <thrust/device_vector.h>
 #include <thrust/host_vector.h>
 const double pi = 3.14159265358979323846;
@@ -53,7 +52,7 @@ namespace cuslater {
     __launch_bounds__(THREADS_PER_BLOCK, 3) __global__
         void evalIntegrand_3DBloackReduce(int n, real_t hxyz, real_t rlx, real_t rly, real_t rlz,
                                           real_t r, int pitchX, real_t* __restrict__ alpha12,
-                                          real_t* __restrict__ block_sums) {
+                                          real_t* __restrict__ d_result) {
         int tid     = (blockIdx.x * blockDim.x + threadIdx.x);
         int totalXY = n * n;
         int y       = tid / n;
@@ -62,24 +61,24 @@ namespace cuslater {
         int rowBase = y * pitchX;
         int base    = rowBase + x;
 
-        // load to registers, or at least to shared memory
-        // to avoid global memory access
-        real3_t c3    = reinterpret_cast<real3_t*>(d_c + 6)[0];
-        real3_t c4    = reinterpret_cast<real3_t*>(d_c + 9)[0];
-        real2_t alpha = reinterpret_cast<real2_t*>(d_alpha + 2)[0];
-
-        // inform the compiler this is unlikely (__builtin_expect(cond, 0))
-        if (__builtin_expect(x == 0 || x == n - 1, 0)) [[unlikely]] {
-            hxyz *= 0.5; // half weight at endpoints
-        }
-        if (__builtin_expect(y == 0 || y == n - 1, 0)) [[unlikely]] {
-            hxyz *= 0.5; // half weight at endpoints
-        }
-
         real_t local = real_t(0.0);
-        // NOTE: BELOW z loop does not have half weights at the endpoints
-
         if (__builtin_expect(tid < totalXY, 1)) [[likely]] {
+
+            // load to registers, or at least to shared memory
+            // to avoid global memory access
+            real3_t c3    = reinterpret_cast<real3_t*>(d_c + 6)[0];
+            real3_t c4    = reinterpret_cast<real3_t*>(d_c + 9)[0];
+            real2_t alpha = reinterpret_cast<real2_t*>(d_alpha + 2)[0];
+
+            // inform the compiler this is unlikely (__builtin_expect(cond, 0))
+            if (__builtin_expect(x == 0 || x == n - 1, 0)) [[unlikely]] {
+                hxyz *= 0.5; // half weight at endpoints
+            }
+            if (__builtin_expect(y == 0 || y == n - 1, 0)) [[unlikely]] {
+                hxyz *= 0.5; // half weight at endpoints
+            }
+            // NOTE: BELOW z loop does not have half weights at the endpoints
+
             real_t xvalue = __ldg(&d_x_grid[x]);
             real_t yvalue = __ldg(&d_y_grid[y]);
 
@@ -163,7 +162,7 @@ namespace cuslater {
 
         real_t block_sum = BlockReduce(temp).Sum(local);
         if (__builtin_expect(threadIdx.x == 0, 0)) [[unlikely]]
-            block_sums[blockIdx.x] = block_sum;
+            atomicAdd(d_result, block_sum);
     }
 
     bool checkZero(real_t* c, real_t* alpha) {
@@ -260,28 +259,28 @@ namespace cuslater {
         cudaFuncSetCacheConfig(evalIntegrand_3DBloackReduce, cudaFuncCachePreferL1);
         cudaFuncSetCacheConfig(compute_distance_grid_zmajor, cudaFuncCachePreferL1);
 
-        thrust::device_vector<real_t> d_block_sums(blocks);
-        thrust::host_vector<real_t>   block_sums(blocks);
-
         double                    sum       = 0.0f;
-        double                    delta_sum = 0.0f;
         int                       r_skipped = 0;
         std::chrono::microseconds duration(0);
 
-        real_t hxyz = hx * hy * hz;
+        real_t  hxyz     = hx * hy * hz;
+        real_t* d_result = nullptr;
+        cudaMalloc(&d_result, sizeof(real_t));
 
         auto grand_start = std::chrono::high_resolution_clock::now();
         for (int j = 0; j < nl; ++j) {
             for (int i = 0; i < nr; ++i) {
                 auto   start = std::chrono::high_resolution_clock::now();
                 real_t r     = r_grid[i].x;
+                cudaMemsetAsync(d_result, 0, sizeof(real_t));
                 evalIntegrand_3DBloackReduce<<<blocks, THREADS_PER_BLOCK>>>(
                     n, hxyz, r * l_grid[j].x, r * l_grid[j].y, r * l_grid[j].z, r, pitchX,
-                    d_distance_grid, thrust::raw_pointer_cast(d_block_sums.data()));
+                    d_distance_grid, d_result);
+                real_t delta_sum;
+                cudaMemcpyAsync(&delta_sum, d_result, sizeof(real_t), cudaMemcpyDeviceToHost);
+                cudaStreamSynchronize(0); // default stream 0
                 auto end = std::chrono::high_resolution_clock::now();
                 duration += std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-                block_sums = d_block_sums;
-                delta_sum  = std::accumulate(block_sums.begin(), block_sums.end(), 0.0);
 
                 sum += delta_sum * r_grid[i].y * l_grid[j].w;
                 if (delta_sum < tol) [[unlikely]] {
