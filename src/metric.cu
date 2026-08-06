@@ -1,10 +1,20 @@
-#include "evalIntegral.h"
+#include "evalIntegral.cuh"
 #include "iomanip"
 #include <sstream>
+#include <string>
 
 namespace cuslater {
     using namespace std;
     ostream& operator<<(ostream& os, const Metric& m) {
+        auto fmtUnit = [](double secs) {
+            if (secs == 0) {
+                return string("NOT RECORDED");
+            }
+            std::ostringstream ss;
+            ss.setf(std::ios::fixed, std::ios::floatfield);
+            ss << std::setprecision(4) << secs;
+            return ss.str();
+        };
         int                total = m.totalKernelCalls + m.skippedLebdevNodes;
         std::ostringstream skipped;
         skipped << std::fixed << std::setprecision(2)
@@ -13,10 +23,10 @@ namespace cuslater {
         os << "  Total Threads: " << m.totalThreads << "\n"
            << "  Total Blocks: " << m.totalBlocks << "\n"
            << "  Total Grid Points: " << m.totalGridPoints << "\n"
-           << "  Total Time: " << m.totalTime.count() / 1e6 << " seconds\n"
+           << "  Total Time: " << fmtUnit(m.totalTime.count() / 1e6) << " seconds\n"
            << "  Total Kernel Calls: " << m.totalKernelCalls << "\n"
-           << "  Total Kernel Time: " << m.totalKernelTime.count() / 1e6 << " seconds\n"
-           << "  Average Kernel Time: " << m.avgKernelTime.count() / 1e6 << " seconds\n"
+           << "  Total Kernel Time: " << fmtUnit(m.totalKernelTime.count() / 1e6) << " seconds\n"
+           << "  Average Kernel Time: " << m.avgKernelTime.count() << " us\n"
            << "  Skipped Lebedev Nodes: " << m.skippedLebdevNodes << "/" << total << " ("
            << skipped.str() << "%)\n"
            << "  Effective Bandwidth: " << m.effectiveBandwidth << " GB/s\n"

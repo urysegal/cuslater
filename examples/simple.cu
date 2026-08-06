@@ -3,7 +3,7 @@
 // editted by MarkEwert03 on 13/05/24
 
 #include "cuslater.cuh"
-#include "evalIntegral.h"
+#include "evalIntegral.cuh"
 #include "grids.h"
 #include "utilities.h"
 #include <chrono>

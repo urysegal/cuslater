@@ -2,10 +2,10 @@
 // Created by gkluhana on 04/03/24.
 //
 
-#include "utilities.h"
-#include "number.h"
 #include "cooperative_groups.h"
 #include "cooperative_groups/reduce.h"
+#include "number.cuh"
+#include "utilities.h"
 #include <cstring>
 #include <iostream>
 

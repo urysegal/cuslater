@@ -6,7 +6,7 @@
 // Created by gkluhana on 04/03/24.
 //
 #pragma once
-#include "number.h"
+#include "./number.cuh"
 #include <vector>
 
 namespace cuslater {
